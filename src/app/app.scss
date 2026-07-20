@@ -1,0 +1,55 @@
+:host {
+  --ink: #203d38;
+  --green: #376b56;
+  display: block;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 14px 34px;
+  font-family: Arial, sans-serif;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration: none;
+  letter-spacing: -0.02em;
+}
+
+.brand-mark {
+  display: grid;
+  min-width: 31px;
+  height: 25px;
+  padding: 0 4px;
+  place-items: center;
+  border-radius: 3px;
+  color: #fffdf8;
+  background: var(--green);
+  font-family: Georgia, serif;
+  font-size: 15px;
+  font-style: italic;
+  line-height: 1;
+}
+
+.topbar-note {
+  color: #748078;
+  font-size: 13px;
+}
+
+@media (max-width: 760px) {
+  .topbar {
+    padding: 21px 22px;
+  }
+
+  .topbar-note {
+    display: none;
+  }
+}
