@@ -1,1 +1,59 @@
-<p>home-page works!</p>
+<main class="home">
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Nourish home">
+      <span class="brand-mark" aria-hidden="true">MTM</span>
+      <span>Make the Most</span>
+    </a>
+    <span class="topbar-note">Make the most of what you have</span>
+  </header>
+
+  <section class="hero" aria-labelledby="page-title">
+    <div class="hero-copy">
+      <p class="eyebrow"><span></span>Make every ingredient count</p>
+      <h1 id="page-title">Get more meals<br />from what you have.</h1>
+      <p class="intro">
+        Find the best combination of meals to make the greatest number of servings from your
+        available ingredients.
+      </p>
+    </div>
+
+    <app-hero-illustration />
+  </section>
+
+  <section class="actions" aria-labelledby="actions-title">
+    <div class="section-heading">
+      <h2 id="actions-title">What would you like to do?</h2>
+    </div>
+
+    <div class="action-grid">
+      <a class="action-card" href="/ingredients">
+        <span class="card-icon ingredients-icon" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="card-content">
+          <span class="card-title">What's in the Pantry</span>
+          <span class="card-description">Update the ingredients you have available.</span>
+        </span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+
+      <a class="action-card" href="/meals">
+        <span class="card-icon meals-icon" aria-hidden="true"><i></i><i></i></span>
+        <span class="card-content">
+          <span class="card-title">What's on the Menu</span>
+          <span class="card-description">Add the meals and recipes you can make.</span>
+        </span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+
+      <a class="action-card featured" href="/optimise">
+        <span class="card-icon optimise-icon" aria-hidden="true"> <i></i><i></i><i></i> </span>
+        <span class="card-content">
+          <span class="card-title">Optimise Meal Plan</span>
+          <span class="card-description"
+            >Find the meal mix that makes your ingredients go furthest.</span
+          >
+        </span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
+  </section>
+</main>
