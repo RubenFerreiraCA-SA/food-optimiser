@@ -9,8 +9,4 @@ import { RouterOutlet } from '@angular/router';
 })
 export class App {
   protected readonly title = signal('meal-optimiser');
-
-  constructor() {
-    console.log('Access Token Test');
-  }
 }
