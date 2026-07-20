@@ -1,1 +1,81 @@
-<p>menu-page works!</p>
+<main class="menu-page">
+  <section class="menu-hero" aria-labelledby="menu-title">
+    <div>
+      <p class="eyebrow"><span></span>Your recipe collection</p>
+      <h1 id="menu-title">What's on the menu?</h1>
+      <p>Keep the meals you can make in one place, ready for your next plan.</p>
+    </div>
+    <span class="hero-mark" aria-hidden="true">⌘</span>
+  </section>
+  
+  <section class="recipes" aria-labelledby="recipes-title">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow"><span></span>{{ menu.recipes().length }} recipes available</p>
+        <h2 id="recipes-title">Your recipes</h2>
+      </div>
+      <div class="actions">
+        <button class="button secondary" type="button" (click)="menu.reset()">Reset menu</button
+        ><a class="button primary" routerLink="/menu/new"
+          >Add a recipe <span aria-hidden="true">→</span></a
+        >
+      </div>
+    </div>
+    @if (menu.recipes().length) {
+      <div class="recipe-grid">
+        @for (recipe of menu.recipes(); track recipe.id) {
+          <article class="recipe-card">
+            <div class="recipe-card__heading">
+              <span class="recipe-icon" aria-hidden="true">✦</span>
+              <div>
+                <h3>{{ recipe.name }}</h3>
+                <p>Feeds {{ recipe.servings }}</p>
+              </div>
+            </div>
+            <ul>
+              @for (ingredient of recipe.ingredients; track ingredient.name) {
+                <li>
+                  <strong>{{ ingredient.quantity }}×</strong> {{ ingredient.name }}
+                </li>
+              }
+            </ul>
+            <div class="card-actions">
+              <a class="card-action edit" [routerLink]="['/menu', recipe.id, 'edit']">Edit recipe</a>
+              <button class="card-action remove" type="button" (click)="requestRemoval(recipe)">Remove</button>
+            </div>
+          </article>
+        }
+      </div>
+    } @else {
+      <div class="empty-state">
+        <span aria-hidden="true">✦</span>
+        <h3>Your menu is ready for its first recipe.</h3>
+        <p>Add a recipe, or restore the starting menu.</p>
+        <a class="button primary" routerLink="/menu/new">Add a recipe</a>
+      </div>
+    }
+  </section>
+</main>
+@if (recipeToRemove(); as recipe) {
+  <div class="dialog-backdrop" role="presentation">
+    <section
+      class="remove-dialog"
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="remove-title"
+    >
+      <p class="eyebrow"><span></span>Remove recipe</p>
+      <h2 id="remove-title">Remove {{ recipe.name }}?</h2>
+      <p>
+        This will remove it from your available menu. You can restore it later by resetting the
+        menu.
+      </p>
+      <div class="dialog-actions">
+        <button class="button secondary" type="button" (click)="cancelRemoval()">Keep recipe</button
+        ><button class="button danger" type="button" (click)="confirmRemoval()">
+          Remove recipe
+        </button>
+      </div>
+    </section>
+  </div>
+}
