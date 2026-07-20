@@ -6,7 +6,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "good-optimiser": {
+    "meal-optimiser": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -61,10 +61,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "good-optimiser:build:production"
+              "buildTarget": "meal-optimiser:build:production"
             },
             "development": {
-              "buildTarget": "good-optimiser:build:development"
+              "buildTarget": "meal-optimiser:build:development"
             }
           },
           "defaultConfiguration": "development"
