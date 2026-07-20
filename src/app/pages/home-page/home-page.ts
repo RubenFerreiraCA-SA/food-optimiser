@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { HeroIllustration } from '../hero-illustration/hero-illustration';
+import { HeroIllustration } from './hero-illustration/hero-illustration';
 
 @Component({
   selector: 'app-home-page',
