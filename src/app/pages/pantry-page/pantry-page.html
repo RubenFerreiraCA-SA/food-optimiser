@@ -35,69 +35,7 @@
         }
       </form>
     }
-    <div class="ingredient-table-wrap">
-      <table class="ingredient-table">
-        <caption class="sr-only">
-          Ingredients currently available in your pantry
-        </caption>
-        <thead>
-          <tr>
-            <th scope="col">Ingredient</th>
-            <th scope="col">Quantity available</th>
-            <th scope="col"><span class="sr-only">Actions</span></th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (ingredient of pantry.ingredients(); track ingredient.id) {
-            <tr>
-              <th scope="row">
-                <span class="ingredient-icon" aria-hidden="true">✦</span>{{ ingredient.name }}
-              </th>
-              <td>
-                @if (editingIngredientId() === ingredient.id) {
-                  <div class="quantity-editor">
-                    <label class="sr-only" [for]="'quantity-' + ingredient.id"
-                      >Quantity for {{ ingredient.name }}</label
-                    ><input
-                      [id]="'quantity-' + ingredient.id"
-                      [name]="'quantity-' + ingredient.id"
-                      [(ngModel)]="editQuantity"
-                      type="number"
-                      min="0"
-                      step="1"
-                      required
-                    /><button
-                      class="table-action save"
-                      type="button"
-                      (click)="saveQuantity(ingredient)"
-                    >
-                      Save</button
-                    ><button class="table-action" type="button" (click)="cancelEditing()">
-                      Cancel
-                    </button>
-                  </div>
-                  @if (editError) {
-                    <p class="edit-error">{{ editError }}</p>
-                  }
-                } @else {
-                  <strong>{{ ingredient.quantity }}</strong
-                  ><span class="quantity-label"> available</span>
-                }
-              </td>
-              <td>
-                <div class="row-actions">
-                  <button class="table-action" type="button" (click)="startEditing(ingredient)">
-                    Edit<span class="sr-only"> {{ ingredient.name }} quantity</span></button
-                  ><button class="remove" type="button" (click)="requestRemoval(ingredient)">
-                    Remove<span class="sr-only"> {{ ingredient.name }}</span>
-                  </button>
-                </div>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <app-ingredient-table [config]="ingredientTable" (action)="handleTableAction($event)" (quantityChange)="updateEditingQuantity($event.quantity)" />
   </section>
 </main>
 @if (showResetWarning()) {

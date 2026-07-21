@@ -43,58 +43,6 @@ h2 {
     14px/1.45 Arial,
     sans-serif;
 }
-.ingredient-list {
-  overflow: hidden;
-  border: 1px solid #e3e1d8;
-  border-radius: 5px;
-  background: #fffdf8;
-}
-.ingredient-row {
-  display: grid;
-  grid-template-columns: 43px 1fr auto;
-  align-items: center;
-  gap: 13px;
-  padding: 14px 20px;
-  cursor: text;
-}
-.ingredient-row + .ingredient-row {
-  border-top: 1px solid #e8e6df;
-}
-.ingredient-icon {
-  display: grid;
-  width: 37px;
-  height: 37px;
-  place-items: center;
-  border-radius: 50%;
-  color: #4e895c;
-  background: #d7e7d3;
-  font-size: 16px;
-}
-.ingredient-name {
-  font-size: 19px;
-}
-.quantity-control {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: #69776f;
-  font:
-    12px Arial,
-    sans-serif;
-}
-.quantity-control input {
-  width: 66px;
-  min-height: 35px;
-  padding: 5px 8px;
-  border: 1px solid #bfd1bd;
-  border-radius: 3px;
-  color: #203d38;
-  background: #fffdf8;
-  font:
-    17px Georgia,
-    serif;
-  text-align: center;
-}
 .footer-actions {
   display: flex;
   align-items: center;
@@ -132,9 +80,6 @@ h2 {
   }
   .section-copy {
     margin-top: 12px;
-  }
-  .ingredient-row {
-    padding: 13px 14px;
   }
   .footer-actions .button {
     flex: 1;

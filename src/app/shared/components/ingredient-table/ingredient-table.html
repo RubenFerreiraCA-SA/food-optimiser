@@ -1,0 +1,96 @@
+<div class="ingredient-table-wrap">
+  <table class="ingredient-table">
+    <caption class="sr-only">
+      {{
+        config.caption
+      }}
+    </caption>
+    <thead>
+      <tr>
+        <th scope="col">Ingredient</th>
+        <th scope="col">{{ config.quantityHeader }}</th>
+        @if (config.actions?.length) {
+          <th scope="col"><span class="sr-only">Actions</span></th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (row of config.rows; track row.id) {
+        <tr>
+          <th scope="row">
+            <span class="ingredient-icon" aria-hidden="true">✦</span>{{ row.name }}
+          </th>
+          <td>
+            @if (config.quantityMode === 'always-edit') {
+              <div class="quantity-editor">
+                <label class="sr-only" [for]="'quantity-' + row.id"
+                  >Quantity for {{ row.name }}</label
+                >
+                <input
+                  [id]="'quantity-' + row.id"
+                  type="number"
+                  min="0"
+                  step="1"
+                  [ngModel]="row.quantity"
+                  (ngModelChange)="quantityChange.emit({ row, quantity: $event })"
+                />
+              </div>
+            } @else if (isEditing(row)) {
+              <div class="quantity-editor">
+                <label class="sr-only" [for]="'quantity-' + row.id"
+                  >Quantity for {{ row.name }}</label
+                >
+                <input
+                  [id]="'quantity-' + row.id"
+                  type="number"
+                  min="0"
+                  step="1"
+                  [ngModel]="config.editingQuantity"
+                  (ngModelChange)="quantityChange.emit({ row, quantity: $event })"
+                />
+                <button
+                  class="table-action save"
+                  type="button"
+                  (click)="action.emit({ action: 'save', row })"
+                >
+                  Save
+                </button>
+                <button
+                  class="table-action"
+                  type="button"
+                  (click)="action.emit({ action: 'cancel', row })"
+                >
+                  Cancel
+                </button>
+              </div>
+              @if (config.editError) {
+                <p class="edit-error">{{ config.editError }}</p>
+              }
+            } @else {
+              <strong>{{ row.quantity }}</strong>
+              @if (config.showQuantityLabel) {
+                <span class="quantity-label"> available</span>
+              }
+            }
+          </td>
+          @if (config.actions?.length) {
+            <td>
+              <div class="row-actions">
+                @for (item of config.actions; track item.id) {
+                  <button
+                    class="table-action"
+                    [class.remove]="item.variant === 'remove'"
+                    type="button"
+                    (click)="action.emit({ action: item.id, row })"
+                  >
+                    {{ item.label }}<span class="sr-only"> {{ row.name }}</span>
+                  </button>
+                }
+              </div>
+            </td>
+          }
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

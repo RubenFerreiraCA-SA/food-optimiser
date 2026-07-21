@@ -4,10 +4,11 @@ import { MenuService, Recipe } from '../../shared/services/menu.service';
 import { PantryIngredient, PantryService } from '../../shared/services/pantry.service';
 import { Dialog, DialogConfig } from '../../shared/components/dialog/dialog';
 import { PageHero, PageHeroConfig } from '../../shared/components/page-hero/page-hero';
+import { IngredientTable, IngredientTableConfig, IngredientTableEvent } from '../../shared/components/ingredient-table/ingredient-table';
 
 @Component({
   selector: 'app-pantry-page',
-  imports: [FormsModule, Dialog, PageHero],
+  imports: [FormsModule, Dialog, PageHero, IngredientTable],
   templateUrl: './pantry-page.html',
   styleUrl: './pantry-page.scss',
 })
@@ -31,6 +32,19 @@ export class PantryPage {
     if (!ingredient) return [];
     return this.recipeUsages(ingredient);
   });
+  get ingredientTable(): IngredientTableConfig {
+    return {
+    caption: 'Ingredients currently available in your pantry',
+    quantityHeader: 'Quantity available',
+    rows: this.pantry.ingredients(),
+    quantityMode: 'editing',
+    showQuantityLabel: true,
+    editingId: this.editingIngredientId(),
+    editingQuantity: this.editQuantity,
+    editError: this.editError,
+    actions: [{ id: 'edit', label: 'Edit' }, { id: 'remove', label: 'Remove', variant: 'remove' }],
+    };
+  }
   readonly resetDialog: DialogConfig = {
     eyebrow: 'Reset pantry', title: 'Restore default ingredients?', description: 'This replaces your current pantry quantities with the original starting values.',
     actions: [{ id: 'cancel', label: 'Cancel', variant: 'secondary' }, { id: 'confirm', label: 'Reset pantry', variant: 'danger' }],
@@ -72,6 +86,13 @@ export class PantryPage {
   saveQuantity(ingredient: PantryIngredient): void {
     if (this.pantry.setQuantity(ingredient.id, this.editQuantity)) this.cancelEditing();
     else this.editError = 'Enter a whole number of zero or more.';
+  }
+  updateEditingQuantity(quantity: number): void { this.editQuantity = quantity; }
+  handleTableAction(event: IngredientTableEvent): void {
+    if (event.action === 'edit') this.startEditing(event.row);
+    if (event.action === 'remove') this.requestRemoval(event.row);
+    if (event.action === 'save') this.saveQuantity(event.row);
+    if (event.action === 'cancel') this.cancelEditing();
   }
   cancelDialogs(): void {
     this.ingredientToRemove.set(null);
