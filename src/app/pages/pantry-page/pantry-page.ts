@@ -1,7 +1,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MenuService, Recipe } from '../../services/menu.service';
-import { PantryIngredient, PantryService } from '../../services/pantry.service';
+import { MenuService, Recipe } from '../../shared/services/menu.service';
+import { PantryIngredient, PantryService } from '../../shared/services/pantry.service';
 import { Dialog, DialogConfig } from '../../shared/components/dialog/dialog';
 
 @Component({

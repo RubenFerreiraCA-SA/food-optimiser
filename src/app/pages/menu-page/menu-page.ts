@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { MenuService, Recipe } from '../../services/menu.service';
+import { MenuService, Recipe } from '../../shared/services/menu.service';
 import { Dialog, DialogConfig } from '../../shared/components/dialog/dialog';
 
 @Component({

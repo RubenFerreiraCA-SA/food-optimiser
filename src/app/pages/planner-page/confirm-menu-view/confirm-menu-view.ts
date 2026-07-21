@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Recipe } from '../../../services/menu.service';
+import { Recipe } from '../../../shared/services/menu.service';
 
 @Component({
   selector: 'app-confirm-menu-view',

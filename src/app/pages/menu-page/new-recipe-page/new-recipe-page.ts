@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { MenuService, RecipeIngredient } from '../../../services/menu.service';
+import { MenuService, RecipeIngredient } from '../../../shared/services/menu.service';
 
 @Component({ selector: 'app-new-recipe-page', imports: [FormsModule, RouterLink], templateUrl: './new-recipe-page.html', styleUrl: './new-recipe-page.scss' })
 export class NewRecipePage {
