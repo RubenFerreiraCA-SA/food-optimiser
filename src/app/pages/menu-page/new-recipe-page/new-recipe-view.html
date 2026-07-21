@@ -1,0 +1,55 @@
+<section class="new-recipe-page" aria-labelledby="new-recipe-title">
+  <button class="back-link" type="button" (click)="cancelled.emit()">← Back to menu</button>
+  <div class="form-panel">
+    <p class="eyebrow"><span></span>{{ isEditing ? 'Edit a recipe' : 'Create a recipe' }}</p>
+    <h1 id="new-recipe-title">
+      {{ isEditing ? 'Refine your recipe.' : 'Add something delicious.' }}
+    </h1>
+    <p class="intro">Tell us what the recipe makes and the ingredients it needs.</p>
+    <form (ngSubmit)="save()">
+      <label
+        >Recipe name
+        <input name="name" [(ngModel)]="name" placeholder="e.g. Vegetable curry" required /></label
+      ><label
+        >Servings <input name="servings" [(ngModel)]="servings" type="number" min="1" required
+      /></label>
+      <fieldset>
+        <legend>Ingredients</legend>
+        @for (ingredient of ingredients(); track $index; let index = $index) {
+          <div class="ingredient-row">
+            <input
+              [value]="ingredient.name"
+              (input)="updateIngredient(index, 'name', $any($event.target).value)"
+              placeholder="Ingredient"
+              [attr.aria-label]="'Ingredient ' + (index + 1)"
+            /><input
+              [value]="ingredient.quantity"
+              type="number"
+              min="1"
+              (input)="updateIngredient(index, 'quantity', +$any($event.target).value)"
+              [attr.aria-label]="'Quantity for ingredient ' + (index + 1)"
+            />
+            @if (ingredients().length > 1) {
+              <button
+                type="button"
+                (click)="removeIngredient(index)"
+                [attr.aria-label]="'Remove ingredient ' + (index + 1)"
+              >
+                ×
+              </button>
+            }
+          </div>
+        }
+        <button class="add-ingredient" type="button" (click)="addIngredient()">
+          + Add another ingredient
+        </button>
+      </fieldset>
+      <div class="form-actions">
+        <button class="button secondary" type="button" (click)="cancelled.emit()">Cancel</button
+        ><button class="button primary" type="submit">
+          {{ isEditing ? 'Save changes' : 'Save recipe' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</section>

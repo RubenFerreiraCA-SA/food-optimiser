@@ -1,17 +1,20 @@
-import { Component, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, computed, inject, signal } from '@angular/core';
 import { MenuService, Recipe } from '../../shared/services/menu.service';
 import { Dialog, DialogConfig } from '../../shared/components/dialog/dialog';
+import { NewRecipeView } from './new-recipe-page/new-recipe-view';
 
 @Component({
   selector: 'app-menu-page',
-  imports: [RouterLink, Dialog],
+  imports: [NewRecipeView, Dialog],
   templateUrl: './menu-page.html',
   styleUrl: './menu-page.scss',
 })
 export class MenuPage {
   readonly menu = inject(MenuService);
   readonly recipeToRemove = signal<Recipe | null>(null);
+  readonly recipeBeingEdited = signal<Recipe | null>(null);
+  readonly isCreatingRecipe = signal(false);
+  readonly isRecipeFormOpen = computed(() => this.isCreatingRecipe() || !!this.recipeBeingEdited());
   requestRemoval(recipe: Recipe): void { this.recipeToRemove.set(recipe); }
   cancelRemoval(): void { this.recipeToRemove.set(null); }
   confirmRemoval(): void { const recipe = this.recipeToRemove(); if (recipe) this.menu.remove(recipe.id); this.recipeToRemove.set(null); }
@@ -19,4 +22,11 @@ export class MenuPage {
     return { eyebrow: 'Remove recipe', title: `Remove ${recipe.name}?`, description: 'This will remove it from your available menu. You can restore it later by resetting the menu.', actions: [{ id: 'cancel', label: 'Keep recipe', variant: 'secondary' }, { id: 'confirm', label: 'Remove recipe', variant: 'danger' }] };
   }
   handleRemoveDialog(action: string): void { action === 'confirm' ? this.confirmRemoval() : this.cancelRemoval(); }
+  startCreating(): void { this.recipeBeingEdited.set(null); this.isCreatingRecipe.set(true); }
+  startEditing(recipe: Recipe): void { this.recipeBeingEdited.set(recipe); this.isCreatingRecipe.set(false); }
+  closeRecipeForm(): void { this.recipeBeingEdited.set(null); this.isCreatingRecipe.set(false); }
+  saveRecipe(event: { id: string | null; recipe: Omit<Recipe, 'id'> }): void {
+    if (event.id) this.menu.updateRecipe(event.id, event.recipe); else this.menu.add(event.recipe);
+    this.closeRecipeForm();
+  }
 }

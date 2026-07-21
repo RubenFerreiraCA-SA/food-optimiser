@@ -1,61 +1,75 @@
-<main class="menu-page">
-  <section class="menu-hero" aria-labelledby="menu-title">
-    <div>
-      <p class="eyebrow"><span></span>Your recipe collection</p>
-      <h1 id="menu-title">What's on the menu?</h1>
-      <p>Keep the meals you can make in one place, ready for your next plan.</p>
-    </div>
-    <span class="hero-mark" aria-hidden="true">⌘</span>
-  </section>
-  
-  <section class="recipes" aria-labelledby="recipes-title">
-    <div class="section-heading">
+@if (isRecipeFormOpen()) {
+  <app-new-recipe-view
+    [recipe]="recipeBeingEdited()"
+    (saved)="saveRecipe($event)"
+    (cancelled)="closeRecipeForm()"
+  />
+} @else {
+  <main class="menu-page">
+    <section class="menu-hero" aria-labelledby="menu-title">
       <div>
-        <p class="eyebrow"><span></span>{{ menu.recipes().length }} recipes available</p>
-        <h2 id="recipes-title">Your recipes</h2>
+        <p class="eyebrow"><span></span>Your recipe collection</p>
+        <h1 id="menu-title">What's on the menu?</h1>
+        <p>Keep the meals you can make in one place, ready for your next plan.</p>
       </div>
-      <div class="actions">
-        <button class="button secondary" type="button" (click)="menu.reset()">Reset menu</button
-        ><a class="button primary" routerLink="/menu/new"
-          >Add a recipe <span aria-hidden="true">→</span></a
-        >
+      <span class="hero-mark" aria-hidden="true">⌘</span>
+    </section>
+
+    <section class="recipes" aria-labelledby="recipes-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow"><span></span>{{ menu.recipes().length }} recipes available</p>
+          <h2 id="recipes-title">Your recipes</h2>
+        </div>
+        <div class="actions">
+          <button class="button secondary" type="button" (click)="menu.reset()">Reset menu</button
+          ><button class="button primary" type="button" (click)="startCreating()">
+            Add a recipe <span aria-hidden="true">→</span>
+          </button>
+        </div>
       </div>
-    </div>
-    @if (menu.recipes().length) {
-      <div class="recipe-grid">
-        @for (recipe of menu.recipes(); track recipe.id) {
-          <article class="recipe-card">
-            <div class="recipe-card__heading">
-              <span class="recipe-icon" aria-hidden="true">✦</span>
-              <div>
-                <h3>{{ recipe.name }}</h3>
-                <p>Feeds {{ recipe.servings }}</p>
+      @if (menu.recipes().length) {
+        <div class="recipe-grid">
+          @for (recipe of menu.recipes(); track recipe.id) {
+            <article class="recipe-card">
+              <div class="recipe-card__heading">
+                <span class="recipe-icon" aria-hidden="true">✦</span>
+                <div>
+                  <h3>{{ recipe.name }}</h3>
+                  <p>Feeds {{ recipe.servings }}</p>
+                </div>
               </div>
-            </div>
-            <ul>
-              @for (ingredient of recipe.ingredients; track ingredient.name) {
-                <li>
-                  <strong>{{ ingredient.quantity }}×</strong> {{ ingredient.name }}
-                </li>
-              }
-            </ul>
-            <div class="card-actions">
-              <a class="card-action edit" [routerLink]="['/menu', recipe.id, 'edit']">Edit recipe</a>
-              <button class="card-action remove" type="button" (click)="requestRemoval(recipe)">Remove</button>
-            </div>
-          </article>
-        }
-      </div>
-    } @else {
-      <div class="empty-state">
-        <span aria-hidden="true">✦</span>
-        <h3>Your menu is ready for its first recipe.</h3>
-        <p>Add a recipe, or restore the starting menu.</p>
-        <a class="button primary" routerLink="/menu/new">Add a recipe</a>
-      </div>
-    }
-  </section>
-</main>
+              <ul>
+                @for (ingredient of recipe.ingredients; track ingredient.name) {
+                  <li>
+                    <strong>{{ ingredient.quantity }}×</strong> {{ ingredient.name }}
+                  </li>
+                }
+              </ul>
+              <div class="card-actions">
+                <button class="card-action edit" type="button" (click)="startEditing(recipe)">
+                  Edit recipe
+                </button>
+                <button class="card-action remove" type="button" (click)="requestRemoval(recipe)">
+                  Remove
+                </button>
+              </div>
+            </article>
+          }
+        </div>
+      } @else {
+        <div class="empty-state">
+          <span aria-hidden="true">✦</span>
+          <h3>Your menu is ready for its first recipe.</h3>
+          <p>Add a recipe, or restore the starting menu.</p>
+          <button class="button primary" type="button" (click)="startCreating()">
+            Add a recipe
+          </button>
+        </div>
+      }
+    </section>
+  </main>
+}
 @if (recipeToRemove(); as recipe) {
   <app-dialog [config]="removeDialog(recipe)" (action)="handleRemoveDialog($event)" />
 }
