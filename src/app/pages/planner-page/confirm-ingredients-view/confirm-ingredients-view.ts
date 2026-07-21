@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { PlanningIngredient } from '../planner-page';
+import type { PlanningIngredient } from '../planner-page';
 
 @Component({
   selector: 'app-confirm-ingredients-view',

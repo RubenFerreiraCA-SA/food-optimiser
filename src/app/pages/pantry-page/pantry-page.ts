@@ -2,10 +2,11 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MenuService, Recipe } from '../../services/menu.service';
 import { PantryIngredient, PantryService } from '../../services/pantry.service';
+import { Dialog, DialogConfig } from '../../shared/components/dialog/dialog';
 
 @Component({
   selector: 'app-pantry-page',
-  imports: [FormsModule],
+  imports: [FormsModule, Dialog],
   templateUrl: './pantry-page.html',
   styleUrl: './pantry-page.scss',
 })
@@ -28,6 +29,21 @@ export class PantryPage {
     if (!ingredient) return [];
     return this.recipeUsages(ingredient);
   });
+  readonly resetDialog: DialogConfig = {
+    eyebrow: 'Reset pantry', title: 'Restore default ingredients?', description: 'This replaces your current pantry quantities with the original starting values.',
+    actions: [{ id: 'cancel', label: 'Cancel', variant: 'secondary' }, { id: 'confirm', label: 'Reset pantry', variant: 'danger' }],
+  };
+
+  removeDialog(ingredient: PantryIngredient): DialogConfig {
+    return { eyebrow: 'Remove ingredient', title: `Remove ${ingredient.name}?`, description: 'This ingredient will no longer be available for meal planning.', actions: [{ id: 'cancel', label: 'Keep ingredient', variant: 'secondary' }, { id: 'confirm', label: 'Remove ingredient', variant: 'danger' }] };
+  }
+
+  blockedDialog(ingredient: PantryIngredient): DialogConfig {
+    return { eyebrow: 'Ingredient in use', title: `${ingredient.name} can't be removed.`, description: 'It is still needed by these recipes:', list: this.blockedUsages().map((usage) => ({ label: usage.recipe.name, detail: `${usage.quantity}× ${ingredient.name}` })), actions: [{ id: 'close', label: 'Got it', variant: 'primary' }] };
+  }
+
+  handleResetDialog(action: string): void { action === 'confirm' ? this.confirmReset() : this.cancelDialogs(); }
+  handleRemovalDialog(action: string): void { action === 'confirm' ? this.confirmRemoval() : this.cancelDialogs(); }
 
   addIngredient(): void {
     if (this.pantry.add(this.name, this.quantity)) {

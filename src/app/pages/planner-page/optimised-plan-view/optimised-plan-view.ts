@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { PlannedMeal } from '../planner-page';
+import type { PlannedMeal } from '../planner-page';
 
 @Component({
   selector: 'app-optimised-plan-view',

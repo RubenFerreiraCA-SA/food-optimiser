@@ -108,51 +108,11 @@
   </section>
 </main>
 @if (showResetWarning()) {
-  <div class="dialog-backdrop">
-    <section class="dialog" role="alertdialog" aria-modal="true" aria-labelledby="reset-title">
-      <p class="eyebrow"><span></span>Reset pantry</p>
-      <h2 id="reset-title">Restore default ingredients?</h2>
-      <p>This replaces your current pantry quantities with the original starting values.</p>
-      <div class="dialog-actions">
-        <button class="button secondary" type="button" (click)="cancelDialogs()">Cancel</button
-        ><button class="button danger" type="button" (click)="confirmReset()">Reset pantry</button>
-      </div>
-    </section>
-  </div>
+  <app-dialog [config]="resetDialog" (action)="handleResetDialog($event)" />
 }
 @if (ingredientToRemove(); as ingredient) {
-  <div class="dialog-backdrop">
-    <section class="dialog" role="alertdialog" aria-modal="true" aria-labelledby="remove-title">
-      <p class="eyebrow"><span></span>Remove ingredient</p>
-      <h2 id="remove-title">Remove {{ ingredient.name }}?</h2>
-      <p>This ingredient will no longer be available for meal planning.</p>
-      <div class="dialog-actions">
-        <button class="button secondary" type="button" (click)="cancelDialogs()">
-          Keep ingredient</button
-        ><button class="button danger" type="button" (click)="confirmRemoval()">
-          Remove ingredient
-        </button>
-      </div>
-    </section>
-  </div>
+  <app-dialog [config]="removeDialog(ingredient)" (action)="handleRemovalDialog($event)" />
 }
 @if (blockedIngredient(); as ingredient) {
-  <div class="dialog-backdrop">
-    <section class="dialog" role="alertdialog" aria-modal="true" aria-labelledby="blocked-title">
-      <p class="eyebrow"><span></span>Ingredient in use</p>
-      <h2 id="blocked-title">{{ ingredient.name }} can't be removed.</h2>
-      <p>It is still needed by these recipes:</p>
-      <ul class="usage-list">
-        @for (usage of blockedUsages(); track usage.recipe.id) {
-          <li>
-            <strong>{{ usage.recipe.name }}</strong
-            ><span>{{ usage.quantity }}× {{ ingredient.name }}</span>
-          </li>
-        }
-      </ul>
-      <div class="dialog-actions">
-        <button class="button primary" type="button" (click)="cancelDialogs()">Got it</button>
-      </div>
-    </section>
-  </div>
+  <app-dialog [config]="blockedDialog(ingredient)" (action)="cancelDialogs()" />
 }

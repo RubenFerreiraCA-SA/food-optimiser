@@ -1,0 +1,19 @@
+<div class="dialog-backdrop" role="presentation">
+  <section class="dialog" role="alertdialog" aria-modal="true" aria-labelledby="dialog-title">
+    <p class="eyebrow"><span></span>{{ config.eyebrow }}</p>
+    <h2 id="dialog-title">{{ config.title }}</h2>
+    <p class="description">{{ config.description }}</p>
+    @if (config.list?.length) {
+      <ul class="detail-list">
+        @for (item of config.list; track item.label) {
+          <li><strong>{{ item.label }}</strong><span>{{ item.detail }}</span></li>
+        }
+      </ul>
+    }
+    <div class="dialog-actions">
+      @for (item of config.actions; track item.id) {
+        <button class="button" [class]="'button ' + item.variant" type="button" (click)="action.emit(item.id)">{{ item.label }}</button>
+      }
+    </div>
+  </section>
+</div>
