@@ -1,10 +1,11 @@
-:host {
-  display: block;
-}
-.planning-section {
-  max-width: 890px;
-  margin: 0 auto;
-}
+@use '../../../shared/styles/planner-view' as planner;
+
+@include planner.host;
+@include planner.section;
+@include planner.footer-actions;
+@include planner.button;
+@include planner.empty-state;
+
 .result-intro {
   max-width: 650px;
   margin: 0 auto 27px;
@@ -122,58 +123,6 @@ p {
     700 14px Arial,
     sans-serif;
 }
-.empty-state {
-  padding: 52px 20px;
-  border: 1px dashed #b8ccba;
-  border-radius: 5px;
-  text-align: center;
-  background: #f3f7ef;
-}
-.empty-state > span {
-  color: #4e895c;
-  font-size: 32px;
-}
-.empty-state h3 {
-  margin: 9px 0 7px;
-  font-size: 23px;
-  font-weight: 400;
-}
-.empty-state p {
-  color: #64716a;
-  font:
-    14px Arial,
-    sans-serif;
-}
-.footer-actions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: 24px;
-}
-.button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: 42px;
-  padding: 10px 15px;
-  border: 1px solid transparent;
-  border-radius: 4px;
-  font:
-    700 13px/1 Arial,
-    sans-serif;
-  cursor: pointer;
-}
-.button.primary {
-  color: #fffdf8;
-  background: #376b56;
-}
-.button.secondary {
-  border-color: #c7d3c3;
-  color: #315d4c;
-  background: transparent;
-}
 @media (max-width: 760px) {
   .result-intro h2 {
     font-size: 31px;
@@ -190,8 +139,5 @@ p {
   }
   .plan-meal > strong {
     grid-column: 2;
-  }
-  .footer-actions .button {
-    flex: 1;
   }
 }

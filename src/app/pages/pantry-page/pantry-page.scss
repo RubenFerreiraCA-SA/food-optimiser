@@ -6,8 +6,6 @@
 }
 .pantry-page {
   --ink: #203d38;
-  --muted: #64716a;
-  --paper: #fffdf8;
   --green: #376b56;
   max-width: 1120px;
   margin: 0 auto;
@@ -32,9 +30,7 @@
   height: 1px;
   background: currentColor;
 }
-h1,
 h2,
-h3,
 p {
   margin-top: 0;
 }
@@ -57,8 +53,7 @@ h2 {
   font-weight: 400;
   letter-spacing: -0.04em;
 }
-.actions,
-.dialog-actions {
+.actions {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
@@ -85,10 +80,6 @@ h2 {
   border-color: #c7d3c3;
   color: #315d4c;
   background: transparent;
-}
-.button.danger {
-  color: #fffdf8;
-  background: #a94f41;
 }
 .add-form {
   display: grid;
@@ -129,7 +120,6 @@ h2 {
     13px Arial,
     sans-serif;
 }
-
 
 @media (max-width: 760px) {
   .pantry-page {

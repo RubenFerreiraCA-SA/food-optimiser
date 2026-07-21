@@ -1,0 +1,127 @@
+@mixin host {
+  :host {
+    display: block;
+  }
+}
+
+@mixin section {
+  .planning-section {
+    max-width: 890px;
+    margin: 0 auto;
+  }
+}
+
+@mixin heading {
+  .section-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 28px;
+    margin-bottom: 24px;
+  }
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin: 0 0 8px;
+    color: #587062;
+    font:
+      700 11px Arial,
+      sans-serif;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .eyebrow span {
+    width: 21px;
+    height: 1px;
+    background: currentColor;
+  }
+  h2 {
+    margin: 0;
+    font-size: 30px;
+    font-weight: 400;
+    letter-spacing: -0.04em;
+  }
+  .section-copy {
+    max-width: 280px;
+    margin: 0;
+    color: #64716a;
+    font:
+      14px/1.45 Arial,
+      sans-serif;
+  }
+  @media (max-width: 760px) {
+    .section-heading {
+      display: block;
+    }
+    .section-copy {
+      margin-top: 12px;
+    }
+  }
+}
+
+@mixin footer-actions {
+  .footer-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 24px;
+  }
+  @media (max-width: 760px) {
+    .footer-actions .button {
+      flex: 1;
+    }
+  }
+}
+
+@mixin button {
+  .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 42px;
+    padding: 10px 15px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    font:
+      700 13px/1 Arial,
+      sans-serif;
+    cursor: pointer;
+  }
+  .button.primary {
+    color: #fffdf8;
+    background: #376b56;
+  }
+  .button.secondary {
+    border-color: #c7d3c3;
+    color: #315d4c;
+    background: transparent;
+  }
+}
+
+@mixin empty-state {
+  .empty-state {
+    padding: 52px 20px;
+    border: 1px dashed #b8ccba;
+    border-radius: 5px;
+    text-align: center;
+    background: #f3f7ef;
+  }
+  .empty-state > span {
+    color: #4e895c;
+    font-size: 32px;
+  }
+  .empty-state h3 {
+    margin: 9px 0 7px;
+    font-size: 23px;
+    font-weight: 400;
+  }
+  .empty-state p {
+    color: #64716a;
+    font:
+      14px Arial,
+      sans-serif;
+  }
+}

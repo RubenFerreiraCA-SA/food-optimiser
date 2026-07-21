@@ -1,5 +1,81 @@
-:host { display: block; }
-* { box-sizing: border-box; }
-.planner-page { --ink:#203d38; --muted:#64716a; --paper:#fffdf8; --green:#376b56; max-width:1120px; margin:0 auto; padding:30px 34px 64px; color:var(--ink); font-family:Georgia, 'Times New Roman', serif; }
-.progress { display:flex; align-items:center; justify-content:center; max-width:620px; margin:39px auto 42px; }.progress-step { display:flex; align-items:center; gap:9px; border:0; padding:0; color:#89938b; background:transparent; font:700 12px Arial,sans-serif; cursor:pointer; }.progress-step span { display:grid; width:28px; height:28px; place-items:center; border:1px solid #cad4c8; border-radius:50%; background:var(--paper); }.progress-step.active,.progress-step.complete { color:#315d4c; }.progress-step.active span,.progress-step.complete span { border-color:#376b56; color:#fffdf8; background:#376b56; }.progress i { width:84px; height:1px; margin:0 12px; background:#d7dfd4; }.progress i.complete { background:#6e9979; }
-@media(max-width:760px) { .planner-page { padding:0 22px 42px; }.progress { margin:32px 0 34px; }.progress i { width:100%; margin:0 7px; }.progress-step { gap:5px; }.progress-step b { display:none; } }
+:host {
+  display: block;
+}
+* {
+  box-sizing: border-box;
+}
+.planner-page {
+  --ink: #203d38;
+  --paper: #fffdf8;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 30px 34px 64px;
+  color: var(--ink);
+  font-family: Georgia, 'Times New Roman', serif;
+}
+.progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 620px;
+  margin: 39px auto 42px;
+}
+.progress-step {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  border: 0;
+  padding: 0;
+  color: #89938b;
+  background: transparent;
+  font:
+    700 12px Arial,
+    sans-serif;
+  cursor: pointer;
+}
+.progress-step span {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border: 1px solid #cad4c8;
+  border-radius: 50%;
+  background: var(--paper);
+}
+.progress-step.active,
+.progress-step.complete {
+  color: #315d4c;
+}
+.progress-step.active span,
+.progress-step.complete span {
+  border-color: #376b56;
+  color: #fffdf8;
+  background: #376b56;
+}
+.progress i {
+  width: 84px;
+  height: 1px;
+  margin: 0 12px;
+  background: #d7dfd4;
+}
+.progress i.complete {
+  background: #6e9979;
+}
+@media (max-width: 760px) {
+  .planner-page {
+    padding: 0 22px 42px;
+  }
+  .progress {
+    margin: 32px 0 34px;
+  }
+  .progress i {
+    width: 100%;
+    margin: 0 7px;
+  }
+  .progress-step {
+    gap: 5px;
+  }
+  .progress-step b {
+    display: none;
+  }
+}
