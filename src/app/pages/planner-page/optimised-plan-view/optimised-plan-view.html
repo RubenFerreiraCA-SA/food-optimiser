@@ -13,8 +13,8 @@
       ><span>servings to enjoy</span>
     </div>
     <div>
-      <strong>{{ totalMeals }}</strong
-      ><span>meals to make</span>
+      <strong>{{ totalDishes }}</strong
+      ><span>dishes to prepare</span>
     </div>
     <div>
       <strong>{{ recipeCount }}</strong
@@ -25,12 +25,12 @@
     <div class="plan-list">
       @for (meal of meals; track meal.name) {
         <article class="plan-meal">
-          <span class="meal-count">{{ meal.times }}×</span>
+          <span class="meal-count">{{ meal.dishes }}×</span>
           <div>
             <h3>{{ meal.name }}</h3>
             <p>{{ meal.ingredients }}</p>
           </div>
-          <strong>{{ meal.servings * meal.times }} servings</strong>
+          <strong>{{ meal.meals }} meals</strong>
         </article>
       }
     </div>
@@ -41,6 +41,31 @@
       <p>Choose at least one recipe to generate a plan.</p>
     </div>
   }
+  <section class="ingredient-usage" aria-labelledby="ingredient-usage-title">
+    <h3 id="ingredient-usage-title">Ingredient use</h3>
+    <div class="usage-table-wrap">
+      <table class="usage-table">
+        <thead>
+          <tr>
+            <th>Ingredient</th>
+            <th>Before</th>
+            <th>Used</th>
+            <th>Left after</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (ingredient of ingredientUsage; track ingredient.id) {
+            <tr>
+              <th scope="row">{{ ingredient.name }}</th>
+              <td>{{ ingredient.before }}</td>
+              <td>{{ ingredient.used }}</td>
+              <td>{{ ingredient.left }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
   <div class="footer-actions">
     <button class="button secondary" type="button" (click)="adjustMenu.emit()">Adjust menu</button
     ><button class="button primary" type="button" (click)="startNew.emit()">

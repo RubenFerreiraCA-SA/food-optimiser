@@ -1,6 +1,11 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { MenuService, Recipe } from '../../shared/services/menu.service';
+import { MenuService } from '../../shared/services/menu.service';
 import { PantryIngredient, PantryService } from '../../shared/services/pantry.service';
+import {
+  IngredientPlanUsage,
+  OptimisedPlanMeal,
+  PlannerService,
+} from '../../shared/services/planner.service';
 import { ConfirmIngredientsView } from './confirm-ingredients-view/confirm-ingredients-view';
 import { ConfirmMenuView } from './confirm-menu-view/confirm-menu-view';
 import { OptimisedPlanView } from './optimised-plan-view/optimised-plan-view';
@@ -10,12 +15,8 @@ export interface PlanningIngredient extends PantryIngredient {
   planningQuantity: number;
 }
 
-export interface PlannedMeal {
-  name: string;
-  servings: number;
-  times: number;
-  ingredients: string;
-}
+export type PlannedMeal = OptimisedPlanMeal;
+export type PlannedIngredientUsage = IngredientPlanUsage;
 
 @Component({
   selector: 'app-planner-page',
@@ -26,7 +27,14 @@ export interface PlannedMeal {
 export class PlannerPage {
   readonly pantry = inject(PantryService);
   readonly menu = inject(MenuService);
-  readonly hero: PageHeroConfig = { eyebrow: 'Make the most of what you have', title: 'Plan your meals.', description: "We'll help you find the menu that makes your ingredients go furthest.", titleId: 'planner-title', markRotation: 12 };
+  private readonly planner = inject(PlannerService);
+  readonly hero: PageHeroConfig = {
+    eyebrow: 'Make the most of what you have',
+    title: 'Plan your meals.',
+    description: "We'll help you find the menu that makes your ingredients go furthest.",
+    titleId: 'planner-title',
+    markRotation: 12,
+  };
 
   readonly step = signal(1);
   readonly planningIngredients = signal<PlanningIngredient[]>(this.createPlanningIngredients());
@@ -34,11 +42,20 @@ export class PlannerPage {
   readonly selectedRecipes = computed(() =>
     this.menu.recipes().filter((recipe) => this.selectedRecipeIds().includes(recipe.id)),
   );
-  readonly planMeals = computed(() => this.mockPlan());
-  readonly totalServings = computed(() =>
-    this.planMeals().reduce((sum, meal) => sum + meal.servings * meal.times, 0),
+  readonly plan = computed(() =>
+    this.planner.optimise(
+      this.planningIngredients().map((ingredient) => ({
+        id: ingredient.id,
+        name: ingredient.name,
+        quantity: ingredient.planningQuantity,
+      })),
+      this.selectedRecipes(),
+    ),
   );
-  readonly totalMeals = computed(() => this.planMeals().reduce((sum, meal) => sum + meal.times, 0));
+  readonly planMeals = computed(() => this.plan().meals);
+  readonly totalServings = computed(() => this.plan().totalMeals);
+  readonly totalDishes = computed(() => this.plan().totalDishes);
+  readonly ingredientUsage = computed(() => this.plan().ingredients);
 
   updateIngredient(id: string, quantity: number): void {
     const validQuantity = Number.isFinite(quantity) ? Math.max(0, Math.floor(quantity)) : 0;
@@ -77,43 +94,5 @@ export class PlannerPage {
     return this.pantry
       .ingredients()
       .map((ingredient) => ({ ...ingredient, planningQuantity: ingredient.quantity }));
-  }
-
-  private mockPlan(): PlannedMeal[] {
-    const candidates: Record<string, PlannedMeal> = {
-      burger: {
-        name: 'Burger',
-        servings: 1,
-        times: 2,
-        ingredients: 'Meat, lettuce, tomato, cheese & dough',
-      },
-      pasta: { name: 'Pasta', servings: 2, times: 2, ingredients: 'Dough, tomato, cheese & meat' },
-      pizza: {
-        name: 'Pizza',
-        servings: 4,
-        times: 1,
-        ingredients: 'Dough, tomato, cheese & olives',
-      },
-      salad: {
-        name: 'Salad',
-        servings: 3,
-        times: 1,
-        ingredients: 'Lettuce, tomato, cucumber, cheese & olives',
-      },
-      sandwich: { name: 'Sandwich', servings: 1, times: 1, ingredients: 'Dough & cucumber' },
-      pie: { name: 'Pie', servings: 1, times: 1, ingredients: 'Dough & meat' },
-    };
-    return this.selectedRecipes()
-      .map((recipe) => candidates[recipe.id] ?? this.fallbackMeal(recipe))
-      .slice(0, 4);
-  }
-
-  private fallbackMeal(recipe: Recipe): PlannedMeal {
-    return {
-      name: recipe.name,
-      servings: recipe.servings,
-      times: 1,
-      ingredients: recipe.ingredients.map((ingredient) => ingredient.name).join(', '),
-    };
   }
 }

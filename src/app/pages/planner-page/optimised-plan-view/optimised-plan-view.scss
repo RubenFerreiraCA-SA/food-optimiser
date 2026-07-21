@@ -123,6 +123,52 @@ p {
     700 14px Arial,
     sans-serif;
 }
+.ingredient-usage {
+  margin-top: 28px;
+}
+.ingredient-usage h3 {
+  margin: 0 0 12px;
+  font-size: 24px;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+}
+.usage-table-wrap {
+  overflow-x: auto;
+  border: 1px solid #e3e1d8;
+  border-radius: 5px;
+  background: #fffdf8;
+}
+.usage-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+.usage-table th,
+.usage-table td {
+  padding: 13px 18px;
+}
+.usage-table thead {
+  color: #587062;
+  background: #eef5ea;
+  font:
+    700 11px Arial,
+    sans-serif;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.usage-table tbody tr + tr {
+  border-top: 1px solid #e8e6df;
+}
+.usage-table tbody th {
+  font-size: 17px;
+  font-weight: 400;
+}
+.usage-table td {
+  color: #396a55;
+  font:
+    700 14px Arial,
+    sans-serif;
+}
 @media (max-width: 760px) {
   .result-intro h2 {
     font-size: 31px;
@@ -139,5 +185,9 @@ p {
   }
   .plan-meal > strong {
     grid-column: 2;
+  }
+  .usage-table th,
+  .usage-table td {
+    padding: 12px;
   }
 }

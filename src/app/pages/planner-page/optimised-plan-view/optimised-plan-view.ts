@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import type { PlannedMeal } from '../planner-page';
+import type { PlannedIngredientUsage, PlannedMeal } from '../planner-page';
 
 @Component({
   selector: 'app-optimised-plan-view',
@@ -9,7 +9,8 @@ import type { PlannedMeal } from '../planner-page';
 export class OptimisedPlanView {
   @Input({ required: true }) meals: PlannedMeal[] = [];
   @Input({ required: true }) totalServings = 0;
-  @Input({ required: true }) totalMeals = 0;
+  @Input({ required: true }) totalDishes = 0;
+  @Input({ required: true }) ingredientUsage: PlannedIngredientUsage[] = [];
   @Input({ required: true }) recipeCount = 0;
   @Output() readonly adjustMenu = new EventEmitter<void>();
   @Output() readonly startNew = new EventEmitter<void>();

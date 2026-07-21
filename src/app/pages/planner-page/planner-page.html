@@ -28,10 +28,28 @@
   </nav>
 
   @if (step() === 1) {
-    <app-confirm-ingredients-view [ingredients]="planningIngredients()" (quantityChange)="updateIngredient($event.id, $event.quantity)" (confirmed)="continueToMenu()" />
+    <app-confirm-ingredients-view
+      [ingredients]="planningIngredients()"
+      (quantityChange)="updateIngredient($event.id, $event.quantity)"
+      (confirmed)="continueToMenu()"
+    />
   } @else if (step() === 2) {
-    <app-confirm-menu-view [recipes]="menu.recipes()" [selectedRecipeIds]="selectedRecipeIds()" (selectionChange)="toggleRecipe($event)" (back)="goTo(1)" (confirmed)="createPlan()" />
+    <app-confirm-menu-view
+      [recipes]="menu.recipes()"
+      [selectedRecipeIds]="selectedRecipeIds()"
+      (selectionChange)="toggleRecipe($event)"
+      (back)="goTo(1)"
+      (confirmed)="createPlan()"
+    />
   } @else {
-    <app-optimised-plan-view [meals]="planMeals()" [totalServings]="totalServings()" [totalMeals]="totalMeals()" [recipeCount]="selectedRecipes().length" (adjustMenu)="goTo(2)" (startNew)="startAgain()" />
+    <app-optimised-plan-view
+      [meals]="planMeals()"
+      [totalServings]="totalServings()"
+      [totalDishes]="totalDishes()"
+      [ingredientUsage]="ingredientUsage()"
+      [recipeCount]="selectedRecipes().length"
+      (adjustMenu)="goTo(2)"
+      (startNew)="startAgain()"
+    />
   }
 </main>
