@@ -9,76 +9,8 @@
 
 .recipe-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
-}
-.recipe-card {
-  position: relative;
-  display: grid;
-  grid-template-columns: 38px 42px 1fr;
-  align-items: center;
-  gap: 12px;
-  min-height: 112px;
-  padding: 20px;
-  border: 1px solid #dfdfd7;
-  border-radius: 5px;
-  background: #fffdf8;
-  cursor: pointer;
-}
-.recipe-card.selected {
-  border-color: #91b492;
-  background: #f0f6ed;
-}
-.recipe-card input {
-  position: absolute;
-  opacity: 0;
-}
-.checkmark {
-  display: grid;
-  width: 21px;
-  height: 21px;
-  place-items: center;
-  border: 1px solid #bbcbbb;
-  border-radius: 3px;
-  color: transparent;
-  font:
-    700 14px Arial,
-    sans-serif;
-}
-.selected .checkmark {
-  border-color: #376b56;
-  color: #fffdf8;
-  background: #376b56;
-}
-.recipe-icon {
-  display: grid;
-  width: 37px;
-  height: 37px;
-  place-items: center;
-  border-radius: 50%;
-  color: #4e895c;
-  background: #d7e7d3;
-  font-size: 16px;
-}
-.recipe-copy {
-  display: grid;
-  gap: 4px;
-}
-.recipe-copy strong {
-  font-size: 20px;
-  font-weight: 400;
-  letter-spacing: -0.025em;
-}
-.recipe-copy small,
-.recipe-ingredients {
-  color: #69776f;
-  font:
-    12px Arial,
-    sans-serif;
-}
-.recipe-ingredients {
-  grid-column: 2 / -1;
-  margin-top: -6px;
 }
 .button {
   text-decoration: none;

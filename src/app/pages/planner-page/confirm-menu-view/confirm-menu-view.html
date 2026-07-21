@@ -9,20 +9,7 @@
   @if (recipes.length) {
     <div class="recipe-grid">
       @for (recipe of recipes; track recipe.id) {
-        <label class="recipe-card" [class.selected]="isSelected(recipe.id)"
-          ><input
-            type="checkbox"
-            [checked]="isSelected(recipe.id)"
-            (change)="selectionChange.emit(recipe.id)"
-          /><span class="checkmark" aria-hidden="true">✓</span
-          ><span class="recipe-icon" aria-hidden="true">✦</span
-          ><span class="recipe-copy"
-            ><strong>{{ recipe.name }}</strong
-            ><small>Feeds {{ recipe.servings }}</small></span
-          ><span class="recipe-ingredients"
-            >{{ recipe.ingredients.length }} ingredients</span
-          ></label
-        >
+        <app-recipe-card [config]="recipeCard(recipe)" (action)="handleRecipeCard($event)" />
       }
     </div>
   } @else {

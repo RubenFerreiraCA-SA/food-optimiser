@@ -24,30 +24,7 @@
       @if (menu.recipes().length) {
         <div class="recipe-grid">
           @for (recipe of menu.recipes(); track recipe.id) {
-            <article class="recipe-card">
-              <div class="recipe-card__heading">
-                <span class="recipe-icon" aria-hidden="true">✦</span>
-                <div>
-                  <h3>{{ recipe.name }}</h3>
-                  <p>Feeds {{ recipe.servings }}</p>
-                </div>
-              </div>
-              <ul>
-                @for (ingredient of recipe.ingredients; track ingredient.name) {
-                  <li>
-                    <strong>{{ ingredient.quantity }}×</strong> {{ ingredient.name }}
-                  </li>
-                }
-              </ul>
-              <div class="card-actions">
-                <button class="card-action edit" type="button" (click)="startEditing(recipe)">
-                  Edit recipe
-                </button>
-                <button class="card-action remove" type="button" (click)="requestRemoval(recipe)">
-                  Remove
-                </button>
-              </div>
-            </article>
+            <app-recipe-card [config]="recipeCard(recipe)" (action)="handleRecipeCard($event)" />
           }
         </div>
       } @else {

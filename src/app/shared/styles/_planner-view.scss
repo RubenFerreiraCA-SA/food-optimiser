@@ -5,10 +5,7 @@
 }
 
 @mixin section {
-  .planning-section {
-    max-width: 890px;
-    margin: 0 auto;
-  }
+  .planning-section { width: 100%; }
 }
 
 @mixin heading {

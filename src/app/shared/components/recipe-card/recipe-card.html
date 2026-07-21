@@ -1,0 +1,50 @@
+@if (config.mode === 'select') {
+  <label
+    [class]="'recipe-card recipe-card--select recipe-card--' + config.recipe.id"
+    [class.selected]="config.selected"
+  >
+    <input
+      type="checkbox"
+      [checked]="config.selected"
+      (change)="action.emit({ action: 'toggle', recipe: config.recipe })"
+    />
+    <span class="checkmark" aria-hidden="true">✓</span>
+    <span class="recipe-icon" aria-hidden="true">✦</span>
+    <span class="recipe-copy"
+      ><strong>{{ config.recipe.name }}</strong
+      ><small>Feeds {{ config.recipe.servings }}</small></span
+    >
+    <span class="recipe-ingredients">{{ config.recipe.ingredients.length }} ingredients</span>
+  </label>
+} @else {
+  <article [class]="'recipe-card recipe-card--view recipe-card--' + config.recipe.id">
+    <div class="recipe-card__heading">
+      <span class="recipe-icon" aria-hidden="true">✦</span>
+      <div>
+        <h3>{{ config.recipe.name }}</h3>
+        <p>Feeds {{ config.recipe.servings }}</p>
+      </div>
+    </div>
+    <ul>
+      @for (ingredient of config.recipe.ingredients; track ingredient.name) {
+        <li>
+          <strong>{{ ingredient.quantity }}×</strong> {{ ingredient.name }}
+        </li>
+      }
+    </ul>
+    @if (config.actions?.length) {
+      <div class="card-actions">
+        @for (item of config.actions; track item.id) {
+          <button
+            class="card-action"
+            [class.remove]="item.variant === 'remove'"
+            type="button"
+            (click)="action.emit({ action: item.id, recipe: config.recipe })"
+          >
+            {{ item.label }}
+          </button>
+        }
+      </div>
+    }
+  </article>
+}
