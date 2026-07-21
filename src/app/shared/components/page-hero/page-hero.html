@@ -1,0 +1,8 @@
+<section class="page-hero" [attr.aria-labelledby]="config.titleId">
+  <div>
+    <p class="eyebrow"><span></span>{{ config.eyebrow }}</p>
+    <h1 [id]="config.titleId">{{ config.title }}</h1>
+    <p>{{ config.description }}</p>
+  </div>
+  <span class="hero-mark" [style.transform]="'rotate(' + (config.markRotation ?? 0) + 'deg)'" aria-hidden="true">⌘</span>
+</section>

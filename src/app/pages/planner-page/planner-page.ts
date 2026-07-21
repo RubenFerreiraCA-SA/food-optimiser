@@ -4,6 +4,7 @@ import { PantryIngredient, PantryService } from '../../shared/services/pantry.se
 import { ConfirmIngredientsView } from './confirm-ingredients-view/confirm-ingredients-view';
 import { ConfirmMenuView } from './confirm-menu-view/confirm-menu-view';
 import { OptimisedPlanView } from './optimised-plan-view/optimised-plan-view';
+import { PageHero, PageHeroConfig } from '../../shared/components/page-hero/page-hero';
 
 export interface PlanningIngredient extends PantryIngredient {
   planningQuantity: number;
@@ -18,13 +19,14 @@ export interface PlannedMeal {
 
 @Component({
   selector: 'app-planner-page',
-  imports: [ConfirmIngredientsView, ConfirmMenuView, OptimisedPlanView],
+  imports: [ConfirmIngredientsView, ConfirmMenuView, OptimisedPlanView, PageHero],
   templateUrl: './planner-page.html',
   styleUrl: './planner-page.scss',
 })
 export class PlannerPage {
   readonly pantry = inject(PantryService);
   readonly menu = inject(MenuService);
+  readonly hero: PageHeroConfig = { eyebrow: 'Make the most of what you have', title: 'Plan your meals.', description: "We'll help you find the menu that makes your ingredients go furthest.", titleId: 'planner-title', markRotation: 12 };
 
   readonly step = signal(1);
   readonly planningIngredients = signal<PlanningIngredient[]>(this.createPlanningIngredients());

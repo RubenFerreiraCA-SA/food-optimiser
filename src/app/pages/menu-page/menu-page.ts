@@ -2,10 +2,11 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { MenuService, Recipe } from '../../shared/services/menu.service';
 import { Dialog, DialogConfig } from '../../shared/components/dialog/dialog';
 import { NewRecipeView } from './new-recipe-page/new-recipe-view';
+import { PageHero, PageHeroConfig } from '../../shared/components/page-hero/page-hero';
 
 @Component({
   selector: 'app-menu-page',
-  imports: [NewRecipeView, Dialog],
+  imports: [NewRecipeView, Dialog, PageHero],
   templateUrl: './menu-page.html',
   styleUrl: './menu-page.scss',
 })
@@ -15,6 +16,7 @@ export class MenuPage {
   readonly recipeBeingEdited = signal<Recipe | null>(null);
   readonly isCreatingRecipe = signal(false);
   readonly isRecipeFormOpen = computed(() => this.isCreatingRecipe() || !!this.recipeBeingEdited());
+  readonly hero: PageHeroConfig = { eyebrow: 'Your recipe collection', title: "What's on the menu?", description: 'Keep the meals you can make in one place, ready for your next plan.', titleId: 'menu-title', markRotation: -12 };
   requestRemoval(recipe: Recipe): void { this.recipeToRemove.set(recipe); }
   cancelRemoval(): void { this.recipeToRemove.set(null); }
   confirmRemoval(): void { const recipe = this.recipeToRemove(); if (recipe) this.menu.remove(recipe.id); this.recipeToRemove.set(null); }

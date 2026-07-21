@@ -3,10 +3,11 @@ import { FormsModule } from '@angular/forms';
 import { MenuService, Recipe } from '../../shared/services/menu.service';
 import { PantryIngredient, PantryService } from '../../shared/services/pantry.service';
 import { Dialog, DialogConfig } from '../../shared/components/dialog/dialog';
+import { PageHero, PageHeroConfig } from '../../shared/components/page-hero/page-hero';
 
 @Component({
   selector: 'app-pantry-page',
-  imports: [FormsModule, Dialog],
+  imports: [FormsModule, Dialog, PageHero],
   templateUrl: './pantry-page.html',
   styleUrl: './pantry-page.scss',
 })
@@ -23,6 +24,7 @@ export class PantryPage {
   editQuantity = 0;
   addError = '';
   editError = '';
+  readonly hero: PageHeroConfig = { eyebrow: 'What you have', title: 'Your pantry.', description: 'Keep track of the ingredients available for your next meal plan.', titleId: 'pantry-title', markRotation: 16 };
 
   readonly blockedUsages = computed(() => {
     const ingredient = this.blockedIngredient();

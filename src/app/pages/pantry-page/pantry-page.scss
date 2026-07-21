@@ -15,16 +15,6 @@
   color: var(--ink);
   font-family: Georgia, 'Times New Roman', serif;
 }
-.pantry-hero {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 225px;
-  padding: 42px 68px;
-  border-radius: 5px;
-  background: #e4ede0;
-  overflow: hidden;
-}
 .eyebrow {
   display: flex;
   align-items: center;
@@ -47,34 +37,6 @@ h2,
 h3,
 p {
   margin-top: 0;
-}
-h1 {
-  margin-bottom: 13px;
-  font-size: clamp(42px, 5vw, 56px);
-  font-weight: 400;
-  letter-spacing: -0.055em;
-  line-height: 0.98;
-}
-.pantry-hero > div > p:last-child {
-  max-width: 430px;
-  margin-bottom: 0;
-  color: #53655c;
-  font-size: 17px;
-  line-height: 1.5;
-}
-.hero-mark {
-  display: grid;
-  width: 118px;
-  height: 118px;
-  place-items: center;
-  border: 9px solid #f6f1e7;
-  border-radius: 50%;
-  color: #4e895c;
-  background: #d1e3ca;
-  font:
-    62px Arial,
-    sans-serif;
-  transform: rotate(16deg);
 }
 .ingredients {
   padding-top: 44px;
@@ -302,18 +264,6 @@ h2 {
 @media (max-width: 760px) {
   .pantry-page {
     padding: 0 22px 42px;
-  }
-  .pantry-hero {
-    min-height: 285px;
-    margin: 0 -22px;
-    padding: 40px 32px;
-    border-radius: 0;
-  }
-  .hero-mark {
-    width: 82px;
-    height: 82px;
-    border-width: 6px;
-    font-size: 42px;
   }
   .ingredients {
     padding-top: 36px;

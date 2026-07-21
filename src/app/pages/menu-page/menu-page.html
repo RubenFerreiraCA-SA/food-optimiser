@@ -6,14 +6,7 @@
   />
 } @else {
   <main class="menu-page">
-    <section class="menu-hero" aria-labelledby="menu-title">
-      <div>
-        <p class="eyebrow"><span></span>Your recipe collection</p>
-        <h1 id="menu-title">What's on the menu?</h1>
-        <p>Keep the meals you can make in one place, ready for your next plan.</p>
-      </div>
-      <span class="hero-mark" aria-hidden="true">⌘</span>
-    </section>
+    <app-page-hero [config]="hero" />
 
     <section class="recipes" aria-labelledby="recipes-title">
       <div class="section-heading">
