@@ -1,0 +1,16 @@
+<a class="action-card" [class.featured]="config.featured" [href]="config.href"
+  ><span
+    class="card-icon"
+    [class.ingredients-icon]="config.icon === 'ingredients'"
+    [class.meals-icon]="config.icon === 'meals'"
+    [class.optimise-icon]="config.icon === 'optimise'"
+    aria-hidden="true"
+    ><i></i><i></i>
+    @if (config.icon !== 'meals') {
+      <i></i>
+    }</span
+  ><span class="card-content"
+    ><span class="card-title">{{ config.title }}</span
+    ><span class="card-description">{{ config.description }}</span></span
+  ><span class="arrow" aria-hidden="true">→</span></a
+>

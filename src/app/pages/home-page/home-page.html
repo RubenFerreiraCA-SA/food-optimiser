@@ -18,34 +18,9 @@
     </div>
 
     <div class="action-grid">
-      <a class="action-card" href="/pantry">
-        <span class="card-icon ingredients-icon" aria-hidden="true"><i></i><i></i><i></i></span>
-        <span class="card-content">
-          <span class="card-title">What's in the Pantry</span>
-          <span class="card-description">Update the ingredients you have available.</span>
-        </span>
-        <span class="arrow" aria-hidden="true">→</span>
-      </a>
-
-      <a class="action-card" href="/menu">
-        <span class="card-icon meals-icon" aria-hidden="true"><i></i><i></i></span>
-        <span class="card-content">
-          <span class="card-title">What's on the Menu</span>
-          <span class="card-description">Add the meals and recipes you can make.</span>
-        </span>
-        <span class="arrow" aria-hidden="true">→</span>
-      </a>
-
-      <a class="action-card featured" href="/planner">
-        <span class="card-icon optimise-icon" aria-hidden="true"> <i></i><i></i><i></i> </span>
-        <span class="card-content">
-          <span class="card-title">Optimise Meal Plan</span>
-          <span class="card-description"
-            >Find the meal mix that makes your ingredients go furthest.</span
-          >
-        </span>
-        <span class="arrow" aria-hidden="true">→</span>
-      </a>
+      @for (card of actionCards; track card.href) {
+        <app-action-card [config]="card" />
+      }
     </div>
   </section>
 </main>

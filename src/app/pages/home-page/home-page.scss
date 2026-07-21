@@ -102,132 +102,6 @@ h2 {
   grid-template-columns: repeat(3, 1fr);
   gap: 15px;
 }
-.action-card {
-  display: grid;
-  grid-template-columns: 48px 1fr 20px;
-  align-items: center;
-  gap: 14px;
-  min-height: 157px;
-  padding: 25px 21px;
-  border: 1px solid #e6e2d8;
-  border-radius: 4px;
-  color: var(--ink);
-  background: var(--paper);
-  text-decoration: none;
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease,
-    background 0.2s ease;
-}
-.action-card:hover {
-  box-shadow: 0 12px 24px #28423714;
-  transform: translateY(-4px);
-}
-.action-card:focus-visible {
-  outline: 3px solid #92b8a0;
-  outline-offset: 3px;
-}
-.action-card.featured {
-  border-color: #c0d2bd;
-  background: #edf4e9;
-}
-.card-icon {
-  position: relative;
-  display: grid;
-  width: 46px;
-  height: 46px;
-  place-items: center;
-  overflow: hidden;
-  border-radius: 50%;
-  background: #d6e5d2;
-}
-.featured .card-icon {
-  background: #b9d5b4;
-}
-.optimise-icon i {
-  position: absolute;
-  bottom: 11px;
-  width: 5px;
-  border-radius: 6px;
-  background: #3e7358;
-}
-.optimise-icon i:nth-child(1) {
-  left: 12px;
-  height: 12px;
-}
-.optimise-icon i:nth-child(2) {
-  left: 21px;
-  height: 22px;
-}
-.optimise-icon i:nth-child(3) {
-  left: 30px;
-  height: 30px;
-}
-.ingredients-icon i {
-  position: absolute;
-  width: 11px;
-  height: 18px;
-  border-radius: 50% 50% 48% 48%;
-  background: #6d9762;
-  transform: rotate(40deg);
-}
-.ingredients-icon i:nth-child(1) {
-  top: 11px;
-  left: 12px;
-}
-.ingredients-icon i:nth-child(2) {
-  top: 17px;
-  left: 22px;
-  background: #ed9d51;
-  transform: rotate(-12deg);
-}
-.ingredients-icon i:nth-child(3) {
-  top: 9px;
-  right: 9px;
-  background: #e47a62;
-  transform: rotate(15deg);
-}
-.meals-icon::before {
-  content: '';
-  width: 23px;
-  height: 23px;
-  border: 3px solid #61885d;
-  border-radius: 50%;
-}
-.meals-icon i {
-  position: absolute;
-  width: 3px;
-  height: 21px;
-  border-radius: 2px;
-  background: #61885d;
-}
-.meals-icon i:nth-child(1) {
-  left: 11px;
-  top: 13px;
-}
-.meals-icon i:nth-child(2) {
-  right: 11px;
-  top: 13px;
-}
-.card-title {
-  display: block;
-  margin-bottom: 7px;
-  font-size: 20px;
-  letter-spacing: -0.03em;
-}
-.card-description {
-  display: block;
-  color: var(--muted);
-  font-family: Arial, sans-serif;
-  font-size: 13px;
-  line-height: 1.45;
-}
-.arrow {
-  align-self: start;
-  color: #547862;
-  font-family: Arial, sans-serif;
-  font-size: 21px;
-}
 footer {
   padding: 12px 34px 32px;
   color: #8a928b;
@@ -250,9 +124,6 @@ footer {
   }
   .action-grid {
     grid-template-columns: 1fr;
-  }
-  .action-card {
-    min-height: 122px;
   }
   footer {
     padding-bottom: 23px;
@@ -311,9 +182,6 @@ footer {
     grid-template-columns: 1fr;
   }
 
-  .action-card {
-    min-height: 94px;
-  }
 
   footer {
     grid-column: 1 / -1;
