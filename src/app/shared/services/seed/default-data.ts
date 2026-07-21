@@ -1,5 +1,5 @@
-import type { Recipe } from '../services/menu/menu.service';
-import type { PantryIngredient } from '../services/pantry/pantry.service';
+import type { Recipe } from '../menu/menu.service';
+import type { PantryIngredient } from '../pantry/pantry.service';
 
 export const DATA_KEYS = {
   menu: 'make-the-most-menu',

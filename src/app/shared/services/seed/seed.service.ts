@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { DATA_KEYS, defaultIngredients, defaultRecipes } from '../../data/default-data';
+import { DATA_KEYS, defaultIngredients, defaultRecipes } from './default-data';
 import { DataService } from '../data/data.service';
 
 @Injectable({ providedIn: 'root' })
