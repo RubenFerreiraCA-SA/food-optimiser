@@ -2,75 +2,36 @@
   display: block;
 }
 .recipe-card {
-  position: relative;
-  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) repeat(2, minmax(0, 1fr)) 28px;
+  grid-template-rows: auto minmax(94px, 1fr) auto;
+  gap: 14px;
+  padding: 20px;
   border: 1px solid #e3e1d8;
   border-radius: 5px;
   background: #fffdf8;
 }
-.recipe-card::before {
-  position: absolute;
-  right: -12px;
-  bottom: -20px;
-  z-index: 0;
-  opacity: 0.18;
-  font-size: 112px;
-  line-height: 1;
-  transform: rotate(-12deg);
-}
-.recipe-card > * {
-  position: relative;
-  z-index: 1;
-}
-.recipe-card--burger {
-  background: linear-gradient(135deg, #fff8e8, #f0c984);
-}
-.recipe-card--burger::before {
-  content: '🍔';
-}
-.recipe-card--pie {
-  background: linear-gradient(135deg, #fff7eb, #edc392);
-}
-.recipe-card--pie::before {
-  content: '🥧';
-}
-.recipe-card--sandwich {
-  background: linear-gradient(135deg, #f8f8df, #c6dfad);
-}
-.recipe-card--sandwich::before {
-  content: '🥪';
-}
-.recipe-card--pasta {
-  background: linear-gradient(135deg, #fff3d7, #efb980);
-}
-.recipe-card--pasta::before {
-  content: '🍝';
-}
-.recipe-card--salad {
-  background: linear-gradient(135deg, #eff8e7, #aed3a0);
-}
-.recipe-card--salad::before {
-  content: '🥗';
-}
-.recipe-card--pizza {
-  background: linear-gradient(135deg, #fff0d8, #eda887);
-}
-.recipe-card--pizza::before {
-  content: '🍕';
-}
 .recipe-card--view {
-  display: flex;
-  flex-direction: column;
   min-height: 245px;
-  padding: 22px;
   box-shadow: 0 3px 10px #28423708;
+}
+.recipe-card--select {
+  position: relative;
+  min-height: 204px;
+  border-color: #dfdfd7;
+  cursor: pointer;
+}
+.recipe-card--select.selected {
+  border-color: #91b492;
+  background: #f0f6ed;
 }
 .recipe-card__heading {
   display: grid;
+  grid-column: 1 / 4;
+  grid-row: 1;
   grid-template-columns: 45px 1fr;
   align-items: center;
   gap: 12px;
-  margin-bottom: 18px;
 }
 .recipe-icon {
   display: grid;
@@ -95,8 +56,11 @@
     12px Arial,
     sans-serif;
 }
-.recipe-card ul {
+.recipe-ingredients-list {
   display: grid;
+  grid-column: 1;
+  grid-row: 2;
+  align-content: center;
   gap: 7px;
   margin: 0;
   padding: 0;
@@ -106,14 +70,43 @@
     14px Arial,
     sans-serif;
 }
-.recipe-card li strong {
+.recipe-ingredients-list li strong {
   color: #396a55;
+}
+.recipe-image {
+  display: grid;
+  grid-column: 2 / 5;
+  grid-row: 2;
+  min-height: 94px;
+  place-items: center;
+  border-radius: 4px;
+  background: linear-gradient(135deg, #e7efdc, #bfd9b8);
+  font-size: 42px;
+}
+.recipe-image--burger {
+  background: linear-gradient(135deg, #f5d79d, #e8ad71);
+}
+.recipe-image--pie {
+  background: linear-gradient(135deg, #f4d9b9, #dcad74);
+}
+.recipe-image--sandwich {
+  background: linear-gradient(135deg, #e6ddb2, #b9d3a8);
+}
+.recipe-image--pasta {
+  background: linear-gradient(135deg, #f0dca5, #e59668);
+}
+.recipe-image--salad {
+  background: linear-gradient(135deg, #d9edc9, #92ba83);
+}
+.recipe-image--pizza {
+  background: linear-gradient(135deg, #f5cf98, #e47d63);
 }
 .card-actions {
   display: flex;
+  grid-column: 1 / -1;
+  grid-row: 3;
   gap: 12px;
-  margin-top: auto;
-  padding-top: 19px;
+  padding-top: 5px;
 }
 .card-action {
   border: 0;
@@ -130,30 +123,18 @@
 .card-action.remove {
   color: #9a4034;
 }
-.recipe-card--select {
-  position: relative;
-  display: grid;
-  grid-template-columns: 38px 42px 1fr;
-  align-items: center;
-  gap: 12px;
-  min-height: 112px;
-  padding: 20px;
-  border-color: #dfdfd7;
-  cursor: pointer;
-}
-.recipe-card--select.selected {
-  border-color: #91b492;
-  background: #f0f6ed;
-}
 .recipe-card--select input {
   position: absolute;
   opacity: 0;
 }
 .checkmark {
   display: grid;
+  grid-column: 4;
+  grid-row: 1;
   width: 21px;
   height: 21px;
   place-items: center;
+  justify-self: end;
   border: 1px solid #bbcbbb;
   border-radius: 3px;
   color: transparent;
@@ -161,33 +142,14 @@
     700 14px Arial,
     sans-serif;
 }
-.selected .checkmark {
+.recipe-card--select.selected .checkmark {
   border-color: #376b56;
   color: #fffdf8;
   background: #376b56;
 }
-.recipe-copy {
-  display: grid;
-  gap: 4px;
-}
-.recipe-copy strong {
-  font-size: 20px;
-  font-weight: 400;
-  letter-spacing: -0.025em;
-}
-.recipe-copy small,
-.recipe-ingredients {
-  color: #69776f;
-  font:
-    12px Arial,
-    sans-serif;
-}
-.recipe-ingredients {
-  grid-column: 2/-1;
-  margin-top: -6px;
-}
 @media (max-width: 760px) {
-  .recipe-card--view {
+  .recipe-card--view,
+  .recipe-card--select {
     min-height: 0;
   }
 }

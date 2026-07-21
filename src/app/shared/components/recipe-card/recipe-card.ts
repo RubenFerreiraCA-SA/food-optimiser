@@ -29,4 +29,16 @@ export interface RecipeCardEvent {
 export class RecipeCard {
   @Input({ required: true }) config!: RecipeCardConfig;
   @Output() readonly action = new EventEmitter<RecipeCardEvent>();
+
+  mockImageLabel(): string {
+    const labels: Record<string, string> = {
+      burger: '🍔',
+      pie: '🥧',
+      sandwich: '🥪',
+      pasta: '🍝',
+      salad: '🥗',
+      pizza: '🍕',
+    };
+    return labels[this.config.recipe.id] ?? '🍽️';
+  }
 }
