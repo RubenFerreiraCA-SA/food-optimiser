@@ -1,0 +1,142 @@
+:host {
+  display: block;
+}
+.planning-section {
+  max-width: 890px;
+  margin: 0 auto;
+}
+.section-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 28px;
+  margin-bottom: 24px;
+}
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 0 8px;
+  color: #587062;
+  font:
+    700 11px Arial,
+    sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.eyebrow span {
+  width: 21px;
+  height: 1px;
+  background: currentColor;
+}
+h2 {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 400;
+  letter-spacing: -0.04em;
+}
+.section-copy {
+  max-width: 280px;
+  margin: 0;
+  color: #64716a;
+  font:
+    14px/1.45 Arial,
+    sans-serif;
+}
+.ingredient-list {
+  overflow: hidden;
+  border: 1px solid #e3e1d8;
+  border-radius: 5px;
+  background: #fffdf8;
+}
+.ingredient-row {
+  display: grid;
+  grid-template-columns: 43px 1fr auto;
+  align-items: center;
+  gap: 13px;
+  padding: 14px 20px;
+  cursor: text;
+}
+.ingredient-row + .ingredient-row {
+  border-top: 1px solid #e8e6df;
+}
+.ingredient-icon {
+  display: grid;
+  width: 37px;
+  height: 37px;
+  place-items: center;
+  border-radius: 50%;
+  color: #4e895c;
+  background: #d7e7d3;
+  font-size: 16px;
+}
+.ingredient-name {
+  font-size: 19px;
+}
+.quantity-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #69776f;
+  font:
+    12px Arial,
+    sans-serif;
+}
+.quantity-control input {
+  width: 66px;
+  min-height: 35px;
+  padding: 5px 8px;
+  border: 1px solid #bfd1bd;
+  border-radius: 3px;
+  color: #203d38;
+  background: #fffdf8;
+  font:
+    17px Georgia,
+    serif;
+  text-align: center;
+}
+.footer-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 24px;
+}
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 10px 15px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  font:
+    700 13px/1 Arial,
+    sans-serif;
+  cursor: pointer;
+}
+.button.primary {
+  color: #fffdf8;
+  background: #376b56;
+}
+.text-link {
+  color: #3e7058;
+  font:
+    700 13px Arial,
+    sans-serif;
+}
+@media (max-width: 760px) {
+  .section-heading {
+    display: block;
+  }
+  .section-copy {
+    margin-top: 12px;
+  }
+  .ingredient-row {
+    padding: 13px 14px;
+  }
+  .footer-actions .button {
+    flex: 1;
+  }
+}

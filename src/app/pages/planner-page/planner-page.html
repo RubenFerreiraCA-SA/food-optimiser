@@ -1,1 +1,44 @@
-<p>planner-page works!</p>
+<main class="planner-page">
+  <section class="planner-hero" aria-labelledby="planner-title">
+    <div>
+      <p class="eyebrow"><span></span>Make the most of what you have</p>
+      <h1 id="planner-title">Plan your meals.</h1>
+      <p>We'll help you find the menu that makes your ingredients go furthest.</p>
+    </div>
+    <span class="hero-mark" aria-hidden="true">⌘</span>
+  </section>
+
+  <nav class="progress" aria-label="Meal planning progress">
+    <button
+      class="progress-step"
+      [class.active]="step() === 1"
+      [class.complete]="step() > 1"
+      type="button"
+      (click)="goTo(1)"
+    >
+      <span>1</span><b>Ingredients</b>
+    </button>
+    <i [class.complete]="step() > 1" aria-hidden="true"></i>
+    <button
+      class="progress-step"
+      [class.active]="step() === 2"
+      [class.complete]="step() > 2"
+      type="button"
+      (click)="goTo(2)"
+    >
+      <span>2</span><b>Menu</b>
+    </button>
+    <i [class.complete]="step() > 2" aria-hidden="true"></i>
+    <button class="progress-step" [class.active]="step() === 3" type="button" (click)="goTo(3)">
+      <span>3</span><b>Your plan</b>
+    </button>
+  </nav>
+
+  @if (step() === 1) {
+    <app-confirm-ingredients-view [ingredients]="planningIngredients()" (quantityChange)="updateIngredient($event.id, $event.quantity)" (confirmed)="continueToMenu()" />
+  } @else if (step() === 2) {
+    <app-confirm-menu-view [recipes]="menu.recipes()" [selectedRecipeIds]="selectedRecipeIds()" (selectionChange)="toggleRecipe($event)" (back)="goTo(1)" (confirmed)="createPlan()" />
+  } @else {
+    <app-optimised-plan-view [meals]="planMeals()" [totalServings]="totalServings()" [totalMeals]="totalMeals()" [recipeCount]="selectedRecipes().length" (adjustMenu)="goTo(2)" (startNew)="startAgain()" />
+  }
+</main>

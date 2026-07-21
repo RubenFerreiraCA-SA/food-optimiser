@@ -1,0 +1,47 @@
+<section class="planning-section" aria-labelledby="menu-title">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow"><span></span>{{ selectedRecipeIds.length }} recipes selected</p>
+      <h2 id="menu-title">Confirm your menu</h2>
+    </div>
+    <p class="section-copy">Uncheck anything you don't want included in this plan.</p>
+  </div>
+  @if (recipes.length) {
+    <div class="recipe-grid">
+      @for (recipe of recipes; track recipe.id) {
+        <label class="recipe-card" [class.selected]="isSelected(recipe.id)"
+          ><input
+            type="checkbox"
+            [checked]="isSelected(recipe.id)"
+            (change)="selectionChange.emit(recipe.id)"
+          /><span class="checkmark" aria-hidden="true">✓</span
+          ><span class="recipe-icon" aria-hidden="true">✦</span
+          ><span class="recipe-copy"
+            ><strong>{{ recipe.name }}</strong
+            ><small>Feeds {{ recipe.servings }}</small></span
+          ><span class="recipe-ingredients"
+            >{{ recipe.ingredients.length }} ingredients</span
+          ></label
+        >
+      }
+    </div>
+  } @else {
+    <div class="empty-state">
+      <span aria-hidden="true">✦</span>
+      <h3>Your menu is empty.</h3>
+      <p>Add recipes before building a plan.</p>
+      <a class="button primary" href="/menu">Go to menu</a>
+    </div>
+  }
+  <div class="footer-actions">
+    <button class="button secondary" type="button" (click)="back.emit()">Back</button
+    ><button
+      class="button primary"
+      type="button"
+      [disabled]="!selectedRecipeIds.length"
+      (click)="confirmed.emit()"
+    >
+      Create meal plan <span aria-hidden="true">→</span>
+    </button>
+  </div>
+</section>

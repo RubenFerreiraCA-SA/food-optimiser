@@ -1,0 +1,32 @@
+<section class="planning-section" aria-labelledby="ingredients-title">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow"><span></span>{{ ingredients.length }} ingredients to use</p>
+      <h2 id="ingredients-title">Confirm your ingredients</h2>
+    </div>
+    <p class="section-copy">Adjust quantities for this plan. Your pantry stays unchanged.</p>
+  </div>
+  <div class="ingredient-list">
+    @for (ingredient of ingredients; track ingredient.id) {
+      <label class="ingredient-row"
+        ><span class="ingredient-icon" aria-hidden="true">✦</span
+        ><span class="ingredient-name">{{ ingredient.name }}</span
+        ><span class="quantity-control"
+          ><span>Available</span
+          ><input
+            type="number"
+            min="0"
+            step="1"
+            [ngModel]="ingredient.planningQuantity"
+            (ngModelChange)="quantityChange.emit({ id: ingredient.id, quantity: $event })"
+            [attr.aria-label]="ingredient.name + ' quantity'" /></span
+      ></label>
+    }
+  </div>
+  <div class="footer-actions">
+    <a class="text-link" href="/pantry">Edit pantry instead</a
+    ><button class="button primary" type="button" (click)="confirmed.emit()">
+      Confirm ingredients <span aria-hidden="true">→</span>
+    </button>
+  </div>
+</section>

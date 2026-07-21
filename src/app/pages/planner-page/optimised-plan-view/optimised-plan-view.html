@@ -1,0 +1,50 @@
+<section class="planning-section" aria-labelledby="result-title">
+  <div class="result-intro">
+    <p class="eyebrow"><span></span>Your optimised menu</p>
+    <h2 id="result-title">Here's your best meal plan.</h2>
+    <p>
+      Based on the ingredients and recipes you confirmed, this combination makes the most of your
+      pantry.
+    </p>
+  </div>
+  <div class="result-summary">
+    <div>
+      <strong>{{ totalServings }}</strong
+      ><span>servings to enjoy</span>
+    </div>
+    <div>
+      <strong>{{ totalMeals }}</strong
+      ><span>meals to make</span>
+    </div>
+    <div>
+      <strong>{{ recipeCount }}</strong
+      ><span>recipes considered</span>
+    </div>
+  </div>
+  @if (meals.length) {
+    <div class="plan-list">
+      @for (meal of meals; track meal.name) {
+        <article class="plan-meal">
+          <span class="meal-count">{{ meal.times }}×</span>
+          <div>
+            <h3>{{ meal.name }}</h3>
+            <p>{{ meal.ingredients }}</p>
+          </div>
+          <strong>{{ meal.servings * meal.times }} servings</strong>
+        </article>
+      }
+    </div>
+  } @else {
+    <div class="empty-state">
+      <span aria-hidden="true">✦</span>
+      <h3>No recipes selected yet.</h3>
+      <p>Choose at least one recipe to generate a plan.</p>
+    </div>
+  }
+  <div class="footer-actions">
+    <button class="button secondary" type="button" (click)="adjustMenu.emit()">Adjust menu</button
+    ><button class="button primary" type="button" (click)="startNew.emit()">
+      Start a new plan
+    </button>
+  </div>
+</section>
