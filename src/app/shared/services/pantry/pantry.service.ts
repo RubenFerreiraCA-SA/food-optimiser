@@ -1,4 +1,6 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
+import { DataService } from '../data/data.service';
+import { DATA_KEYS, defaultIngredients } from '../../data/default-data';
 
 export interface PantryIngredient {
   id: string;
@@ -6,19 +8,10 @@ export interface PantryIngredient {
   quantity: number;
 }
 
-const DEFAULT_INGREDIENTS: PantryIngredient[] = [
-  { id: 'cucumber', name: 'Cucumber', quantity: 2 },
-  { id: 'olives', name: 'Olives', quantity: 2 },
-  { id: 'lettuce', name: 'Lettuce', quantity: 3 },
-  { id: 'meat', name: 'Meat', quantity: 6 },
-  { id: 'tomato', name: 'Tomato', quantity: 6 },
-  { id: 'cheese', name: 'Cheese', quantity: 8 },
-  { id: 'dough', name: 'Dough', quantity: 10 },
-];
-
 @Injectable({ providedIn: 'root' })
 export class PantryService {
-  private readonly storageKey = 'make-the-most-pantry';
+  private readonly data = inject(DataService);
+  private readonly storageKey = DATA_KEYS.pantry;
   private readonly state = signal<PantryIngredient[]>(this.read());
   readonly ingredients = computed(() => this.state());
 
@@ -43,19 +36,14 @@ export class PantryService {
     return true;
   }
   reset(): void {
-    this.update(DEFAULT_INGREDIENTS.map((item) => ({ ...item })));
+    this.update(defaultIngredients());
   }
 
   private read(): PantryIngredient[] {
-    try {
-      const saved = localStorage.getItem(this.storageKey);
-      return saved ? JSON.parse(saved) : DEFAULT_INGREDIENTS;
-    } catch {
-      return DEFAULT_INGREDIENTS;
-    }
+    return this.data.read(this.storageKey, defaultIngredients());
   }
   private update(ingredients: PantryIngredient[]): void {
     this.state.set(ingredients);
-    localStorage.setItem(this.storageKey, JSON.stringify(ingredients));
+    this.data.write(this.storageKey, ingredients);
   }
 }
