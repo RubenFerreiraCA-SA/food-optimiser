@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import type { Recipe } from './menu.service';
+import type { Recipe } from '../menu/menu.service';
 
 export interface PlannerIngredientInput {
   id: string;

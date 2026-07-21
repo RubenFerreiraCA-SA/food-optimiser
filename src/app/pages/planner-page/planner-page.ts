@@ -1,11 +1,11 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { MenuService } from '../../shared/services/menu.service';
-import { PantryIngredient, PantryService } from '../../shared/services/pantry.service';
+import { MenuService } from '../../shared/services/menu/menu.service';
+import { PantryIngredient, PantryService } from '../../shared/services/pantry/pantry.service';
 import {
   IngredientPlanUsage,
   OptimisedPlanMeal,
   PlannerService,
-} from '../../shared/services/planner.service';
+} from '../../shared/services/planner/planner.service';
 import { ConfirmIngredientsView } from './confirm-ingredients-view/confirm-ingredients-view';
 import { ConfirmMenuView } from './confirm-menu-view/confirm-menu-view';
 import { OptimisedPlanView } from './optimised-plan-view/optimised-plan-view';

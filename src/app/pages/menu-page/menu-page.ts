@@ -1,5 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { MenuService, Recipe } from '../../shared/services/menu.service';
+import { MenuService, Recipe } from '../../shared/services/menu/menu.service';
 import { Dialog, DialogConfig } from '../../shared/components/dialog/dialog';
 import { NewRecipeView } from './new-recipe-view/new-recipe-view';
 import { PageHero, PageHeroConfig } from '../../shared/components/page-hero/page-hero';

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Recipe } from '../../../shared/services/menu.service';
+import { Recipe } from '../../../shared/services/menu/menu.service';
 import {
   RecipeCard,
   RecipeCardConfig,
