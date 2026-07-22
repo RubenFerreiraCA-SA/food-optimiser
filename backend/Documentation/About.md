@@ -49,6 +49,15 @@ The API allows requests from:
 
 That is the local Angular frontend.
 
+## Swagger
+
+When the API is running in `Local`, Swagger is available at:
+
+- `http://localhost:3000/swagger`
+- `http://localhost:3000/swagger/v1/swagger.json`
+
+The UI is useful for trying endpoints by hand.
+
 ## Local setup
 
 Run the backend from the repo root with:

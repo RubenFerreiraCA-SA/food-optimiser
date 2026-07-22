@@ -3,6 +3,8 @@ using Google.Cloud.Firestore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddJsonFile("appsettings.local.json", optional: true, reloadOnChange: true);
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var firestoreProjectId = builder.Configuration["Firestore:ProjectId"];
 if (string.IsNullOrWhiteSpace(firestoreProjectId))
@@ -41,6 +43,12 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+if (app.Environment.IsEnvironment("Local"))
+{
+  app.UseSwagger();
+  app.UseSwaggerUI();
+}
 
 app.UseCors("Frontend");
 

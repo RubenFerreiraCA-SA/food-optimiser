@@ -1,78 +1,148 @@
 # Meal Optimiser
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.12.
+Meal Optimiser is a meal-planning app with an Angular frontend, an ASP.NET Core backend, and Firestore for data storage.
 
-## Local server
+It is set up for two environments:
 
-To start the local frontend server, run:
+- `local` on a developer machine
+- `production` when deployed
 
-```bash
-ng serve
-```
+## What is in this repo
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- `frontend/` contains the Angular app
+- `backend/` contains the ASP.NET Core API
+- `firebase.json` and `.firebaserc` contain Firebase hosting and emulator settings
+- `_scripts/` contains local orchestration scripts
+- `.vscode/` contains recommended editor settings
 
-## C# Server
+## Prerequisites
 
-This repo includes a minimal ASP.NET Core backend at `backend/MealOptimiser.Api`.
+You need:
 
-To run it locally:
+- Node.js
+- `pnpm`
+- .NET 8 SDK
+- Firebase CLI if you want to run emulators or deploy
 
-```bash
-dotnet run --project backend/MealOptimiser.Api
-```
+## Install
 
-Available endpoints:
-
-- `GET /api/health`
-- `GET /api/info`
-
-The API is configured to accept requests from the Angular local server on `http://localhost:4200`.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+From the repo root:
 
 ```bash
-ng generate component component-name
+pnpm install
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+That installs the frontend and repo tooling dependencies.
+
+## Run locally
+
+### Full stack
+
+Start the frontend, backend, and Firebase emulators together:
 
 ```bash
-ng generate --help
+pnpm start
 ```
 
-## Building
+This is the quickest way to work on the app locally.
 
-To build the project run:
+### Frontend only
+
+Start just the Angular app:
 
 ```bash
-ng build
+pnpm serve:fe
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+### Backend only
 
-The Angular build output is written to `frontend/dist/meal-optimiser/`.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+Start just the API:
 
 ```bash
-ng test
+pnpm serve:be
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+The backend runs at:
 
 ```bash
-ng e2e
+http://localhost:3000
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+The frontend runs at:
 
-## Additional Resources
+```bash
+http://localhost:4200
+```
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Backend docs
+
+The backend has two separate docs:
+
+- [Explainer](backend/Documentation/Explainer.md) for a file-by-file breakdown
+- [About](backend/Documentation/About.md) for how the API works and how to run it locally
+
+## Firebase
+
+Firebase is used for:
+
+- Firestore data
+- Hosting the frontend
+- Local emulators
+
+The repo is configured to use the Firebase project alias from `.firebaserc`.
+
+### Local emulators
+
+The local dev script starts the Firestore emulator and emulator UI.
+
+You can also run them directly with:
+
+```bash
+firebase emulators:start --only firestore,ui
+```
+
+The emulator UI runs at:
+
+```bash
+http://localhost:4000
+```
+
+## Build
+
+Build the frontend:
+
+```bash
+pnpm build
+```
+
+## Tests
+
+Run frontend tests:
+
+```bash
+pnpm test
+```
+
+## Deploy
+
+Deploy the frontend hosting and Firestore rules:
+
+```bash
+pnpm deploy
+```
+
+This uses Firebase hosting and the Firestore rules in `firestore.rules`.
+
+## Production
+
+The live app is deployed through Firebase Hosting for the `make-the-most-3bcb5` project.
+
+If you need the exact live URL, check the Firebase Hosting entry for that project in the Firebase console.
+
+## Useful files
+
+- [`package.json`](package.json) for repo scripts
+- [`angular.json`](angular.json) for frontend build and serve config
+- [`firebase.json`](firebase.json) for hosting and emulator config
+- [`backend/Program.cs`](backend/Program.cs) for backend startup
+- [`backend/Documentation/About.md`](backend/Documentation/About.md) for backend usage
