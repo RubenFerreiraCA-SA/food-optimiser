@@ -1,19 +1,41 @@
 import { TestBed } from '@angular/core/testing';
+import { signal } from '@angular/core';
 import { AuthService } from '../../auth/auth.service';
 import { DataService } from '../data.service';
 import { DataSeedingService } from './data-seeding.service';
-import { DATA_KEYS } from './seed-data';
+import { defaultIngredients, defaultPantryIngredients, defaultRecipes } from './seed-data';
+import { GLOBAL_COLLECTIONS, PROFILE_DOC_ID, USER_COLLECTIONS, USER_DATA_DOCS } from '../user-data';
 
 describe('SeedService', () => {
   it('seeds missing records without replacing existing data', async () => {
-    const values = new Map<string, string>([[DATA_KEYS.menu, JSON.stringify([{ id: 'saved' }])]]);
+    const key = (scope: 'user' | 'global', collectionName: string) => `${scope}:${collectionName}`;
+    const collections = new Map<string, Map<string, unknown>>([
+      [key('global', GLOBAL_COLLECTIONS.recipes), new Map<string, unknown>([['saved', { id: 'saved' }]])],
+    ]);
     const data = {
-      has: (key: string) => values.has(key),
-      read: (key: string, fallback: unknown) => {
-        const value = values.get(key);
-        return value ? JSON.parse(value) : fallback;
+      revision: signal(0),
+      hasDocument: (collectionName: string, docId: string, scope: 'user' | 'global' = 'user') =>
+        collections.get(key(scope, collectionName))?.has(docId) ?? false,
+      collectionSize: (collectionName: string, scope: 'user' | 'global' = 'user') =>
+        collections.get(key(scope, collectionName))?.size ?? 0,
+      upsertDocument: (
+        collectionName: string,
+        docId: string,
+        value: unknown,
+        scope: 'user' | 'global' = 'user',
+      ) => {
+        const collectionKey = key(scope, collectionName);
+        const collection = collections.get(collectionKey) ?? new Map<string, unknown>();
+        collection.set(docId, value);
+        collections.set(collectionKey, collection);
       },
-      write: (key: string, value: unknown) => values.set(key, JSON.stringify(value)),
+      replaceCollection: (
+        collectionName: string,
+        value: Array<{ id: string }>,
+        scope: 'user' | 'global' = 'user',
+      ) => {
+        collections.set(key(scope, collectionName), new Map<string, unknown>(value.map((item) => [item.id, item])));
+      },
       whenReady: () => Promise.resolve(),
     };
     TestBed.configureTestingModule({
@@ -33,7 +55,21 @@ describe('SeedService', () => {
     const service = TestBed.inject(DataSeedingService);
     await service.seed();
 
-    expect(JSON.parse(values.get(DATA_KEYS.menu) ?? '[]')).toEqual([{ id: 'saved' }]);
-    expect(JSON.parse(values.get(DATA_KEYS.pantry) ?? '[]')).toHaveLength(7);
+    expect(Array.from(collections.get(key('global', GLOBAL_COLLECTIONS.recipes))?.values() ?? [])).toEqual([
+      { id: 'saved' },
+    ]);
+    expect(collections.get(key('global', GLOBAL_COLLECTIONS.ingredients))?.size).toBe(defaultIngredients().length);
+    expect(collections.get(key('user', USER_COLLECTIONS.data))?.get(USER_DATA_DOCS.ingredients)).toEqual(
+      Object.fromEntries(defaultPantryIngredients().map((ingredient) => [ingredient.id, ingredient.quantity])),
+    );
+    expect(collections.get(key('user', USER_COLLECTIONS.data))?.get(USER_DATA_DOCS.recipes)).toEqual(
+      { values: defaultRecipes().map((recipe) => recipe.id) },
+    );
+    expect(collections.get(key('user', USER_COLLECTIONS.profile))?.get(PROFILE_DOC_ID)).toEqual(
+      expect.objectContaining({
+        uid: 'user-1',
+        displayName: 'Guest',
+      }),
+    );
   });
 });

@@ -17,12 +17,17 @@
         <legend>Ingredients</legend>
         @for (ingredient of ingredients(); track $index; let index = $index) {
           <div class="ingredient-row">
-            <input
-              [value]="ingredient.name"
-              (input)="updateIngredient(index, 'name', $any($event.target).value)"
-              placeholder="Ingredient"
+            <select
+              [value]="ingredient.ingredientId"
+              (change)="updateIngredient(index, 'ingredientId', $any($event.target).value)"
               [attr.aria-label]="'Ingredient ' + (index + 1)"
-            /><input
+            >
+              <option value="">Choose ingredient</option>
+              @for (option of ingredientOptions(); track option.id) {
+                <option [value]="option.id">{{ option.name }}</option>
+              }
+            </select>
+            <input
               [value]="ingredient.quantity"
               type="number"
               min="1"

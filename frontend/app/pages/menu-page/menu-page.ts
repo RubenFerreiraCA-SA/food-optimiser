@@ -7,7 +7,8 @@ import {
   RecipeCardConfig,
   RecipeCardEvent,
 } from '../../shared/components/recipe-card/recipe-card';
-import { MenuService, Recipe } from '../../services/page-helpers/menu/menu.service';
+import { MenuService } from '../../services/page-helpers/menu/menu.service';
+import { Recipe } from '../../services/data/shared-types';
 
 @Component({
   selector: 'app-menu-page',

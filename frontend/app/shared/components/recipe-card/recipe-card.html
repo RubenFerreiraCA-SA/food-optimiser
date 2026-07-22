@@ -14,7 +14,7 @@
     </div>
     <span class="checkmark" aria-hidden="true">✓</span>
     <ul class="recipe-ingredients-list">
-      @for (ingredient of config.recipe.ingredients; track ingredient.name) {
+      @for (ingredient of recipeIngredients(config.recipe); track ingredient.id) {
         <li>
           <strong>{{ ingredient.quantity }}×</strong> {{ ingredient.name }}
         </li>
@@ -37,7 +37,7 @@
       </div>
     </div>
     <ul class="recipe-ingredients-list">
-      @for (ingredient of config.recipe.ingredients; track ingredient.name) {
+      @for (ingredient of recipeIngredients(config.recipe); track ingredient.id) {
         <li>
           <strong>{{ ingredient.quantity }}×</strong> {{ ingredient.name }}
         </li>

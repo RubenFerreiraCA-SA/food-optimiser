@@ -1,7 +1,9 @@
 import { Injectable, effect, inject } from '@angular/core';
+import { User } from 'firebase/auth';
 import { AuthService } from '../../auth/auth.service';
-import { DATA_KEYS, defaultIngredients, defaultRecipes } from './seed-data';
 import { DataService } from '../data.service';
+import { defaultIngredients, defaultPantryIngredients, defaultRecipes } from './seed-data';
+import { GLOBAL_COLLECTIONS, PROFILE_DOC_ID, USER_COLLECTIONS, USER_DATA_DOCS } from '../user-data';
 
 @Injectable({ providedIn: 'root' })
 export class DataSeedingService {
@@ -10,6 +12,7 @@ export class DataSeedingService {
 
   constructor() {
     effect(() => {
+      this.data.revision();
       const user = this.auth.user();
       if (!this.auth.ready() || !user) return;
       void this.seed();
@@ -21,7 +24,54 @@ export class DataSeedingService {
 
     await this.data.whenReady();
 
-    if (!this.data.has(DATA_KEYS.pantry)) this.data.write(DATA_KEYS.pantry, defaultIngredients());
-    if (!this.data.has(DATA_KEYS.menu)) this.data.write(DATA_KEYS.menu, defaultRecipes());
+    const user = this.auth.user();
+    if (!user) return;
+
+    this.ensureProfile(user);
+
+    if (this.data.collectionSize(GLOBAL_COLLECTIONS.ingredients, 'global') === 0) {
+      for (const ingredient of defaultIngredients()) {
+        this.data.upsertDocument(GLOBAL_COLLECTIONS.ingredients, ingredient.id, ingredient, 'global');
+      }
+    }
+
+    if (this.data.collectionSize(GLOBAL_COLLECTIONS.recipes, 'global') === 0) {
+      for (const recipe of defaultRecipes()) {
+        this.data.upsertDocument(GLOBAL_COLLECTIONS.recipes, recipe.id, recipe, 'global');
+      }
+    }
+
+    if (!this.data.hasDocument(USER_COLLECTIONS.data, USER_DATA_DOCS.ingredients)) {
+      this.data.upsertDocument(
+        USER_COLLECTIONS.data,
+        USER_DATA_DOCS.ingredients,
+        Object.fromEntries(
+          defaultPantryIngredients().map((ingredient) => [ingredient.id, ingredient.quantity]),
+        ),
+      );
+    }
+
+    if (!this.data.hasDocument(USER_COLLECTIONS.data, USER_DATA_DOCS.recipes)) {
+      this.data.upsertDocument(
+        USER_COLLECTIONS.data,
+        USER_DATA_DOCS.recipes,
+        { values: defaultRecipes().map((recipe) => recipe.id) },
+      );
+    }
+  }
+
+  private ensureProfile(user: User): void {
+    if (this.data.hasDocument(USER_COLLECTIONS.profile, PROFILE_DOC_ID)) return;
+
+    const now = new Date().toISOString();
+    this.data.upsertDocument(USER_COLLECTIONS.profile, PROFILE_DOC_ID, {
+      uid: user.uid,
+      displayName: user.displayName ?? user.email ?? 'Guest',
+      email: user.email ?? null,
+      photoURL: user.photoURL ?? null,
+      providerId: user.providerData[0]?.providerId ?? null,
+      createdAt: now,
+      updatedAt: now,
+    });
   }
 }

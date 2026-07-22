@@ -1,9 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { AuthService } from '../auth/auth.service';
 import { DataService } from './data.service';
+import { GLOBAL_COLLECTIONS } from './user-data';
 
 describe('DataService', () => {
-  it('serialises values and falls back when data is invalid', () => {
+  it('uses Firestore-style ids for created and replaced documents', () => {
     TestBed.configureTestingModule({
       providers: [
         {
@@ -17,10 +18,44 @@ describe('DataService', () => {
     });
     const service = TestBed.inject(DataService);
 
-    service.write('plan', { meals: 6 });
-    expect(service.read('plan', { meals: 0 })).toEqual({ meals: 6 });
+    const createdId = service.createDocument(
+      GLOBAL_COLLECTIONS.recipes,
+      {
+        name: 'Tea',
+        servings: 1,
+        image: '',
+        ingredients: {},
+      },
+      'global',
+    );
+    expect(createdId).toMatch(/^[0-9a-f]{8}$/);
 
-    service.write('plan', 'not json');
-    expect(service.read('plan', { meals: 0 })).toEqual('not json');
+    const replaced = service.replaceCollection(
+      GLOBAL_COLLECTIONS.recipes,
+      [
+      {
+        id: 'saved',
+        name: 'Soup',
+        servings: 2,
+        image: '',
+        ingredients: { water: 1 },
+      },
+      ],
+      'global',
+    );
+    expect(replaced[0].id).toMatch(/^[0-9a-f]{8}$/);
+    expect(service.readCollection(GLOBAL_COLLECTIONS.recipes, [], 'global')).toEqual([
+      {
+        id: replaced[0].id,
+        name: 'Soup',
+        servings: 2,
+        image: '',
+        ingredients: { water: 1 },
+      },
+    ]);
+    expect(service.collectionSize(GLOBAL_COLLECTIONS.recipes, 'global')).toBe(1);
+
+    service.deleteDocument(GLOBAL_COLLECTIONS.recipes, 'saved', 'global');
+    expect(service.readCollection(GLOBAL_COLLECTIONS.recipes, [], 'global')).toEqual([]);
   });
 });

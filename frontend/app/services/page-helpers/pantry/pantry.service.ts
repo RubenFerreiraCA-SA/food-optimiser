@@ -1,11 +1,14 @@
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { AuthService } from '../../auth/auth.service';
-import { DATA_KEYS, defaultIngredients } from '../../data/data-seeding/seed-data';
+import { IngredientCatalogService } from '../../data/ingredient-catalog.service';
 import { DataService } from '../../data/data.service';
+import { defaultPantryIngredients } from '../../data/data-seeding/seed-data';
+import { USER_COLLECTIONS, USER_DATA_DOCS } from '../../data/user-data';
 
 export interface PantryIngredient {
   id: string;
   name: string;
+  image?: string;
   quantity: number;
 }
 
@@ -13,27 +16,25 @@ export interface PantryIngredient {
 export class PantryService {
   private readonly auth = inject(AuthService);
   private readonly data = inject(DataService);
-  private readonly storageKey = DATA_KEYS.pantry;
+  private readonly catalog = inject(IngredientCatalogService);
   private readonly state = signal<PantryIngredient[]>(this.read());
   readonly ingredients = computed(() => this.state());
 
   constructor() {
     effect(() => {
+      this.data.revision();
       if (!this.auth.ready()) return;
       this.auth.user();
-      this.state.set(this.read());
+      void this.refresh();
     });
   }
 
-  add(name: string, quantity: number): boolean {
-    const cleanName = name.trim();
-    if (
-      !cleanName ||
-      quantity < 1 ||
-      this.state().some((item) => item.name.toLowerCase() === cleanName.toLowerCase())
-    )
+  add(ingredientId: string, quantity: number): boolean {
+    const ingredient = this.ingredientsCatalog().find((item) => item.id === ingredientId);
+    if (!ingredient || quantity < 1 || this.state().some((item) => item.id === ingredientId))
       return false;
-    this.update([...this.state(), { id: crypto.randomUUID(), name: cleanName, quantity }]);
+    const next = [...this.state(), { ...ingredient, quantity }];
+    this.update(next);
     return true;
   }
   remove(id: string): void {
@@ -46,14 +47,36 @@ export class PantryService {
     return true;
   }
   reset(): void {
-    this.update(defaultIngredients());
+    this.update(defaultPantryIngredients());
   }
 
   private read(): PantryIngredient[] {
-    return this.data.read(this.storageKey, defaultIngredients());
+    const saved = this.data.readDocument<Record<string, number>>(
+      USER_COLLECTIONS.data,
+      USER_DATA_DOCS.ingredients,
+      Object.fromEntries(defaultPantryIngredients().map((ingredient) => [ingredient.id, ingredient.quantity])),
+    );
+    return Object.entries(saved).flatMap(([id, quantity]) => {
+      const ingredient = this.ingredientsCatalog().find((item) => item.id === id);
+      if (!ingredient) return [];
+      return [{ ...ingredient, quantity: Math.max(0, Math.floor(quantity)) }];
+    });
   }
   private update(ingredients: PantryIngredient[]): void {
     this.state.set(ingredients);
-    this.data.write(this.storageKey, ingredients);
+    this.data.upsertDocument(
+      USER_COLLECTIONS.data,
+      USER_DATA_DOCS.ingredients,
+      Object.fromEntries(ingredients.map((ingredient) => [ingredient.id, ingredient.quantity])),
+    );
+  }
+
+  private async refresh(): Promise<void> {
+    await this.data.whenReady();
+    this.state.set(this.read());
+  }
+
+  private ingredientsCatalog() {
+    return this.catalog.ingredients();
   }
 }

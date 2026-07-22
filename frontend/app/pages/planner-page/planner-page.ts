@@ -34,7 +34,7 @@ export class PlannerPage {
 
   readonly step = signal(1);
   readonly planningIngredients = signal<PlanningIngredient[]>(this.createPlanningIngredients());
-  readonly selectedRecipeIds = signal<string[]>(this.menu.recipes().map((recipe) => recipe.id));
+  readonly selectedRecipeIds = signal<string[]>(this.menu.selectedRecipeIds());
   readonly selectedRecipes = computed(() =>
     this.menu.recipes().filter((recipe) => this.selectedRecipeIds().includes(recipe.id)),
   );
@@ -82,7 +82,7 @@ export class PlannerPage {
 
   startAgain(): void {
     this.planningIngredients.set(this.createPlanningIngredients());
-    this.selectedRecipeIds.set(this.menu.recipes().map((recipe) => recipe.id));
+    this.selectedRecipeIds.set(this.menu.selectedRecipeIds());
     this.step.set(1);
   }
 

@@ -17,12 +17,14 @@
     @if (isAdding()) {
       <form class="add-form" (ngSubmit)="addIngredient()">
         <label
-          >Ingredient name<input
-            name="ingredient-name"
-            [(ngModel)]="name"
-            placeholder="e.g. Beans"
-            required /></label
-        ><label
+          >Ingredient
+          <select name="ingredient-id" [(ngModel)]="ingredientId" required>
+            <option value="">Choose ingredient</option>
+            @for (option of ingredientOptions(); track option.id) {
+              <option [value]="option.id">{{ option.name }}</option>
+            }
+          </select>
+        </label><label
           >Quantity<input
             name="ingredient-quantity"
             [(ngModel)]="quantity"

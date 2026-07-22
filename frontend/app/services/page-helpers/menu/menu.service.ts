@@ -1,62 +1,83 @@
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { AuthService } from '../../auth/auth.service';
 import { DataService } from '../../data/data.service';
-import { DATA_KEYS, defaultRecipes } from '../../data/data-seeding/seed-data';
+import { GLOBAL_COLLECTIONS, USER_COLLECTIONS, USER_DATA_DOCS } from '../../data/user-data';
+import { defaultRecipes } from '../../data/data-seeding/seed-data';
+import { Recipe } from '../../data/shared-types';
 
-export interface RecipeIngredient {
-  name: string;
-  quantity: number;
-}
-export interface Recipe {
-  id: string;
-  name: string;
-  servings: number;
-  ingredients: RecipeIngredient[];
+interface RecipeSelectionDoc {
+  values: string[];
 }
 
 @Injectable({ providedIn: 'root' })
 export class MenuService {
   private readonly auth = inject(AuthService);
   private readonly data = inject(DataService);
-  private readonly storageKey = DATA_KEYS.menu;
-  private readonly recipeState = signal<Recipe[]>(this.readRecipes());
-  readonly recipes = computed(() => this.recipeState());
+  private readonly allRecipesState = signal<Recipe[]>(this.readRecipes());
+  private readonly selectedRecipeIdsState = signal<string[]>(this.readSelection());
+  readonly recipes = computed(() =>
+    this.allRecipesState().filter((recipe) => this.selectedRecipeIdsState().includes(recipe.id)),
+  );
+  readonly allRecipes = computed(() => this.allRecipesState());
+  readonly selectedRecipeIds = computed(() => this.selectedRecipeIdsState());
 
   constructor() {
     effect(() => {
+      this.data.revision();
       if (!this.auth.ready()) return;
       this.auth.user();
-      this.recipeState.set(this.readRecipes());
+      void this.refresh();
     });
   }
 
   add(recipe: Omit<Recipe, 'id'>): void {
-    this.update([...this.recipeState(), { ...recipe, id: crypto.randomUUID() }]);
+    const id = this.data.createDocument(GLOBAL_COLLECTIONS.recipes, recipe, 'global');
+    const nextRecipe = { ...recipe, id };
+    this.allRecipesState.set([...this.allRecipesState(), nextRecipe]);
+    this.updateSelection([...this.selectedRecipeIdsState(), id]);
   }
 
   find(id: string): Recipe | undefined {
-    return this.recipeState().find((recipe) => recipe.id === id);
+    return this.allRecipesState().find((recipe) => recipe.id === id);
   }
 
   updateRecipe(id: string, recipe: Omit<Recipe, 'id'>): void {
-    this.update(
-      this.recipeState().map((current) => (current.id === id ? { ...recipe, id } : current)),
+    this.allRecipesState.update((recipes) =>
+      recipes.map((current) => (current.id === id ? { ...recipe, id } : current)),
     );
+    this.data.upsertDocument(GLOBAL_COLLECTIONS.recipes, id, recipe, 'global');
   }
 
   remove(id: string): void {
-    this.update(this.recipeState().filter((recipe) => recipe.id !== id));
+    this.updateSelection(this.selectedRecipeIdsState().filter((recipeId) => recipeId !== id));
   }
 
   reset(): void {
-    this.update(defaultRecipes());
+    this.allRecipesState.set(this.readRecipes());
+    this.updateSelection(defaultRecipes().map((recipe) => recipe.id));
   }
 
   private readRecipes(): Recipe[] {
-    return this.data.read(this.storageKey, defaultRecipes());
+    return this.data.readCollection(GLOBAL_COLLECTIONS.recipes, defaultRecipes(), 'global');
   }
-  private update(recipes: Recipe[]): void {
-    this.recipeState.set(recipes);
-    this.data.write(this.storageKey, recipes);
+
+  private readSelection(): string[] {
+    return this.data.readDocument<RecipeSelectionDoc>(
+      USER_COLLECTIONS.data,
+      USER_DATA_DOCS.recipes,
+      { values: defaultRecipes().map((recipe) => recipe.id) },
+    ).values;
+  }
+
+  private updateSelection(values: string[]): void {
+    const next = Array.from(new Set(values));
+    this.selectedRecipeIdsState.set(next);
+    this.data.upsertDocument(USER_COLLECTIONS.data, USER_DATA_DOCS.recipes, { values: next });
+  }
+
+  private async refresh(): Promise<void> {
+    await this.data.whenReady();
+    this.allRecipesState.set(this.readRecipes());
+    this.selectedRecipeIdsState.set(this.readSelection());
   }
 }

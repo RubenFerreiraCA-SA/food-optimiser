@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Recipe } from '../../../services/page-helpers/menu/menu.service';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { IngredientCatalogService } from '../../../services/data/ingredient-catalog.service';
+import { Recipe } from '../../../services/data/shared-types';
 
 export type RecipeCardMode = 'view' | 'select';
 
@@ -29,6 +30,15 @@ export interface RecipeCardEvent {
 export class RecipeCard {
   @Input({ required: true }) config!: RecipeCardConfig;
   @Output() readonly action = new EventEmitter<RecipeCardEvent>();
+  private readonly ingredients = inject(IngredientCatalogService);
+
+  recipeIngredients(recipe: Recipe): Array<{ id: string; name: string; quantity: number }> {
+    return Object.entries(recipe.ingredients).map(([id, quantity]) => ({
+      id,
+      name: this.ingredients.nameFor(id),
+      quantity,
+    }));
+  }
 
   mockImageLabel(): string {
     const labels: Record<string, string> = {

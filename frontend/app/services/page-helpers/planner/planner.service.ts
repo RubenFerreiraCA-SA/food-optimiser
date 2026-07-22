@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
-import type { Recipe } from '../menu/menu.service';
+import { Injectable, inject } from '@angular/core';
+import { IngredientCatalogService } from '../../data/ingredient-catalog.service';
+import type { Recipe } from '../../data/shared-types';
 
 export interface PlannerIngredientInput {
   id: string;
@@ -47,12 +48,13 @@ interface LinearSolution {
 @Injectable({ providedIn: 'root' })
 export class PlannerService {
   private readonly epsilon = 1e-7;
+  private readonly ingredients = inject(IngredientCatalogService);
 
   optimise(availableIngredients: PlannerIngredientInput[], recipes: Recipe[]): OptimisedPlan {
     const pantry = availableIngredients.map((ingredient) => ({
       ...ingredient,
       quantity: this.toQuantity(ingredient.quantity),
-      key: ingredient.name.trim().toLowerCase(),
+      key: ingredient.id,
     }));
     const indexByIngredient = new Map(pantry.map((ingredient, index) => [ingredient.key, index]));
     const candidates = this.createCandidates(recipes, indexByIngredient, pantry.length);
@@ -127,8 +129,8 @@ export class PlannerService {
                 name: candidate.recipe.name,
                 dishes,
                 meals: candidate.recipe.servings * dishes,
-                ingredients: candidate.recipe.ingredients
-                  .map((ingredient) => `${ingredient.quantity}× ${ingredient.name}`)
+                ingredients: Object.entries(candidate.recipe.ingredients)
+                  .map(([ingredientId, quantity]) => `${quantity}× ${this.ingredients.nameFor(ingredientId)}`)
                   .join(', '),
               },
             ]
@@ -258,12 +260,16 @@ export class PlannerService {
     pantrySize: number,
   ): CandidateRecipe[] {
     return recipes.flatMap((recipe) => {
-      if (!Number.isInteger(recipe.servings) || recipe.servings < 1 || !recipe.ingredients.length)
+      if (
+        !Number.isInteger(recipe.servings) ||
+        recipe.servings < 1 ||
+        !Object.keys(recipe.ingredients).length
+      )
         return [];
       const requirements = Array<number>(pantrySize).fill(0);
-      for (const ingredient of recipe.ingredients) {
-        const index = ingredientIndex.get(ingredient.name.trim().toLowerCase());
-        const quantity = this.toQuantity(ingredient.quantity);
+      for (const [ingredientId, amount] of Object.entries(recipe.ingredients)) {
+        const index = ingredientIndex.get(ingredientId);
+        const quantity = this.toQuantity(amount);
         if (index === undefined || quantity < 1) return [];
         requirements[index] += quantity;
       }

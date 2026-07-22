@@ -3,8 +3,10 @@ import { FormsModule } from '@angular/forms';
 import { Dialog, DialogConfig } from '../../shared/components/dialog/dialog';
 import { PageHero, PageHeroConfig } from '../../shared/components/page-hero/page-hero';
 import { IngredientTable, IngredientTableConfig, IngredientTableEvent } from '../../shared/components/ingredient-table/ingredient-table';
-import { MenuService, Recipe } from '../../services/page-helpers/menu/menu.service';
+import { MenuService } from '../../services/page-helpers/menu/menu.service';
 import { PantryService, PantryIngredient } from '../../services/page-helpers/pantry/pantry.service';
+import { IngredientCatalogService } from '../../services/data/ingredient-catalog.service';
+import type { Recipe } from '../../services/data/shared-types';
 
 @Component({
   selector: 'app-pantry-page',
@@ -15,12 +17,13 @@ import { PantryService, PantryIngredient } from '../../services/page-helpers/pan
 export class PantryPage {
   readonly pantry = inject(PantryService);
   private readonly menu = inject(MenuService);
+  private readonly catalog = inject(IngredientCatalogService);
   readonly isAdding = signal(false);
   readonly showResetWarning = signal(false);
   readonly ingredientToRemove = signal<PantryIngredient | null>(null);
   readonly blockedIngredient = signal<PantryIngredient | null>(null);
   readonly editingIngredientId = signal<string | null>(null);
-  name = '';
+  ingredientId = '';
   quantity = 1;
   editQuantity = 0;
   addError = '';
@@ -34,15 +37,15 @@ export class PantryPage {
   });
   get ingredientTable(): IngredientTableConfig {
     return {
-    caption: 'Ingredients currently available in your pantry',
-    quantityHeader: 'Quantity available',
-    rows: this.pantry.ingredients(),
-    quantityMode: 'editing',
-    showQuantityLabel: true,
-    editingId: this.editingIngredientId(),
-    editingQuantity: this.editQuantity,
-    editError: this.editError,
-    actions: [{ id: 'edit', label: 'Edit' }, { id: 'remove', label: 'Remove', variant: 'remove' }],
+      caption: 'Ingredients currently available in your pantry',
+      quantityHeader: 'Quantity available',
+      rows: this.pantry.ingredients(),
+      quantityMode: 'editing',
+      showQuantityLabel: true,
+      editingId: this.editingIngredientId(),
+      editingQuantity: this.editQuantity,
+      editError: this.editError,
+      actions: [{ id: 'edit', label: 'Edit' }, { id: 'remove', label: 'Remove', variant: 'remove' }],
     };
   }
   readonly resetDialog: DialogConfig = {
@@ -62,12 +65,12 @@ export class PantryPage {
   handleRemovalDialog(action: string): void { action === 'confirm' ? this.confirmRemoval() : this.cancelDialogs(); }
 
   addIngredient(): void {
-    if (this.pantry.add(this.name, this.quantity)) {
-      this.name = '';
+    if (this.pantry.add(this.ingredientId, this.quantity)) {
+      this.ingredientId = '';
       this.quantity = 1;
       this.addError = '';
       this.isAdding.set(false);
-    } else this.addError = 'Enter a unique ingredient name and a quantity of at least one.';
+    } else this.addError = 'Choose a unique ingredient and a quantity of at least one.';
   }
   requestRemoval(ingredient: PantryIngredient): void {
     this.recipeUsages(ingredient).length
@@ -113,9 +116,13 @@ export class PantryPage {
     return this.menu
       .recipes()
       .flatMap((recipe) =>
-        recipe.ingredients
-          .filter((item) => item.name.toLowerCase() === ingredient.name.toLowerCase())
-          .map((item) => ({ recipe, quantity: item.quantity })),
+        Object.entries(recipe.ingredients)
+          .filter(([ingredientId]) => ingredientId === ingredient.id)
+          .map(([, quantity]) => ({ recipe, quantity })),
       );
+  }
+
+  ingredientOptions() {
+    return this.catalog.ingredients();
   }
 }
