@@ -8,12 +8,13 @@ import { RegisterPage } from './pages/auth-page/register-page/register-page';
 import { guestGuard, authGuard } from './services/auth/auth.guard';
 
 export const routes: Routes = [
+  // Pre-login pages
   { path: 'login', component: LoginPage, canActivate: [guestGuard] },
   { path: 'register', component: RegisterPage, canActivate: [guestGuard] },
+  // Post-login pages
   { path: '', component: HomePage, canActivate: [authGuard] },
-  { path: 'home', component: HomePage, canActivate: [authGuard] },
   { path: 'pantry', component: PantryPage, canActivate: [authGuard] },
   { path: 'menu', component: MenuPage, canActivate: [authGuard] },
   { path: 'planner', component: PlannerPage, canActivate: [authGuard] },
-  { path: '**', redirectTo: 'home' },
+  { path: '**', redirectTo: '' },
 ];

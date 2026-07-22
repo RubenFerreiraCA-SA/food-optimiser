@@ -2,20 +2,35 @@
   <header class="topbar">
     @if (auth.ready()) {
       @if (auth.isAuthenticated()) {
-        <a class="brand" routerLink="/home" aria-label="Make the Most home">
+        <a class="brand" routerLink="/" aria-label="Make the Most home">
           <span class="brand-mark" aria-hidden="true">MTM</span>
           <span class="brand-name">Make the Most</span>
         </a>
 
         <div class="topbar-right">
           <nav class="topbar-nav" aria-label="Primary">
-            <a class="topbar-nav-link" routerLink="/pantry" routerLinkActive="active" (click)="closeMenus()">
+            <a
+              class="topbar-nav-link"
+              routerLink="/pantry"
+              routerLinkActive="active"
+              (click)="closeMenus()"
+            >
               Pantry
             </a>
-            <a class="topbar-nav-link" routerLink="/menu" routerLinkActive="active" (click)="closeMenus()">
+            <a
+              class="topbar-nav-link"
+              routerLink="/menu"
+              routerLinkActive="active"
+              (click)="closeMenus()"
+            >
               Menu
             </a>
-            <a class="topbar-nav-link" routerLink="/planner" routerLinkActive="active" (click)="closeMenus()">
+            <a
+              class="topbar-nav-link"
+              routerLink="/planner"
+              routerLinkActive="active"
+              (click)="closeMenus()"
+            >
               Plan
             </a>
           </nav>
@@ -57,7 +72,12 @@
 
             @if (profileMenuOpen()) {
               <div class="avatar-dropdown" role="menu" aria-label="Account menu">
-                <button class="dropdown-item danger" type="button" role="menuitem" (click)="signOut()">
+                <button
+                  class="dropdown-item danger"
+                  type="button"
+                  role="menuitem"
+                  (click)="signOut()"
+                >
                   Sign out
                 </button>
               </div>
@@ -83,10 +103,29 @@
 
           @if (mobileMenuOpen()) {
             <div class="mobile-menu-dropdown" role="menu" aria-label="Navigation menu">
-              <a class="mobile-menu-item" routerLink="/pantry" role="menuitem" (click)="closeMenus()">Pantry</a>
-              <a class="mobile-menu-item" routerLink="/menu" role="menuitem" (click)="closeMenus()">Menu</a>
-              <a class="mobile-menu-item" routerLink="/planner" role="menuitem" (click)="closeMenus()">Plan</a>
-              <button class="mobile-menu-item danger" type="button" role="menuitem" (click)="signOut()">
+              <a
+                class="mobile-menu-item"
+                routerLink="/pantry"
+                role="menuitem"
+                (click)="closeMenus()"
+                >Pantry</a
+              >
+              <a class="mobile-menu-item" routerLink="/menu" role="menuitem" (click)="closeMenus()"
+                >Menu</a
+              >
+              <a
+                class="mobile-menu-item"
+                routerLink="/planner"
+                role="menuitem"
+                (click)="closeMenus()"
+                >Plan</a
+              >
+              <button
+                class="mobile-menu-item danger"
+                type="button"
+                role="menuitem"
+                (click)="signOut()"
+              >
                 Sign out
               </button>
             </div>

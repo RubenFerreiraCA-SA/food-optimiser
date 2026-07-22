@@ -40,7 +40,7 @@ export class RegisterPage {
     this.isSubmitting = true;
     try {
       await this.auth.registerWithEmail(this.email.trim(), this.password, this.name);
-      await this.router.navigateByUrl('/home');
+      await this.router.navigateByUrl('');
     } catch (error) {
       this.errorMessage = this.toMessage(error);
     } finally {
@@ -53,7 +53,7 @@ export class RegisterPage {
     this.errorMessage = '';
     try {
       await this.auth.signInWithGoogle();
-      await this.router.navigateByUrl('/home');
+      await this.router.navigateByUrl('');
     } catch (error) {
       this.errorMessage = this.toMessage(error);
     } finally {

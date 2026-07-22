@@ -83,7 +83,13 @@
           "defaultConfiguration": "development"
         },
         "test": {
-          "builder": "@angular/build:unit-test"
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "progress": false,
+            "reporters": ["dot"],
+            "coverage": true,
+            "coverageReporters": ["text-summary", "html"]
+          }
         }
       }
     }

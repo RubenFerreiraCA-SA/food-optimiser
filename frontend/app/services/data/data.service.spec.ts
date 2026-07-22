@@ -55,7 +55,7 @@ describe('DataService', () => {
     ]);
     expect(service.collectionSize(GLOBAL_COLLECTIONS.recipes, 'global')).toBe(1);
 
-    service.deleteDocument(GLOBAL_COLLECTIONS.recipes, 'saved', 'global');
+    service.deleteDocument(GLOBAL_COLLECTIONS.recipes, replaced[0].id, 'global');
     expect(service.readCollection(GLOBAL_COLLECTIONS.recipes, [], 'global')).toEqual([]);
   });
 });

@@ -33,7 +33,7 @@ export class LoginPage {
     this.errorMessage = '';
     try {
       await this.auth.signInWithEmail(this.email.trim(), this.password);
-      await this.router.navigateByUrl('/home');
+      await this.router.navigateByUrl('');
     } catch (error) {
       this.errorMessage = this.toMessage(error);
     } finally {
@@ -46,7 +46,7 @@ export class LoginPage {
     this.errorMessage = '';
     try {
       await this.auth.signInWithGoogle();
-      await this.router.navigateByUrl('/home');
+      await this.router.navigateByUrl('');
     } catch (error) {
       this.errorMessage = this.toMessage(error);
     } finally {
