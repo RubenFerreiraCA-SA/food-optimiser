@@ -2,9 +2,9 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.12.
 
-## Development server
+## Local server
 
-To start a local development server, run:
+To start the local frontend server, run:
 
 ```bash
 ng serve
@@ -27,7 +27,7 @@ Available endpoints:
 - `GET /api/health`
 - `GET /api/info`
 
-The API is configured to accept requests from the Angular dev server on `http://localhost:4200`.
+The API is configured to accept requests from the Angular local server on `http://localhost:4200`.
 
 ## Code scaffolding
 

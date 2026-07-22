@@ -2,6 +2,7 @@ using Google.Api.Gax;
 using Google.Cloud.Firestore;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Configuration.AddJsonFile("appsettings.local.json", optional: true, reloadOnChange: true);
 
 var firestoreProjectId = builder.Configuration["Firestore:ProjectId"];
 if (string.IsNullOrWhiteSpace(firestoreProjectId))
@@ -9,11 +10,12 @@ if (string.IsNullOrWhiteSpace(firestoreProjectId))
   throw new InvalidOperationException("Firestore:ProjectId must be configured.");
 }
 
-if (builder.Environment.IsDevelopment() &&
+var useFirestoreEmulator = builder.Configuration.GetValue<bool>("Firestore:UseEmulator");
+if (useFirestoreEmulator &&
     string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("FIRESTORE_EMULATOR_HOST")))
 {
   throw new InvalidOperationException(
-    "FIRESTORE_EMULATOR_HOST must be set in Development to use the Firestore emulator.");
+    "FIRESTORE_EMULATOR_HOST must be set when Firestore:UseEmulator is enabled.");
 }
 
 var firestore = new FirestoreDbBuilder
@@ -63,7 +65,7 @@ api.MapGet("/info", (IHostEnvironment environment, FirestoreDb firestoreDb) =>
     firestore = new
     {
       projectId = firestoreDb.ProjectId,
-      mode = environment.IsDevelopment() ? "emulator" : "production",
+      mode = useFirestoreEmulator ? "emulator" : "production",
     },
   });
 });
