@@ -2,12 +2,17 @@ import { Injectable, InjectionToken, inject } from '@angular/core';
 
 /** Replace this adapter at bootstrap to persist to a host-backed store later. */
 export interface DataAdapter {
+  initialize?(): Promise<void>;
   read(key: string): string | null;
   write(key: string, value: string): void;
   remove(key: string): void;
 }
 
 export class LocalStorageDataAdapter implements DataAdapter {
+  initialize(): Promise<void> {
+    return Promise.resolve();
+  }
+
   read(key: string): string | null {
     try {
       return typeof localStorage === 'undefined' ? null : localStorage.getItem(key);
@@ -41,6 +46,12 @@ export const DATA_ADAPTER = new InjectionToken<DataAdapter>('DATA_ADAPTER', {
 @Injectable({ providedIn: 'root' })
 export class DataService {
   private readonly adapter = inject(DATA_ADAPTER);
+  private initialization: Promise<void> | null = null;
+
+  initialize(): Promise<void> {
+    this.initialization ??= this.adapter.initialize?.() ?? Promise.resolve();
+    return this.initialization;
+  }
 
   read<T>(key: string, fallback: T): T {
     const value = this.adapter.read(key);
