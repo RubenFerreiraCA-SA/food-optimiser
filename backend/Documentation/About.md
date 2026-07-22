@@ -1,62 +1,30 @@
 # Meal Optimiser API About
 
-This document is for developers who want to understand the API quickly and run it locally without learning the whole project first.
+This backend is the ASP.NET Core foundation for the app.
+It is wired to Firestore and the Firebase schema, but it does not expose endpoints yet.
 
-## What the API does
+## What the backend does
 
-The API is a small ASP.NET Core service that:
+The backend currently:
 
-- exposes a health endpoint
-- exposes an info endpoint
+- boots an ASP.NET Core host
+- binds Firebase configuration
 - connects to Firestore
-- uses the Firestore emulator during local runs
-- allows the frontend to call it from `http://localhost:4200`
+- configures the frontend CORS policy
+- exposes typed schema contracts for recipes, ingredients, pantry data, and user profiles
 
-## How it works
+## Firestore
 
-### Startup
+The backend reads and writes the same Firestore schema the frontend uses.
 
-`Program.cs` creates the web app, loads configuration, sets up Firestore, registers CORS, and maps the routes.
+Current collection groups:
 
-### Configuration
-
-The API reads settings from:
-
-- `appsettings.json` for shared settings
-- `appsettings.local.json` for local overrides
-- `launchSettings.json` when you run from the CLI or an IDE profile
-
-### Firestore
-
-The API connects to Firestore through `Google.Cloud.Firestore`.
-
-For local work:
-
-- `Firestore:UseEmulator` is set to `true`
-- `FIRESTORE_EMULATOR_HOST` points at the local emulator
-
-For production:
-
-- the emulator flag is not used
-- the API connects to the real Firestore project
-
-### CORS
-
-The API allows requests from:
-
-- `http://localhost:4200`
-- `http://127.0.0.1:4200`
-
-That is the local Angular frontend.
-
-## Swagger
-
-When the API is running in `Local`, Swagger is available at:
-
-- `http://localhost:3000/swagger`
-- `http://localhost:3000/swagger/v1/swagger.json`
-
-The UI is useful for trying endpoints by hand.
+- `recipes` for shared recipes
+- `ingredients` for shared ingredients
+- `users/{uid}/profile/main`
+- `users/{uid}/data/recipes`
+- `users/{uid}/data/ingredients`
+- `users/{uid}/recipes`
 
 ## Local setup
 
@@ -66,40 +34,32 @@ Run the backend from the repo root with:
 pnpm serve:be
 ```
 
-That starts the API at:
+The local host is:
 
 ```bash
 http://localhost:3000
 ```
 
-## Local environment values
+## Local environment
 
-When launched locally, the API expects:
+When launched locally, the backend expects:
 
 - `ASPNETCORE_ENVIRONMENT=Local`
 - `FIRESTORE_EMULATOR_HOST=127.0.0.1:8080`
 
-## Endpoints
+## Configuration
 
-### `GET /api/health`
+Backend configuration lives in:
 
-Returns a simple health check response.
-
-### `GET /api/info`
-
-Returns basic runtime information, including:
-
-- API name
-- current environment name
-- version
-- Firestore project id
-- whether the emulator is active
+- `backend/appsettings.json`
+- `backend/appsettings.local.json`
+- `backend/Properties/launchSettings.json`
 
 ## When to use this file
 
-Use this file if you are a developer who just needs to:
+Use this file if you want to know:
 
-- start the API
-- understand which environment variables matter
-- see what endpoints exist
-- know whether Firestore is local or production
+- how the backend is wired
+- where the Firestore schema lives
+- how to run the service locally
+- what is already in place before endpoints are added

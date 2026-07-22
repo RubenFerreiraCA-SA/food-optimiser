@@ -1,87 +1,92 @@
 # Meal Optimiser API Explainer
 
-This document is for understanding the project at a file-by-file level.
-It explains what each source file does and why it exists.
+This document explains the backend foundation at a file level.
+The project is intentionally set up without endpoints yet, so this file focuses on the host, configuration, Firestore access, and the schema contracts the future endpoints will use.
 
 ## Project files
 
-### [MealOptimiser.Api.csproj](../MealOptimiser.Api.csproj)
+### [Program.cs](../Program.cs)
 
-The project file for the ASP.NET Core API.
+Application startup.
+
+It:
+
+- builds the ASP.NET Core host
+- loads `appsettings.local.json` on developer machines
+- registers the backend services
+- enables the frontend CORS policy
+- starts the app without mapping routes yet
+
+### [Infrastructure/DependencyInjection.cs](../Infrastructure/DependencyInjection.cs)
+
+The backend service registration entry point.
+
+It binds Firebase configuration, validates required settings, registers Firestore, and configures CORS origins.
+
+### [Infrastructure/Configuration/FirebaseOptions.cs](../Infrastructure/Configuration/FirebaseOptions.cs)
+
+The strongly typed Firebase configuration model.
 
 It defines:
 
-- the target framework (`net8.0`)
-- nullable reference types and implicit usings
-- the project namespace
-- the Firestore package dependency
+- Firestore project id
+- emulator settings
+- allowed frontend origins
 
-If you want to know what the API depends on or what framework it builds against, this is the file to read.
+### [Infrastructure/Firestore/FirestoreCollectionNames.cs](../Infrastructure/Firestore/FirestoreCollectionNames.cs)
 
-### [Program.cs](../Program.cs)
+Central names for the Firestore collections used by the app.
 
-The application startup file.
+Keeping these values in one place helps avoid schema drift between future services.
 
-It is responsible for:
+### [Infrastructure/Firestore/FirestoreDbAccessor.cs](../Infrastructure/Firestore/FirestoreDbAccessor.cs)
 
-- creating the web app host
-- loading shared config plus `appsettings.local.json`
-- reading the Firestore project id
-- deciding whether the Firestore emulator must be used
-- registering Firestore in dependency injection
-- configuring CORS for the frontend
-- defining the API routes
+A lightweight wrapper around the Firestore client.
 
-This is the main file that explains how the app boots and what it exposes.
+This gives the rest of the backend a single injectable access point for the database connection.
+
+### [Domain/Ingredients/IngredientDocument.cs](../Domain/Ingredients/IngredientDocument.cs)
+
+Typed representation of a shared ingredient document.
+
+### [Domain/Recipes/RecipeDocument.cs](../Domain/Recipes/RecipeDocument.cs)
+
+Typed representation of a recipe document.
+
+It includes the fork metadata fields needed for shared and user-owned recipes.
+
+### [Domain/Users/UserProfileDocument.cs](../Domain/Users/UserProfileDocument.cs)
+
+Typed representation of the user profile document stored under `users/{uid}/profile/main`.
+
+### [Domain/Users/UserPantryDocument.cs](../Domain/Users/UserPantryDocument.cs)
+
+Typed representation of the pantry quantities stored under `users/{uid}/data/ingredients`.
+
+### [Domain/Users/UserRecipeSelectionDocument.cs](../Domain/Users/UserRecipeSelectionDocument.cs)
+
+Typed representation of the user menu selection stored under `users/{uid}/data/recipes`.
 
 ### [appsettings.json](../appsettings.json)
 
-The shared backend config.
+Shared backend settings.
 
-This file contains values that are meant to be safe for all environments unless something more specific overrides them.
-
-In this project, it currently holds the default logging levels and the Firestore project id.
+This currently holds the Firebase project id and the default frontend origins.
 
 ### [appsettings.local.json](../appsettings.local.json)
 
-The local override config.
+Local overrides for backend development.
 
-This file exists so a developer machine can use local-specific settings without changing the shared config.
-
-Right now it is used to:
-
-- increase logging detail for local work
-- enable the Firestore emulator
+This is where the Firestore emulator settings live.
 
 ### [Properties/launchSettings.json](../Properties/launchSettings.json)
 
-The local run profile for `dotnet run` and IDE debugging.
+The local `dotnet run` profile.
 
-This file controls:
-
-- the local URL the API listens on
-- the environment name used during local runs
-- the `FIRESTORE_EMULATOR_HOST` value
-
-It is mainly for developer convenience when starting the API from the command line or from an editor.
-
-### [Documentation/About.md](About.md)
-
-The operational guide for the API.
-
-It explains how the API behaves, what endpoints it exposes, and how to run it locally.
-
-Use this file if you want the quick “how do I serve it?” answer.
-
-## Generated folders
-
-These folders are not source files and are not meant to be edited by hand:
-
-- `bin/` contains compiled output
-- `obj/` contains intermediate build output
-
-They are ignored by Git.
+It sets the local port, environment name, and emulator host.
 
 ## What is not here
 
-This project folder is intentionally small. The frontend app, repo-level scripts, and Firebase configuration live elsewhere in the repository.
+There are intentionally no API endpoints yet.
+
+That layer will be added after the route contracts are defined.
