@@ -169,9 +169,9 @@
 
 @media (max-width: 760px) {
   .hero-illustration {
-    right: -52px;
-    bottom: -75px;
-    transform: scale(0.78);
+    right: -60px;
+    bottom: -62px;
+    transform: scale(0.66);
     transform-origin: bottom right;
   }
 }
@@ -179,7 +179,9 @@
 @media (max-width: 390px) {
   .hero-illustration {
     opacity: 0.75;
-    transform: scale(0.67);
+    right: -66px;
+    bottom: -68px;
+    transform: scale(0.58);
   }
 }
 

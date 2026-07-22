@@ -29,6 +29,7 @@
   padding: 54px 68px 56px;
   border-radius: 5px;
   background: #e4ede0;
+  overflow: hidden;
 }
 
 .hero-copy {
@@ -101,21 +102,43 @@ h2 {
 
 @media (max-width: 760px) {
   .hero {
-    min-height: 445px;
-    padding: 45px 32px;
+    min-height: 0;
+    max-height: 50dvh;
+    padding: 28px 24px 20px;
     border-radius: 0;
   }
 
+  .hero-copy {
+    max-width: 280px;
+  }
+
+  h1 {
+    margin-bottom: 12px;
+    font-size: clamp(34px, 9vw, 44px);
+  }
+
   .intro {
-    max-width: 330px;
+    max-width: 300px;
+    font-size: 15px;
+    line-height: 1.4;
   }
 
   .actions {
-    padding: 48px 22px 32px;
+    padding: 28px 18px 24px;
+  }
+
+  .section-heading {
+    margin-bottom: 14px;
+  }
+
+  h2 {
+    font-size: 22px;
+    line-height: 1.05;
   }
 
   .action-grid {
     grid-template-columns: 1fr;
+    gap: 10px;
   }
 }
 
@@ -148,7 +171,7 @@ h2 {
     width: 100%;
     min-height: 0;
     margin: 0 0 2rem;
-    padding: clamp(32px, 5vw, 68px);
+    padding: clamp(28px, 4.2vw, 58px);
   }
 
   h1 {
