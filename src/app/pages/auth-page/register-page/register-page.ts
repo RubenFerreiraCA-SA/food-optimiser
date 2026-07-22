@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../shared/services/auth/auth.service';
@@ -8,17 +8,27 @@ import { AuthService } from '../../../shared/services/auth/auth.service';
   imports: [FormsModule, RouterLink],
   templateUrl: './register-page.html',
   styleUrl: './register-page.scss',
+  host: { '[class.show-form]': 'showForm()' },
 })
 export class RegisterPage {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
 
+  readonly showForm = signal(false);
   name = '';
   email = '';
   password = '';
   confirmPassword = '';
   errorMessage = '';
   isSubmitting = false;
+
+  openForm(): void {
+    this.showForm.set(true);
+  }
+
+  backToIntro(): void {
+    this.showForm.set(false);
+  }
 
   async register(): Promise<void> {
     this.errorMessage = '';

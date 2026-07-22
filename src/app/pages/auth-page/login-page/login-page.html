@@ -24,9 +24,15 @@
         <li>Generate plans from your own data</li>
         <li>Use Google or email sign-in</li>
       </ul>
+      <div class="mobile-cta-wrap">
+        <button class="button primary full mobile-cta" type="button" (click)="openForm()">
+          Sign in
+        </button>
+      </div>
     </aside>
 
     <section class="auth-card" aria-labelledby="login-title">
+      <button class="mobile-back" type="button" (click)="backToIntro()">← Back</button>
       <p class="eyebrow"><span></span>Welcome back</p>
       <h1 id="login-title">Sign in</h1>
       <p class="copy">
@@ -53,7 +59,7 @@
         Continue with Google
       </button>
 
-      <div class="divider">or use email</div>
+      <div class="divider"><span>or use email</span></div>
 
       <form class="auth-form" (ngSubmit)="signIn()">
         <label>

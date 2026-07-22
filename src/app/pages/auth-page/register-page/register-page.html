@@ -24,9 +24,15 @@
         <li>Email/password or Google sign-up</li>
         <li>Ready for future per-user data</li>
       </ul>
+      <div class="mobile-cta-wrap">
+        <button class="button primary full mobile-cta" type="button" (click)="openForm()">
+          Create account
+        </button>
+      </div>
     </aside>
 
     <section class="auth-card" aria-labelledby="register-title">
+      <button class="mobile-back" type="button" (click)="backToIntro()">← Back</button>
       <p class="eyebrow"><span></span>Create an account</p>
       <h1 id="register-title">Register</h1>
       <p class="copy">Start with Google. Use email and password if you want a separate login.</p>
@@ -51,7 +57,7 @@
         Register with Google
       </button>
 
-      <div class="divider">or use email</div>
+      <div class="divider"><span>or use email</span></div>
 
       <form class="auth-form" (ngSubmit)="register()">
         <label>

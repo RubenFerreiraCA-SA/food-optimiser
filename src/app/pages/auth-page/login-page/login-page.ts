@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../shared/services/auth/auth.service';
@@ -8,15 +8,25 @@ import { AuthService } from '../../../shared/services/auth/auth.service';
   imports: [FormsModule, RouterLink],
   templateUrl: './login-page.html',
   styleUrl: './login-page.scss',
+  host: { '[class.show-form]': 'showForm()' },
 })
 export class LoginPage {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
 
+  readonly showForm = signal(false);
   email = '';
   password = '';
   errorMessage = '';
   isSubmitting = false;
+
+  openForm(): void {
+    this.showForm.set(true);
+  }
+
+  backToIntro(): void {
+    this.showForm.set(false);
+  }
 
   async signIn(): Promise<void> {
     this.isSubmitting = true;
