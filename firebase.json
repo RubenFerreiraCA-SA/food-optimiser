@@ -1,4 +1,13 @@
 {
+  "emulators": {
+    "ui": {
+      "enabled": true,
+      "port": 4000
+    },
+    "firestore": {
+      "port": 8080
+    }
+  },
   "hosting": {
     "public": "dist/meal-optimiser/browser",
     "ignore": [

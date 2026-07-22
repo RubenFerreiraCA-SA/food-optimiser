@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Topbar } from './shared/components/topbar/topbar';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -9,4 +10,5 @@ import { Topbar } from './shared/components/topbar/topbar';
   styleUrl: './app.scss',
 })
 export class App {
+  protected readonly showLocalBanner = environment.firestore.useEmulator;
 }

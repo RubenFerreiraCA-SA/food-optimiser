@@ -15,14 +15,15 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    { provide: DATA_ADAPTER, useFactory: () => new FirebaseDataAdapter() },
-    provideAppInitializer(() => {
-      void inject(AuthService).initialize();
+    { provide: DATA_ADAPTER, useExisting: FirebaseDataAdapter },
+    provideAppInitializer(async () => {
+      const auth = inject(AuthService);
       const data = inject(DataService);
       const seeding = inject(DataSeedingService);
 
-      void data.initialize();
-      seeding.seed();
+      await auth.initialize();
+      await data.initialize();
+      await seeding.seed();
     }),
   ],
 };

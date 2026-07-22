@@ -3,6 +3,7 @@ import { Injectable, InjectionToken, inject } from '@angular/core';
 /** Replace this adapter at bootstrap to persist to a host-backed store later. */
 export interface DataAdapter {
   initialize?(): Promise<void>;
+  whenReady?(): Promise<void>;
   read(key: string): string | null;
   write(key: string, value: string): void;
   remove(key: string): void;
@@ -51,6 +52,10 @@ export class DataService {
   initialize(): Promise<void> {
     this.initialization ??= this.adapter.initialize?.() ?? Promise.resolve();
     return this.initialization;
+  }
+
+  whenReady(): Promise<void> {
+    return this.adapter.whenReady?.() ?? this.initialize();
   }
 
   read<T>(key: string, fallback: T): T {

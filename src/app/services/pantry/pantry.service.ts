@@ -1,4 +1,5 @@
-import { Injectable, computed, inject, signal } from '@angular/core';
+import { Injectable, computed, effect, inject, signal } from '@angular/core';
+import { AuthService } from '../auth/auth.service';
 import { DataService } from '../data/data.service';
 import { DATA_KEYS, defaultIngredients } from '../data-seeding/seed-data';
 
@@ -10,10 +11,19 @@ export interface PantryIngredient {
 
 @Injectable({ providedIn: 'root' })
 export class PantryService {
+  private readonly auth = inject(AuthService);
   private readonly data = inject(DataService);
   private readonly storageKey = DATA_KEYS.pantry;
   private readonly state = signal<PantryIngredient[]>(this.read());
   readonly ingredients = computed(() => this.state());
+
+  constructor() {
+    effect(() => {
+      if (!this.auth.ready()) return;
+      this.auth.user();
+      this.state.set(this.read());
+    });
+  }
 
   add(name: string, quantity: number): boolean {
     const cleanName = name.trim();

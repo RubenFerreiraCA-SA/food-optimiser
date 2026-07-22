@@ -1,4 +1,5 @@
-import { Injectable, computed, inject, signal } from '@angular/core';
+import { Injectable, computed, effect, inject, signal } from '@angular/core';
+import { AuthService } from '../auth/auth.service';
 import { DataService } from '../data/data.service';
 import { DATA_KEYS, defaultRecipes } from '../data-seeding/seed-data';
 
@@ -15,10 +16,19 @@ export interface Recipe {
 
 @Injectable({ providedIn: 'root' })
 export class MenuService {
+  private readonly auth = inject(AuthService);
   private readonly data = inject(DataService);
   private readonly storageKey = DATA_KEYS.menu;
   private readonly recipeState = signal<Recipe[]>(this.readRecipes());
   readonly recipes = computed(() => this.recipeState());
+
+  constructor() {
+    effect(() => {
+      if (!this.auth.ready()) return;
+      this.auth.user();
+      this.recipeState.set(this.readRecipes());
+    });
+  }
 
   add(recipe: Omit<Recipe, 'id'>): void {
     this.update([...this.recipeState(), { ...recipe, id: crypto.randomUUID() }]);

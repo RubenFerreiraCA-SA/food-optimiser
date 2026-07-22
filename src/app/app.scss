@@ -1,3 +1,16 @@
 :host {
   display: block;
 }
+
+.env-banner {
+  padding: 8px 16px;
+  border-bottom: 1px solid #d9c88f;
+  color: #5d4a12;
+  background: #fff3c4;
+  font:
+    700 12px/1.2 Arial,
+    sans-serif;
+  letter-spacing: 0.04em;
+  text-align: center;
+  text-transform: uppercase;
+}
