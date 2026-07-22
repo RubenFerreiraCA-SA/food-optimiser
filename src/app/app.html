@@ -1,22 +1,2 @@
-@if (showTopbar()) {
-  <header class="topbar">
-    <a class="brand" routerLink="/" aria-label="Make the Most home">
-      <span class="brand-mark" aria-hidden="true">MTM</span>
-      <span>Make the Most</span>
-    </a>
-    <div class="topbar-actions">
-      @if (auth.ready()) {
-        @if (auth.isAuthenticated()) {
-          <span class="topbar-note">Signed in as {{ auth.displayName() }}</span>
-          <button class="topbar-link" type="button" (click)="auth.signOut()">Sign out</button>
-        } @else {
-          <span class="topbar-note">Make the most of what you have</span>
-          <a class="topbar-link" routerLink="/login">Sign in</a>
-          <a class="topbar-link primary" routerLink="/register">Register</a>
-        }
-      }
-    </div>
-  </header>
-}
-
+<app-topbar />
 <router-outlet></router-outlet>

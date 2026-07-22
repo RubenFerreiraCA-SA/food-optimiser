@@ -1,0 +1,108 @@
+@if (showTopbar()) {
+  <header class="topbar">
+    @if (auth.ready()) {
+      @if (auth.isAuthenticated()) {
+        <a class="brand" routerLink="/home" aria-label="Make the Most home">
+          <span class="brand-mark" aria-hidden="true">MTM</span>
+          <span class="brand-name">Make the Most</span>
+        </a>
+
+        <div class="topbar-right">
+          <nav class="topbar-nav" aria-label="Primary">
+            <a class="topbar-nav-link" routerLink="/pantry" routerLinkActive="active" (click)="closeMenus()">
+              Pantry
+            </a>
+            <a class="topbar-nav-link" routerLink="/menu" routerLinkActive="active" (click)="closeMenus()">
+              Menu
+            </a>
+            <a class="topbar-nav-link" routerLink="/planner" routerLinkActive="active" (click)="closeMenus()">
+              Plan
+            </a>
+          </nav>
+
+          <div class="profile-menu" [class.open]="profileMenuOpen()">
+            <button
+              class="profile-button"
+              type="button"
+              [attr.aria-expanded]="profileMenuOpen()"
+              aria-haspopup="menu"
+              [attr.aria-label]="'Open account menu for ' + profileName()"
+              (click)="toggleMenu($event)"
+            >
+              <span class="profile-copy">
+                <span class="profile-name">{{ profileName() }}</span>
+                <span class="profile-role">Profile</span>
+              </span>
+
+              <span class="profile-avatar" aria-hidden="true">
+                @if (avatarUrl() && !avatarImageFailed()) {
+                  <img
+                    class="avatar-image"
+                    [src]="avatarUrl()!"
+                    alt=""
+                    (error)="handleAvatarError()"
+                  />
+                } @else {
+                  <span class="avatar-fallback">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                      <path
+                        d="M12 12.25a4.25 4.25 0 1 0 0-8.5 4.25 4.25 0 0 0 0 8.5Zm0 2c-4.03 0-7.5 2.18-7.5 5.25V21h15v-1.5c0-3.07-3.47-5.25-7.5-5.25Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </span>
+                }
+              </span>
+            </button>
+
+            @if (profileMenuOpen()) {
+              <div class="avatar-dropdown" role="menu" aria-label="Account menu">
+                <button class="dropdown-item danger" type="button" role="menuitem" (click)="signOut()">
+                  Sign out
+                </button>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="mobile-menu">
+          <button
+            class="mobile-menu-button"
+            type="button"
+            [attr.aria-expanded]="mobileMenuOpen()"
+            aria-haspopup="menu"
+            aria-label="Open navigation menu"
+            (click)="toggleMobileMenu($event)"
+          >
+            <span class="mobile-menu-icon" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+          </button>
+
+          @if (mobileMenuOpen()) {
+            <div class="mobile-menu-dropdown" role="menu" aria-label="Navigation menu">
+              <a class="mobile-menu-item" routerLink="/pantry" role="menuitem" (click)="closeMenus()">Pantry</a>
+              <a class="mobile-menu-item" routerLink="/menu" role="menuitem" (click)="closeMenus()">Menu</a>
+              <a class="mobile-menu-item" routerLink="/planner" role="menuitem" (click)="closeMenus()">Plan</a>
+              <button class="mobile-menu-item danger" type="button" role="menuitem" (click)="signOut()">
+                Sign out
+              </button>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="topbar-actions">
+          <a class="brand" routerLink="/" aria-label="Make the Most home">
+            <span class="brand-mark" aria-hidden="true">MTM</span>
+            <span>Make the Most</span>
+          </a>
+          <span class="topbar-note">Make the most of what you have</span>
+          <a class="topbar-link" routerLink="/login">Sign in</a>
+          <a class="topbar-link primary" routerLink="/register">Register</a>
+        </div>
+      }
+    }
+  </header>
+}
