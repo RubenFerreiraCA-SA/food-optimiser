@@ -10,5 +10,5 @@ import { environment } from '../environments/environment';
   styleUrl: './app.scss',
 })
 export class App {
-  protected readonly showLocalBanner = environment.firestore.useEmulator;
+  protected readonly showLocalBanner = environment.apiBaseUrl.includes('localhost');
 }

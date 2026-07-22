@@ -49,9 +49,9 @@ export class MenuPage {
   cancelRemoval(): void {
     this.recipeToRemove.set(null);
   }
-  confirmRemoval(): void {
+  async confirmRemoval(): Promise<void> {
     const recipe = this.recipeToRemove();
-    if (recipe) this.menu.remove(recipe.id);
+    if (recipe) await this.menu.remove(recipe.id);
     this.recipeToRemove.set(null);
   }
   removeDialog(recipe: Recipe): DialogConfig {
@@ -81,9 +81,9 @@ export class MenuPage {
     this.recipeBeingEdited.set(null);
     this.isCreatingRecipe.set(false);
   }
-  saveRecipe(event: { id: string | null; recipe: Omit<Recipe, 'id'>; sourceRecipeId: string | null }): void {
-    if (event.id) this.menu.updateRecipe(event.id, event.recipe);
-    else this.menu.add(event.recipe, event.sourceRecipeId);
+  async saveRecipe(event: { id: string | null; recipe: Omit<Recipe, 'id'>; sourceRecipeId: string | null }): Promise<void> {
+    if (event.id) await this.menu.updateRecipe(event.id, event.recipe);
+    else await this.menu.add(event.recipe, event.sourceRecipeId);
     this.closeRecipeForm();
   }
 }

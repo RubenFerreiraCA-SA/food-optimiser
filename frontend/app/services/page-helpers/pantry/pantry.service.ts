@@ -1,9 +1,8 @@
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { AuthService } from '../../auth/auth.service';
+import { ApiClientService } from '../../api/api-client.service';
 import { IngredientCatalogService } from '../../data/ingredient-catalog.service';
-import { DataService } from '../../data/data.service';
 import { defaultPantryIngredients } from '../../data/data-seeding/seed-data';
-import { USER_COLLECTIONS, USER_DATA_DOCS } from '../../data/user-data';
 
 export interface PantryIngredient {
   id: string;
@@ -15,71 +14,58 @@ export interface PantryIngredient {
 @Injectable({ providedIn: 'root' })
 export class PantryService {
   private readonly auth = inject(AuthService);
-  private readonly data = inject(DataService);
+  private readonly api = inject(ApiClientService);
   private readonly catalog = inject(IngredientCatalogService);
-  private readonly state = signal<PantryIngredient[]>(this.read());
+  private readonly state = signal<PantryIngredient[]>([]);
   readonly ingredients = computed(() => this.state());
 
   constructor() {
     effect(() => {
-      this.data.revision();
       if (!this.auth.ready()) return;
       this.auth.user();
       void this.refresh();
     });
   }
 
-  add(ingredientId: string, quantity: number): boolean {
+  async add(ingredientId: string, quantity: number): Promise<boolean> {
     const ingredient = this.ingredientsCatalog().find((item) => item.id === ingredientId);
     if (!ingredient || quantity < 1)
       return false;
 
-    const existing = this.state().find((item) => item.id === ingredientId);
-    const next = existing
-      ? this.state().map((item) =>
-          item.id === ingredientId ? { ...item, quantity: item.quantity + quantity } : item,
-        )
-      : [...this.state(), { ...ingredient, quantity }];
-    this.update(next);
+    await this.api.addPantryIngredient(ingredientId, quantity);
+    await this.refresh();
     return true;
   }
-  remove(id: string): void {
-    this.update(this.state().filter((item) => item.id !== id));
+  async remove(id: string): Promise<void> {
+    await this.api.removePantryIngredient(id);
+    await this.refresh();
   }
-  setQuantity(id: string, quantity: number): boolean {
+  async setQuantity(id: string, quantity: number): Promise<boolean> {
     if (!Number.isInteger(quantity) || quantity < 0 || !this.state().some((item) => item.id === id))
       return false;
-    this.update(this.state().map((item) => (item.id === id ? { ...item, quantity } : item)));
+    await this.api.setPantryIngredient(id, quantity);
+    await this.refresh();
     return true;
   }
-  reset(): void {
-    this.update(defaultPantryIngredients());
-  }
-
-  private read(): PantryIngredient[] {
-    const saved = this.data.readDocument<Record<string, number>>(
-      USER_COLLECTIONS.data,
-      USER_DATA_DOCS.ingredients,
+  async reset(): Promise<void> {
+    await this.api.replacePantry(
       Object.fromEntries(defaultPantryIngredients().map((ingredient) => [ingredient.id, ingredient.quantity])),
     );
-    return Object.entries(saved).flatMap(([id, quantity]) => {
-      const ingredient = this.ingredientsCatalog().find((item) => item.id === id);
-      if (!ingredient) return [];
-      return [{ ...ingredient, quantity: Math.max(0, Math.floor(quantity)) }];
-    });
-  }
-  private update(ingredients: PantryIngredient[]): void {
-    this.state.set(ingredients);
-    this.data.upsertDocument(
-      USER_COLLECTIONS.data,
-      USER_DATA_DOCS.ingredients,
-      Object.fromEntries(ingredients.map((ingredient) => [ingredient.id, ingredient.quantity])),
-    );
+    await this.refresh();
   }
 
   private async refresh(): Promise<void> {
-    await this.data.whenReady();
-    this.state.set(this.read());
+    try {
+      const pantry = await this.api.getPantry();
+      const ingredients = Object.entries(pantry.values).flatMap(([id, quantity]) => {
+        const ingredient = this.ingredientsCatalog().find((item) => item.id === id);
+        if (!ingredient) return [];
+        return [{ ...ingredient, quantity: Math.max(0, Math.floor(quantity)) }];
+      });
+      this.state.set(ingredients);
+    } catch (error) {
+      console.error('Failed to load pantry from API:', error);
+    }
   }
 
   private ingredientsCatalog() {

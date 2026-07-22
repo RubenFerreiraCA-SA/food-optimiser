@@ -100,13 +100,13 @@ export class NewRecipeView {
     );
   }
 
-  createIngredient(index: number): void {
+  async createIngredient(index: number): Promise<void> {
     const row = this.ingredients()[index];
     if (!row) return;
     const name = row.ingredientName.trim();
     if (name.length < 3) return;
 
-    const created = this.catalog.add(name);
+    const created = await this.catalog.add(name);
     if (!created) return;
 
     this.selectIngredient(index, created);
@@ -147,9 +147,8 @@ export class NewRecipeView {
     this.refreshRecipeMatches();
   }
 
-  save(): void {
-    const ingredients = this.ingredients()
-      .map((item) => this.resolveIngredient(item))
+  async save(): Promise<void> {
+    const ingredients = (await Promise.all(this.ingredients().map((item) => this.resolveIngredient(item))))
       .filter((item): item is { id: string; quantity: number } => !!item && item.quantity > 0)
       .reduce<Record<string, number>>((next, item) => {
         next[item.id] = (next[item.id] ?? 0) + Math.floor(item.quantity);
@@ -163,9 +162,9 @@ export class NewRecipeView {
     });
   }
 
-  private resolveIngredient(
+  private async resolveIngredient(
     item: RecipeIngredientRow,
-  ): { id: string; quantity: number } | null {
+  ): Promise<{ id: string; quantity: number } | null> {
     if (!item.quantity || item.quantity < 1) return null;
     const trimmed = item.ingredientName.trim();
     const ingredientId = item.ingredientId.trim();
@@ -175,7 +174,7 @@ export class NewRecipeView {
     const exact = this.catalog.findByName(trimmed);
     if (exact) return { id: exact.id, quantity: item.quantity };
 
-    const created = this.catalog.add(trimmed);
+    const created = await this.catalog.add(trimmed);
     if (!created) return null;
     return { id: created.id, quantity: item.quantity };
   }

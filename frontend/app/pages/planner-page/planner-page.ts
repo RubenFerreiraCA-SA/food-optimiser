@@ -4,7 +4,11 @@ import { ConfirmMenuView } from './confirm-menu-view/confirm-menu-view';
 import { OptimisedPlanView } from './optimised-plan-view/optimised-plan-view';
 import { PageHero, PageHeroConfig } from '../../shared/components/page-hero/page-hero';
 import { MenuService } from '../../services/page-helpers/menu/menu.service';
-import { OptimisedPlanMeal, IngredientPlanUsage, PlannerService } from '../../services/page-helpers/planner/planner.service';
+import {
+  OptimisedPlanMeal,
+  IngredientPlanUsage,
+  PlannerService,
+} from '../../services/page-helpers/planner/planner.service';
 import { PantryIngredient, PantryService } from '../../services/page-helpers/pantry/pantry.service';
 
 export interface PlanningIngredient extends PantryIngredient {
@@ -36,23 +40,14 @@ export class PlannerPage {
   readonly step = signal(1);
   readonly planningIngredients = signal<PlanningIngredient[]>(this.createPlanningIngredients());
   readonly selectedRecipeIds = signal<string[]>(this.menu.selectedRecipeIds());
+  readonly plan = computed(() => this.planner.plan());
+  readonly planMeals = computed(() => this.plan()?.meals ?? []);
+  readonly totalServings = computed(() => this.plan()?.totalMeals ?? 0);
+  readonly totalDishes = computed(() => this.plan()?.totalDishes ?? 0);
+  readonly ingredientUsage = computed(() => this.plan()?.ingredients ?? []);
   readonly selectedRecipes = computed(() =>
     this.menu.recipes().filter((recipe) => this.selectedRecipeIds().includes(recipe.id)),
   );
-  readonly plan = computed(() =>
-    this.planner.optimise(
-      this.planningIngredients().map((ingredient) => ({
-        id: ingredient.id,
-        name: ingredient.name,
-        quantity: ingredient.planningQuantity,
-      })),
-      this.selectedRecipes(),
-    ),
-  );
-  readonly planMeals = computed(() => this.plan().meals);
-  readonly totalServings = computed(() => this.plan().totalMeals);
-  readonly totalDishes = computed(() => this.plan().totalDishes);
-  readonly ingredientUsage = computed(() => this.plan().ingredients);
 
   updateIngredient(id: string, quantity: number): void {
     const validQuantity = Number.isFinite(quantity) ? Math.max(0, Math.floor(quantity)) : 0;
@@ -73,7 +68,16 @@ export class PlannerPage {
     this.step.set(2);
   }
 
-  createPlan(): void {
+  async createPlan(): Promise<void> {
+    await this.planner.createPlan(
+      this.planningIngredients().map((ingredient) => ({
+        id: ingredient.id,
+        name: ingredient.name,
+        quantity: ingredient.planningQuantity,
+      })),
+      this.selectedRecipes(),
+    );
+    if (this.planner.error()) return;
     this.step.set(3);
   }
 
@@ -84,6 +88,7 @@ export class PlannerPage {
   startAgain(): void {
     this.planningIngredients.set(this.createPlanningIngredients());
     this.selectedRecipeIds.set(this.menu.selectedRecipeIds());
+    this.planner.clear();
     this.step.set(1);
   }
 

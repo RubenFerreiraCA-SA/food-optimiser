@@ -1,60 +1,52 @@
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { AuthService } from '../../auth/auth.service';
-import { DataService } from '../../data/data.service';
-import { defaultRecipes } from '../../data/data-seeding/seed-data';
-import { GLOBAL_COLLECTIONS, USER_COLLECTIONS, USER_DATA_DOCS } from '../../data/user-data';
+import { ApiClientService } from '../../api/api-client.service';
 import { Recipe } from '../../data/shared-types';
-
-interface RecipeSelectionDoc {
-  values: string[];
-}
 
 @Injectable({ providedIn: 'root' })
 export class MenuService {
   private readonly auth = inject(AuthService);
-  private readonly data = inject(DataService);
-  private readonly sharedRecipesState = signal<Recipe[]>(this.readSharedRecipes());
-  private readonly userRecipesState = signal<Recipe[]>(this.readUserRecipes());
-  private readonly selectedRecipeIdsState = signal<string[]>(this.readSelection());
+  private readonly api = inject(ApiClientService);
+  private readonly sharedRecipesState = signal<Recipe[]>([]);
+  private readonly userRecipesState = signal<Recipe[]>([]);
+  private readonly selectedRecipeIdsState = signal<string[]>([]);
 
   readonly recipes = computed(() =>
     this.sortRecipes(
       this.selectedRecipeIdsState()
-        .map((recipeId) => this.userRecipesState().find((recipe) => recipe.id === recipeId))
+        .map((recipeId) => this.findRecipe(recipeId))
         .filter((recipe): recipe is Recipe => !!recipe),
     ),
   );
   readonly availableRecipes = computed(() =>
-    this.sortRecipes(
-      this.sharedRecipesState().filter((recipe) => !this.selectedSharedRecipeIds().has(recipe.id)),
-    ),
+    this.sortRecipes(this.sharedRecipesState().filter((recipe) => !this.selectedRecipeIdsSet().has(recipe.id))),
   );
-  readonly allRecipes = computed(() => this.sortRecipes(this.userRecipesState()));
+  readonly allRecipes = computed(() =>
+    this.sortRecipes(this.mergeRecipes(this.sharedRecipesState(), this.userRecipesState())),
+  );
   readonly selectedRecipeIds = computed(() => this.selectedRecipeIdsState());
 
   constructor() {
     effect(() => {
-      this.data.revision();
       if (!this.auth.ready()) return;
       this.auth.user();
       void this.refresh();
     });
   }
 
-  add(recipe: Omit<Recipe, 'id'>, sourceRecipeId: string | null = null): void {
+  async add(recipe: Omit<Recipe, 'id'>, sourceRecipeId: string | null = null): Promise<void> {
     const storedRecipe: Omit<Recipe, 'id'> = {
       ...recipe,
       origin: sourceRecipeId ? 'forked' : recipe.origin ?? 'custom',
       ...(sourceRecipeId ? { sourceRecipeId } : {}),
     };
-    const id = this.data.createDocument(USER_COLLECTIONS.recipes, storedRecipe);
-    const nextRecipe = { ...storedRecipe, id };
-    this.userRecipesState.set([...this.userRecipesState(), nextRecipe]);
-    this.updateSelection([...this.selectedRecipeIdsState(), id]);
+    const created = await this.api.createPersonalRecipe(this.toUpsertRecipe(storedRecipe));
+    await this.api.addMenuRecipe(created.id);
+    await this.refresh();
   }
 
-  fork(recipe: Recipe): void {
-    this.add(
+  async fork(recipe: Recipe): Promise<void> {
+    await this.add(
       {
         name: recipe.name,
         servings: recipe.servings,
@@ -68,10 +60,10 @@ export class MenuService {
   }
 
   find(id: string): Recipe | undefined {
-    return this.userRecipesState().find((recipe) => recipe.id === id);
+    return this.findRecipe(id);
   }
 
-  updateRecipe(id: string, recipe: Omit<Recipe, 'id'>): void {
+  async updateRecipe(id: string, recipe: Omit<Recipe, 'id'>): Promise<void> {
     const current = this.find(id);
     const nextOrigin: Recipe['origin'] =
       current?.origin === 'shared'
@@ -82,73 +74,73 @@ export class MenuService {
       origin: nextOrigin,
       ...(current?.sourceRecipeId ? { sourceRecipeId: current.sourceRecipeId } : {}),
     };
-    this.userRecipesState.update((recipes) =>
-      recipes.map((stored) => (stored.id === id ? { ...nextRecipe, id } : stored)),
-    );
-    this.data.upsertDocument(USER_COLLECTIONS.recipes, id, nextRecipe);
-    this.select(id);
+    await this.api.updatePersonalRecipe(id, this.toUpsertRecipe(nextRecipe));
+    await this.api.addMenuRecipe(id);
+    await this.refresh();
   }
 
-  remove(id: string): void {
-    this.userRecipesState.update((recipes) => recipes.filter((recipe) => recipe.id !== id));
-    this.updateSelection(this.selectedRecipeIdsState().filter((recipeId) => recipeId !== id));
-    this.data.deleteDocument(USER_COLLECTIONS.recipes, id);
+  async remove(id: string): Promise<void> {
+    const isPersonalRecipe = this.userRecipesState().some((recipe) => recipe.id === id);
+    if (isPersonalRecipe) {
+      await this.api.deletePersonalRecipe(id);
+    } else {
+      await this.api.removeMenuRecipe(id);
+    }
+    await this.refresh();
   }
 
-  select(id: string): void {
+  async select(id: string): Promise<void> {
     if (this.selectedRecipeIdsState().includes(id)) return;
-    this.updateSelection([...this.selectedRecipeIdsState(), id]);
+    await this.api.addMenuRecipe(id);
+    await this.refresh();
   }
 
-  reset(): void {
-    const recipes = this.data.replaceCollection(
-      USER_COLLECTIONS.recipes,
-      defaultRecipes().map((recipe) => ({
-        ...recipe,
-        origin: 'shared' as const,
-        sourceRecipeId: recipe.id,
-      })),
-    );
-    this.userRecipesState.set(recipes);
-    this.updateSelection(recipes.map((recipe) => recipe.id));
+  async reset(): Promise<void> {
+    const personalRecipes = await this.api.getPersonalRecipes();
+    for (const recipe of personalRecipes) {
+      await this.api.deletePersonalRecipe(recipe.id);
+    }
+    const sharedRecipes = await this.api.getRecipes();
+    await this.api.replaceMenu(sharedRecipes.map((recipe) => recipe.id));
+    await this.refresh();
   }
 
-  private readSharedRecipes(): Recipe[] {
-    return this.data.readCollection(GLOBAL_COLLECTIONS.recipes, defaultRecipes(), 'global');
+  private findRecipe(id: string): Recipe | undefined {
+    return this.userRecipesState().find((recipe) => recipe.id === id) ??
+      this.sharedRecipesState().find((recipe) => recipe.id === id);
   }
 
-  private readUserRecipes(): Recipe[] {
-    return this.data.readCollection(USER_COLLECTIONS.recipes, [], 'user');
+  private mergeRecipes(...groups: Recipe[][]): Recipe[] {
+    return groups.flat().filter((recipe, index, all) => all.findIndex((item) => item.id === recipe.id) === index);
   }
 
-  private readSelection(): string[] {
-    return this.data.readDocument<RecipeSelectionDoc>(USER_COLLECTIONS.data, USER_DATA_DOCS.recipes, {
-      values: [],
-    }).values;
+  private selectedRecipeIdsSet(): Set<string> {
+    return new Set(this.selectedRecipeIdsState());
   }
 
-  private updateSelection(values: string[]): void {
-    const next = Array.from(new Set(values));
-    this.selectedRecipeIdsState.set(next);
-    this.data.upsertDocument(USER_COLLECTIONS.data, USER_DATA_DOCS.recipes, { values: next });
+  private toUpsertRecipe(recipe: Omit<Recipe, 'id'>) {
+    return {
+      name: recipe.name,
+      servings: recipe.servings,
+      image: recipe.image,
+      ingredients: { ...recipe.ingredients },
+      sourceRecipeId: recipe.sourceRecipeId ?? null,
+    };
   }
 
   private async refresh(): Promise<void> {
-    await this.data.whenReady();
-    this.sharedRecipesState.set(this.readSharedRecipes());
-    this.userRecipesState.set(this.readUserRecipes());
-    this.selectedRecipeIdsState.set(this.readSelection());
-  }
-
-  private selectedSharedRecipeIds(): Set<string> {
-    const ids = new Set<string>();
-    for (const recipeId of this.selectedRecipeIdsState()) {
-      const recipe = this.userRecipesState().find((item) => item.id === recipeId);
-      if (!recipe) continue;
-      const sharedId = recipe.sourceRecipeId ?? (recipe.origin === 'shared' ? recipe.id : null);
-      if (sharedId) ids.add(sharedId);
+    try {
+      const [sharedRecipes, userRecipes, menu] = await Promise.all([
+        this.api.getRecipes(),
+        this.api.getPersonalRecipes(),
+        this.api.getMenu(),
+      ]);
+      this.sharedRecipesState.set(this.sortRecipes(sharedRecipes));
+      this.userRecipesState.set(this.sortRecipes(userRecipes));
+      this.selectedRecipeIdsState.set(menu.selectedRecipeIds);
+    } catch (error) {
+      console.error('Failed to load menu from API:', error);
     }
-    return ids;
   }
 
   private sortRecipes(recipes: Recipe[]): Recipe[] {

@@ -1,20 +1,17 @@
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
-import { DataService } from './data.service';
-import { GLOBAL_COLLECTIONS } from './user-data';
-import { defaultIngredients } from './data-seeding/seed-data';
+import { ApiClientService } from '../api/api-client.service';
 import { SharedIngredient } from './shared-types';
 
 @Injectable({ providedIn: 'root' })
 export class IngredientCatalogService {
   private readonly auth = inject(AuthService);
-  private readonly data = inject(DataService);
-  private readonly state = signal<SharedIngredient[]>(this.read());
+  private readonly api = inject(ApiClientService);
+  private readonly state = signal<SharedIngredient[]>([]);
   readonly ingredients = computed(() => this.state());
 
   constructor() {
     effect(() => {
-      this.data.revision();
       if (!this.auth.ready()) return;
       this.auth.user();
       void this.refresh();
@@ -39,21 +36,14 @@ export class IngredientCatalogService {
       .slice(0, 8);
   }
 
-  add(name: string): SharedIngredient | null {
+  async add(name: string): Promise<SharedIngredient | null> {
     const cleanName = name.trim();
     if (!cleanName) return null;
     const existing = this.findByName(cleanName);
     if (existing) return existing;
 
-    const ingredient = {
-      id: this.data.createDocument(GLOBAL_COLLECTIONS.ingredients, {
-        name: cleanName,
-        image: '',
-      }, 'global'),
-      name: cleanName,
-      image: '',
-    };
-    this.state.set([...this.state(), ingredient]);
+    const ingredient = await this.api.createIngredient({ name: cleanName, image: '' });
+    this.state.update((items) => this.sortIngredients([...items, ingredient]));
     return ingredient;
   }
 
@@ -65,16 +55,22 @@ export class IngredientCatalogService {
     return this.find(id)?.image ?? '';
   }
 
-  private read(): SharedIngredient[] {
-    return this.data.readCollection(GLOBAL_COLLECTIONS.ingredients, defaultIngredients(), 'global');
-  }
-
   private normalize(value: string): string {
     return value.trim().toLowerCase();
   }
 
   private async refresh(): Promise<void> {
-    await this.data.whenReady();
-    this.state.set(this.read());
+    try {
+      const ingredients = await this.api.getIngredients();
+      this.state.set(this.sortIngredients(ingredients));
+    } catch (error) {
+      console.error('Failed to load ingredient catalog from API:', error);
+    }
+  }
+
+  private sortIngredients(ingredients: SharedIngredient[]): SharedIngredient[] {
+    return [...ingredients].sort((left, right) =>
+      left.name.localeCompare(right.name, undefined, { sensitivity: 'base' }),
+    );
   }
 }

@@ -80,10 +80,14 @@ export class PantryPage {
     return { eyebrow: 'Ingredient in use', title: `${ingredient.name} can't be removed.`, description: 'It is still needed by these recipes:', list: this.blockedUsages().map((usage) => ({ label: usage.recipe.name, detail: `${usage.quantity}× ${ingredient.name}` })), actions: [{ id: 'close', label: 'Got it', variant: 'primary' }] };
   }
 
-  handleResetDialog(action: string): void { action === 'confirm' ? this.confirmReset() : this.cancelDialogs(); }
-  handleRemovalDialog(action: string): void { action === 'confirm' ? this.confirmRemoval() : this.cancelDialogs(); }
+  async handleResetDialog(action: string): Promise<void> {
+    action === 'confirm' ? await this.confirmReset() : this.cancelDialogs();
+  }
+  async handleRemovalDialog(action: string): Promise<void> {
+    action === 'confirm' ? await this.confirmRemoval() : this.cancelDialogs();
+  }
 
-  addIngredient(): void {
+  async addIngredient(): Promise<void> {
     const ingredient = this.exactIngredientMatch();
     if (ingredient) {
       this.queueIngredient(ingredient);
@@ -91,7 +95,7 @@ export class PantryPage {
     }
 
     if (this.canCreateIngredient()) {
-      this.queueNewIngredient();
+      await this.queueNewIngredient();
       return;
     }
 
@@ -102,8 +106,8 @@ export class PantryPage {
     this.queueIngredient(option);
   }
 
-  addNewIngredient(): void {
-    this.queueNewIngredient();
+  async addNewIngredient(): Promise<void> {
+    await this.queueNewIngredient();
   }
 
   updatePendingQuantity(id: string, quantity: number): void {
@@ -113,10 +117,10 @@ export class PantryPage {
     );
   }
 
-  addPendingIngredient(id: string): void {
+  async addPendingIngredient(id: string): Promise<void> {
     const pending = this.pendingIngredients().find((item) => item.id === id);
     if (!pending) return;
-    if (this.pantry.add(pending.id, pending.quantity)) {
+    if (await this.pantry.add(pending.id, pending.quantity)) {
       this.pendingIngredients.update((items) => items.filter((item) => item.id !== id));
       this.addError = '';
     } else {
@@ -141,15 +145,15 @@ export class PantryPage {
     this.editingIngredientId.set(null);
     this.editError = '';
   }
-  saveQuantity(ingredient: PantryIngredient): void {
-    if (this.pantry.setQuantity(ingredient.id, this.editQuantity)) this.cancelEditing();
+  async saveQuantity(ingredient: PantryIngredient): Promise<void> {
+    if (await this.pantry.setQuantity(ingredient.id, this.editQuantity)) this.cancelEditing();
     else this.editError = 'Enter a whole number of zero or more.';
   }
   updateEditingQuantity(quantity: number): void { this.editQuantity = quantity; }
-  handleTableAction(event: IngredientTableEvent): void {
+  async handleTableAction(event: IngredientTableEvent): Promise<void> {
     if (event.action === 'edit') this.startEditing(event.row);
     if (event.action === 'remove') this.requestRemoval(event.row);
-    if (event.action === 'save') this.saveQuantity(event.row);
+    if (event.action === 'save') await this.saveQuantity(event.row);
     if (event.action === 'cancel') this.cancelEditing();
   }
   cancelDialogs(): void {
@@ -157,13 +161,13 @@ export class PantryPage {
     this.blockedIngredient.set(null);
     this.showResetWarning.set(false);
   }
-  confirmRemoval(): void {
+  async confirmRemoval(): Promise<void> {
     const ingredient = this.ingredientToRemove();
-    if (ingredient) this.pantry.remove(ingredient.id);
+    if (ingredient) await this.pantry.remove(ingredient.id);
     this.ingredientToRemove.set(null);
   }
-  confirmReset(): void {
-    this.pantry.reset();
+  async confirmReset(): Promise<void> {
+    await this.pantry.reset();
     this.showResetWarning.set(false);
   }
 
@@ -188,7 +192,7 @@ export class PantryPage {
     this.addError = '';
   }
 
-  queueNewIngredient(): void {
+  async queueNewIngredient(): Promise<void> {
     const name = this.ingredientName().trim();
     if (name.length < 3) {
       this.addError = 'Type at least three letters to add a new ingredient.';
@@ -199,7 +203,7 @@ export class PantryPage {
       this.queueIngredient(existing);
       return;
     }
-    const ingredient = this.catalog.add(name);
+    const ingredient = await this.catalog.add(name);
     if (!ingredient) {
       this.addError = 'That ingredient could not be created.';
       return;
