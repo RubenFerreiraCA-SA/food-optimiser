@@ -12,6 +12,23 @@ ng serve
 
 Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
 
+## C# Server
+
+This repo includes a minimal ASP.NET Core backend at `server/MealOptimiser.Api`.
+
+To run it locally:
+
+```bash
+dotnet run --project server/MealOptimiser.Api
+```
+
+Available endpoints:
+
+- `GET /api/health`
+- `GET /api/info`
+
+The API is configured to accept requests from the Angular dev server on `http://localhost:4200`.
+
 ## Code scaffolding
 
 Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
