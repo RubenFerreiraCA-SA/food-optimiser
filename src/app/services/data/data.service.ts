@@ -1,65 +1,53 @@
-import { Injectable, InjectionToken, inject } from '@angular/core';
+import { effect, Injectable, inject, signal } from '@angular/core';
+import {
+  collection,
+  connectFirestoreEmulator,
+  deleteDoc,
+  doc,
+  getDocs,
+  getFirestore,
+  setDoc,
+} from 'firebase/firestore';
+import { environment } from '../../../../environments/environment';
+import { AuthService } from '../auth/auth.service';
+import { getFirebaseApp } from '../firebase-app';
 
-/** Replace this adapter at bootstrap to persist to a host-backed store later. */
-export interface DataAdapter {
-  initialize?(): Promise<void>;
-  whenReady?(): Promise<void>;
-  read(key: string): string | null;
-  write(key: string, value: string): void;
-  remove(key: string): void;
+const firestore = getFirestore(getFirebaseApp());
+
+if (environment.firestore.useEmulator) {
+  connectFirestoreEmulator(firestore, environment.firestore.host, environment.firestore.port);
 }
-
-export class LocalStorageDataAdapter implements DataAdapter {
-  initialize(): Promise<void> {
-    return Promise.resolve();
-  }
-
-  read(key: string): string | null {
-    try {
-      return typeof localStorage === 'undefined' ? null : localStorage.getItem(key);
-    } catch {
-      return null;
-    }
-  }
-
-  write(key: string, value: string): void {
-    try {
-      if (typeof localStorage !== 'undefined') localStorage.setItem(key, value);
-    } catch {
-      // Persistence is optional: the in-memory domain state remains usable.
-    }
-  }
-
-  remove(key: string): void {
-    try {
-      if (typeof localStorage !== 'undefined') localStorage.removeItem(key);
-    } catch {
-      // See write(): browsers may reject storage access.
-    }
-  }
-}
-
-export const DATA_ADAPTER = new InjectionToken<DataAdapter>('DATA_ADAPTER', {
-  providedIn: 'root',
-  factory: () => new LocalStorageDataAdapter(),
-});
 
 @Injectable({ providedIn: 'root' })
 export class DataService {
-  private readonly adapter = inject(DATA_ADAPTER);
+  private readonly auth = inject(AuthService);
+  private readonly state = signal<Record<string, string>>({});
+  private loadVersion = 0;
+  private currentLoad: Promise<void> = Promise.resolve();
   private initialization: Promise<void> | null = null;
 
+  constructor() {
+    effect(() => {
+      const user = this.auth.user();
+      this.currentLoad = this.loadForUser(user?.uid ?? null);
+    });
+  }
+
   initialize(): Promise<void> {
-    this.initialization ??= this.adapter.initialize?.() ?? Promise.resolve();
+    this.initialization ??= this.auth.initialize().then(async () => {
+      this.currentLoad = this.loadForUser(this.auth.user()?.uid ?? null);
+      await this.currentLoad;
+    });
+
     return this.initialization;
   }
 
   whenReady(): Promise<void> {
-    return this.adapter.whenReady?.() ?? this.initialize();
+    return this.currentLoad;
   }
 
   read<T>(key: string, fallback: T): T {
-    const value = this.adapter.read(key);
+    const value = this.state()[key];
     if (!value) return fallback;
     try {
       return JSON.parse(value) as T;
@@ -69,14 +57,60 @@ export class DataService {
   }
 
   has(key: string): boolean {
-    return this.adapter.read(key) !== null;
+    return this.state()[key] !== undefined;
   }
 
   write<T>(key: string, value: T): void {
-    this.adapter.write(key, JSON.stringify(value));
+    const serialized = JSON.stringify(value);
+    this.state.update((current) => ({ ...current, [key]: serialized }));
+    const uid = this.auth.user()?.uid;
+    if (!uid) return;
+
+    void setDoc(doc(firestore, 'users', uid, 'app-data', key), { value: serialized }).catch(
+      (error) => {
+        console.error('Failed to write Firestore data:', { uid, key, error });
+      },
+    );
   }
 
   remove(key: string): void {
-    this.adapter.remove(key);
+    this.state.update((current) => {
+      const next = { ...current };
+      delete next[key];
+      return next;
+    });
+
+    const uid = this.auth.user()?.uid;
+    if (!uid) return;
+
+    void deleteDoc(doc(firestore, 'users', uid, 'app-data', key)).catch((error) => {
+      console.error('Failed to delete Firestore data:', { uid, key, error });
+    });
+  }
+
+  private async loadForUser(uid: string | null): Promise<void> {
+    const version = ++this.loadVersion;
+
+    if (!uid) {
+      this.state.set({});
+      return;
+    }
+
+    try {
+      const snapshot = await getDocs(collection(firestore, 'users', uid, 'app-data'));
+      if (version !== this.loadVersion) return;
+
+      const next: Record<string, string> = {};
+      snapshot.forEach((record) => {
+        const value = record.data()['value'];
+        if (typeof value === 'string') next[record.id] = value;
+      });
+      this.state.set(next);
+    } catch (error) {
+      console.error('Failed to load Firestore data:', { uid, error });
+      if (version === this.loadVersion) {
+        this.state.set({});
+      }
+    }
   }
 }

@@ -10,7 +10,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "emulators": "firebase emulators:start --only firestore,ui",
-    "deploy": "firebase deploy --only hosting"
+    "deploy": "firebase deploy --only hosting,firestore:rules"
   },
   "private": true,
   "packageManager": "pnpm@10.28.2",
