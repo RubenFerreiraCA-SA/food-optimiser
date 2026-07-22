@@ -1,4 +1,5 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import {
   GoogleAuthProvider,
   createUserWithEmailAndPassword,
@@ -15,6 +16,7 @@ import { getAuth } from 'firebase/auth';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly auth = getAuth(getFirebaseApp());
+  private readonly router = inject(Router);
   private readonly userState = signal<User | null>(null);
   private readonly readyState = signal(false);
   private readyResolver: (() => void) | null = null;
@@ -67,5 +69,6 @@ export class AuthService {
 
   async signOut(): Promise<void> {
     await firebaseSignOut(this.auth);
+    await this.router.navigateByUrl('/login');
   }
 }
