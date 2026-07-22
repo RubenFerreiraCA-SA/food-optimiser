@@ -8,7 +8,7 @@ import {
   getFirestore,
   setDoc,
 } from 'firebase/firestore';
-import { environment } from '../../../../environments/environment';
+import { environment } from '../../../environments/environment';
 import { AuthService } from '../auth/auth.service';
 import { getFirebaseApp } from '../firebase/firebase-app';
 

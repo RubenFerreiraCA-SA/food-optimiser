@@ -14,31 +14,32 @@
         }
       },
       "root": "",
-      "sourceRoot": "src",
+      "sourceRoot": "frontend",
       "prefix": "app",
       "architect": {
-        "build": {
-          "builder": "@angular/build:application",
-          "options": {
-            "browser": "src/main.ts",
-            "tsConfig": "tsconfig.app.json",
-            "inlineStyleLanguage": "scss",
-            "assets": [
+          "build": {
+            "builder": "@angular/build:application",
+            "options": {
+              "browser": "frontend/main.ts",
+              "outputPath": "frontend/dist/meal-optimiser",
+              "tsConfig": "tsconfig.app.json",
+              "inlineStyleLanguage": "scss",
+              "assets": [
               {
                 "glob": "**/*",
-                "input": "public"
+                "input": "frontend/public"
               }
             ],
             "styles": [
-              "src/styles.scss"
+              "frontend/styles.scss"
             ]
           },
           "configurations": {
             "production": {
               "fileReplacements": [
                 {
-                  "replace": "environments/environment.ts",
-                  "with": "environments/environment.production.ts"
+                  "replace": "frontend/environments/environment.ts",
+                  "with": "frontend/environments/environment.production.ts"
                 }
               ],
               "budgets": [
@@ -58,8 +59,8 @@
             "development": {
               "fileReplacements": [
                 {
-                  "replace": "environments/environment.ts",
-                  "with": "environments/environment.development.ts"
+                  "replace": "frontend/environments/environment.ts",
+                  "with": "frontend/environments/environment.development.ts"
                 }
               ],
               "optimization": false,

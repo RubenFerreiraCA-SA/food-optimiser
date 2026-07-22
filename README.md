@@ -14,12 +14,12 @@ Once the server is running, open your browser and navigate to `http://localhost:
 
 ## C# Server
 
-This repo includes a minimal ASP.NET Core backend at `server/MealOptimiser.Api`.
+This repo includes a minimal ASP.NET Core backend at `backend/MealOptimiser.Api`.
 
 To run it locally:
 
 ```bash
-dotnet run --project server/MealOptimiser.Api
+dotnet run --project backend/MealOptimiser.Api
 ```
 
 Available endpoints:
@@ -52,6 +52,8 @@ ng build
 ```
 
 This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+
+The Angular build output is written to `frontend/dist/meal-optimiser/`.
 
 ## Running unit tests
 

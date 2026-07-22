@@ -29,7 +29,7 @@ const taskSets = {
     {
       name: 'be',
       command: 'dotnet',
-      args: ['run', '--project', 'server/MealOptimiser.Api'],
+      args: ['run', '--project', 'backend/MealOptimiser.Api'],
     },
   ],
 };

@@ -2,9 +2,9 @@
   "name": "meal-optimiser",
   "version": "0.0.0",
   "scripts": {
-    "start": "node scripts/dev.mjs full",
-    "serve:fe": "node scripts/dev.mjs fe",
-    "serve:be": "dotnet run --project server/MealOptimiser.Api",
+    "start": "node _scripts/dev.mjs full",
+    "serve:fe": "node _scripts/dev.mjs fe",
+    "serve:be": "dotnet run --project backend/MealOptimiser.Api",
     "build": "ng build",
     "test": "ng test",
     "deploy": "firebase deploy --only hosting,firestore:rules"
