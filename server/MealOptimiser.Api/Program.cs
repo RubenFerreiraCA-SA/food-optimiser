@@ -1,4 +1,28 @@
+using Google.Api.Gax;
+using Google.Cloud.Firestore;
+
 var builder = WebApplication.CreateBuilder(args);
+
+var firestoreProjectId = builder.Configuration["Firestore:ProjectId"];
+if (string.IsNullOrWhiteSpace(firestoreProjectId))
+{
+  throw new InvalidOperationException("Firestore:ProjectId must be configured.");
+}
+
+if (builder.Environment.IsDevelopment() &&
+    string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("FIRESTORE_EMULATOR_HOST")))
+{
+  throw new InvalidOperationException(
+    "FIRESTORE_EMULATOR_HOST must be set in Development to use the Firestore emulator.");
+}
+
+var firestore = new FirestoreDbBuilder
+{
+  ProjectId = firestoreProjectId,
+  EmulatorDetection = EmulatorDetection.EmulatorOrProduction,
+}.Build();
+
+builder.Services.AddSingleton(firestore);
 
 builder.Services.AddCors(options =>
 {
@@ -29,13 +53,18 @@ api.MapGet("/health", () =>
   });
 });
 
-api.MapGet("/info", (IHostEnvironment environment) =>
+api.MapGet("/info", (IHostEnvironment environment, FirestoreDb firestoreDb) =>
 {
   return Results.Ok(new
   {
     name = "Meal Optimiser API",
     environment = environment.EnvironmentName,
     version = "1.0.0",
+    firestore = new
+    {
+      projectId = firestoreDb.ProjectId,
+      mode = environment.IsDevelopment() ? "emulator" : "production",
+    },
   });
 });
 
