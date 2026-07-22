@@ -3,12 +3,17 @@ import { HomePage } from './pages/home-page/home-page';
 import { PantryPage } from './pages/pantry-page/pantry-page';
 import { MenuPage } from './pages/menu-page/menu-page';
 import { PlannerPage } from './pages/planner-page/planner-page';
+import { LoginPage } from './pages/auth-page/login-page/login-page';
+import { RegisterPage } from './pages/auth-page/register-page/register-page';
+import { authGuard, guestGuard } from './shared/services/auth/auth.guard';
 
 export const routes: Routes = [
-  { path: '', component: HomePage },
-  { path: 'home', component: HomePage },
-  { path: 'pantry', component: PantryPage },
-  { path: 'menu', component: MenuPage },
-  { path: 'planner', component: PlannerPage },
+  { path: 'login', component: LoginPage, canActivate: [guestGuard] },
+  { path: 'register', component: RegisterPage, canActivate: [guestGuard] },
+  { path: '', component: HomePage, canActivate: [authGuard] },
+  { path: 'home', component: HomePage, canActivate: [authGuard] },
+  { path: 'pantry', component: PantryPage, canActivate: [authGuard] },
+  { path: 'menu', component: MenuPage, canActivate: [authGuard] },
+  { path: 'planner', component: PlannerPage, canActivate: [authGuard] },
   { path: '**', redirectTo: 'home' },
 ];

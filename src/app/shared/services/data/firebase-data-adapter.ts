@@ -1,9 +1,8 @@
-import { initializeApp, getApp, getApps } from 'firebase/app';
 import { collection, deleteDoc, doc, getDocs, getFirestore, setDoc } from 'firebase/firestore';
-import { environment } from '../../../../../environments/environment';
 import { LocalStorageDataAdapter, type DataAdapter } from './data.service';
+import { getFirebaseApp } from '../firebase-app';
 
-const app = getApps().length ? getApp() : initializeApp(environment.firebaseConfig);
+const app = getFirebaseApp();
 const firestore = getFirestore(app);
 const records = collection(firestore, 'app-data');
 

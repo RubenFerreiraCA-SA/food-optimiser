@@ -1,11 +1,12 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import type { PlanningIngredient } from '../planner-page';
 import { IngredientTable, IngredientTableConfig } from '../../../shared/components/ingredient-table/ingredient-table';
 
 @Component({
   selector: 'app-confirm-ingredients-view',
-  imports: [FormsModule, IngredientTable],
+  imports: [FormsModule, IngredientTable, RouterLink],
   templateUrl: './confirm-ingredients-view.html',
   styleUrl: './confirm-ingredients-view.scss',
 })

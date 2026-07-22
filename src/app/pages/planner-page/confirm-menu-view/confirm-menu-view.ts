@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { Recipe } from '../../../shared/services/menu/menu.service';
 import {
   RecipeCard,
@@ -8,7 +9,7 @@ import {
 
 @Component({
   selector: 'app-confirm-menu-view',
-  imports: [RecipeCard],
+  imports: [RecipeCard, RouterLink],
   templateUrl: './confirm-menu-view.html',
   styleUrl: './confirm-menu-view.scss',
 })

@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 export type ActionCardIcon = 'ingredients' | 'meals' | 'optimise';
 
@@ -12,6 +13,7 @@ export interface ActionCardConfig {
 
 @Component({
   selector: 'app-action-card',
+  imports: [RouterLink],
   templateUrl: './action-card.html',
   styleUrl: './action-card.scss',
 })

@@ -6,6 +6,7 @@ import {
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
+import { AuthService } from './shared/services/auth/auth.service';
 import { routes } from './app.routes';
 import { DataSeedingService } from './shared/services/data-seeding/data-seeding.service';
 import { DATA_ADAPTER, DataService } from './shared/services/data/data.service';
@@ -17,6 +18,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     { provide: DATA_ADAPTER, useFactory: () => new FirebaseDataAdapter() },
     provideAppInitializer(() => {
+      void inject(AuthService).initialize();
       const data = inject(DataService);
       const seeding = inject(DataSeedingService);
 
