@@ -1,9 +1,9 @@
 import { Injectable, inject } from '@angular/core';
-import { DATA_KEYS, defaultIngredients, defaultRecipes } from './default-data';
+import { DATA_KEYS, defaultIngredients, defaultRecipes } from './seed-data';
 import { DataService } from '../data/data.service';
 
 @Injectable({ providedIn: 'root' })
-export class SeedService {
+export class DataSeedingService {
   private readonly data = inject(DataService);
 
   seed(): void {

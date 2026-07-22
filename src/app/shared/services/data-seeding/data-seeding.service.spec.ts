@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
-import { DATA_KEYS } from '../../data/default-data';
 import { DATA_ADAPTER, DataAdapter } from '../data/data.service';
-import { SeedService } from './seed.service';
+import { DataSeedingService } from './data-seeding.service';
+import { DATA_KEYS } from './seed-data';
 
 describe('SeedService', () => {
   it('seeds missing records without replacing existing data', () => {
@@ -13,7 +13,7 @@ describe('SeedService', () => {
     };
     TestBed.configureTestingModule({ providers: [{ provide: DATA_ADAPTER, useValue: adapter }] });
 
-    TestBed.inject(SeedService).seed();
+    TestBed.inject(DataSeedingService).seed();
 
     expect(JSON.parse(values.get(DATA_KEYS.menu) ?? '[]')).toEqual([{ id: 'saved' }]);
     expect(JSON.parse(values.get(DATA_KEYS.pantry) ?? '[]')).toHaveLength(7);

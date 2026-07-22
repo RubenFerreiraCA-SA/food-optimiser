@@ -1,6 +1,6 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { DataService } from '../data/data.service';
-import { DATA_KEYS, defaultRecipes } from '../seed/default-data';
+import { DATA_KEYS, defaultRecipes } from '../data-seeding/seed-data';
 
 export interface RecipeIngredient {
   name: string;

@@ -7,12 +7,12 @@ import {
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
-import { SeedService } from './shared/services/seed/seed.service';
+import { DataSeedingService } from './shared/services/data-seeding/data-seeding.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideAppInitializer(() => inject(SeedService).seed()),
+    provideAppInitializer(() => inject(DataSeedingService).seed()),
   ],
 };
