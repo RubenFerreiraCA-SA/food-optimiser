@@ -10,7 +10,7 @@ import {
 } from 'firebase/firestore';
 import { environment } from '../../../../environments/environment';
 import { AuthService } from '../auth/auth.service';
-import { getFirebaseApp } from '../firebase-app';
+import { getFirebaseApp } from '../firebase/firebase-app';
 
 const firestore = getFirestore(getFirebaseApp());
 

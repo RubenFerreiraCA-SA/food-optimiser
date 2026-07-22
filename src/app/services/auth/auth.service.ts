@@ -9,7 +9,7 @@ import {
   updateProfile,
   type User,
 } from 'firebase/auth';
-import { getFirebaseApp } from '../firebase-app';
+import { getFirebaseApp } from '../firebase/firebase-app';
 import { getAuth } from 'firebase/auth';
 
 @Injectable({ providedIn: 'root' })

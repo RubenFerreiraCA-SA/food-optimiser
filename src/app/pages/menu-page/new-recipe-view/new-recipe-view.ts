@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RecipeIngredient, Recipe } from '../../../services/menu/menu.service';
+import { RecipeIngredient, Recipe } from '../../../services/page-helpers/menu/menu.service';
 
 @Component({
   selector: 'app-new-recipe-view',

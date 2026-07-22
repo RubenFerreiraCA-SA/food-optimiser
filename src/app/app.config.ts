@@ -7,7 +7,7 @@ import {
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { AuthService } from './services/auth/auth.service';
-import { DataSeedingService } from './services/data-seeding/data-seeding.service';
+import { DataSeedingService } from './services/data/data-seeding/data-seeding.service';
 import { DataService } from './services/data/data.service';
 
 export const appConfig: ApplicationConfig = {

@@ -3,8 +3,8 @@ import { FormsModule } from '@angular/forms';
 import { Dialog, DialogConfig } from '../../shared/components/dialog/dialog';
 import { PageHero, PageHeroConfig } from '../../shared/components/page-hero/page-hero';
 import { IngredientTable, IngredientTableConfig, IngredientTableEvent } from '../../shared/components/ingredient-table/ingredient-table';
-import { MenuService, Recipe } from '../../services/menu/menu.service';
-import { PantryService, PantryIngredient } from '../../services/pantry/pantry.service';
+import { MenuService, Recipe } from '../../services/page-helpers/menu/menu.service';
+import { PantryService, PantryIngredient } from '../../services/page-helpers/pantry/pantry.service';
 
 @Component({
   selector: 'app-pantry-page',

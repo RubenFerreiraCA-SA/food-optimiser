@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { AuthService } from '../auth/auth.service';
-import { DataService } from '../data/data.service';
+import { AuthService } from '../../auth/auth.service';
+import { DataService } from '../data.service';
 import { DataSeedingService } from './data-seeding.service';
 import { DATA_KEYS } from './seed-data';
 

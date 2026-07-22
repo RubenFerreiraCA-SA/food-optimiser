@@ -1,7 +1,7 @@
 import { Injectable, effect, inject } from '@angular/core';
-import { AuthService } from '../auth/auth.service';
+import { AuthService } from '../../auth/auth.service';
 import { DATA_KEYS, defaultIngredients, defaultRecipes } from './seed-data';
-import { DataService } from '../data/data.service';
+import { DataService } from '../data.service';
 
 @Injectable({ providedIn: 'root' })
 export class DataSeedingService {
