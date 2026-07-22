@@ -1,5 +1,6 @@
 using MealOptimiser.Api.Controllers;
 using MealOptimiser.Api.Contracts.Common;
+using MealOptimiser.Api.Contracts.Planning;
 using MealOptimiser.Api.Contracts.Recipes;
 using MealOptimiser.Api.Contracts.Users;
 using Microsoft.OpenApi.Any;
@@ -144,6 +145,33 @@ public sealed class ProfileResponseExampleOperationFilter : IOperationFilter
                 },
                 ["origin"] = new OpenApiString("shared"),
                 ["sourceRecipeId"] = new OpenApiNull(),
+            },
+            nameof(PlanController.CreatePlan) => new OpenApiObject
+            {
+                ["meals"] = new OpenApiArray
+                {
+                    new OpenApiObject
+                    {
+                        ["recipeId"] = new OpenApiString("rec_pasta_01"),
+                        ["name"] = new OpenApiString("Pasta"),
+                        ["dishes"] = new OpenApiInteger(2),
+                        ["meals"] = new OpenApiInteger(6),
+                        ["ingredients"] = new OpenApiString("2x Flour, 1x Tomato, 1x Cheese"),
+                    },
+                },
+                ["totalDishes"] = new OpenApiInteger(2),
+                ["totalMeals"] = new OpenApiInteger(6),
+                ["ingredients"] = new OpenApiArray
+                {
+                    new OpenApiObject
+                    {
+                        ["id"] = new OpenApiString("ing_flour_02"),
+                        ["name"] = new OpenApiString("Flour"),
+                        ["before"] = new OpenApiInteger(4),
+                        ["used"] = new OpenApiInteger(4),
+                        ["left"] = new OpenApiInteger(0),
+                    },
+                },
             },
             _ => mediaType.Example,
         };

@@ -95,6 +95,10 @@ Routes for the shared ingredient catalog.
 
 Routes for the global shared recipe catalog.
 
+### [Controllers/PlanController.cs](../Controllers/PlanController.cs)
+
+Route for generating an optimised meal plan from supplied ingredients and recipes.
+
 ### [Services/IReadOnlyAppStateService.cs](../Services/IReadOnlyAppStateService.cs)
 
 The read-service contract that backs the controllers.
@@ -144,3 +148,4 @@ It sets the local port, environment name, and emulator host.
 - `GET /api/recipes`
 - `GET /api/recipes/{recipeId}`
 - `POST /api/recipes`
+- `POST /api/plan`

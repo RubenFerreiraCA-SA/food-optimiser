@@ -128,6 +128,10 @@ Returns one shared recipe by id.
 
 Creates a new shared recipe in the global catalog.
 
+### `POST /api/plan`
+
+Runs the meal planner against a set of ingredients and recipes and returns the optimised plan.
+
 ## Local setup
 
 Run the backend from the repo root with:
