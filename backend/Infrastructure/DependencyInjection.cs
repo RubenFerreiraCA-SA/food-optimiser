@@ -21,6 +21,8 @@ public static class DependencyInjection
             .AddEndpointsApiExplorer()
             .AddSwaggerGen(options =>
             {
+                options.OperationFilter<MealOptimiser.Api.Infrastructure.Swagger.ProfileResponseExampleOperationFilter>();
+
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 if (File.Exists(xmlPath))

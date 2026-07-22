@@ -10,5 +10,8 @@
     "**/node_modules": true,
     "**/backend/**/bin": true,
     "**/backend/**/obj": true
+  },
+  "[csharp]": {
+    "editor.defaultFormatter": "ms-dotnettools.csharp"
   }
 }

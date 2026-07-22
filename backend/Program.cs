@@ -23,7 +23,7 @@ app.MapGet("/api/health", () =>
         status = "ok",
         timestampUtc = DateTimeOffset.UtcNow,
     });
-});
+}).ExcludeFromDescription();
 
 app.MapGet("/api/info", (IHostEnvironment environment, Google.Cloud.Firestore.FirestoreDb firestoreDb) =>
 {
@@ -38,7 +38,7 @@ app.MapGet("/api/info", (IHostEnvironment environment, Google.Cloud.Firestore.Fi
             mode = Environment.GetEnvironmentVariable("FIRESTORE_EMULATOR_HOST") is null ? "production" : "emulator",
         },
     });
-});
+}).ExcludeFromDescription();
 
 app.Run();
 

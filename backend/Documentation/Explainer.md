@@ -77,11 +77,7 @@ Typed representation of the user menu selection stored under `users/{uid}/data/r
 
 ### [Controllers/MeController.cs](../Controllers/MeController.cs)
 
-Read-only routes for the current user's profile, pantry, and menu selection.
-
-### [Controllers/MenuController.cs](../Controllers/MenuController.cs)
-
-Read-only routes for the combined menu recipe view and the shared/personal recipe splits.
+Read-only routes for the current user's profile, pantry, menu selection, and menu recipe views.
 
 ### [Controllers/IngredientsController.cs](../Controllers/IngredientsController.cs)
 
