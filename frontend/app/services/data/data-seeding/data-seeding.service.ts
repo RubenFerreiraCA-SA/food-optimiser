@@ -41,6 +41,27 @@ export class DataSeedingService {
       }
     }
 
+    if (this.data.collectionSize(USER_COLLECTIONS.recipes) === 0) {
+      const seededRecipes = this.data.replaceCollection(
+        USER_COLLECTIONS.recipes,
+        defaultRecipes().map((recipe) => ({
+          ...recipe,
+          origin: 'shared' as const,
+          sourceRecipeId: recipe.id,
+        })),
+      );
+
+      this.data.upsertDocument(USER_COLLECTIONS.data, USER_DATA_DOCS.recipes, {
+        values: seededRecipes.map((recipe) => recipe.id),
+      });
+    } else if (!this.data.hasDocument(USER_COLLECTIONS.data, USER_DATA_DOCS.recipes)) {
+      this.data.upsertDocument(
+        USER_COLLECTIONS.data,
+        USER_DATA_DOCS.recipes,
+        { values: [] },
+      );
+    }
+
     if (!this.data.hasDocument(USER_COLLECTIONS.data, USER_DATA_DOCS.ingredients)) {
       this.data.upsertDocument(
         USER_COLLECTIONS.data,
@@ -51,13 +72,6 @@ export class DataSeedingService {
       );
     }
 
-    if (!this.data.hasDocument(USER_COLLECTIONS.data, USER_DATA_DOCS.recipes)) {
-      this.data.upsertDocument(
-        USER_COLLECTIONS.data,
-        USER_DATA_DOCS.recipes,
-        { values: defaultRecipes().map((recipe) => recipe.id) },
-      );
-    }
   }
 
   private ensureProfile(user: User): void {

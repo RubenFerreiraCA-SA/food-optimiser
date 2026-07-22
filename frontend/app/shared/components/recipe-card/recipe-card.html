@@ -36,6 +36,9 @@
         <p>Feeds {{ config.recipe.servings }}</p>
       </div>
     </div>
+    @if (recipeBadgeLabel(); as badge) {
+      <span class="recipe-badge">{{ badge }}</span>
+    }
     <ul class="recipe-ingredients-list">
       @for (ingredient of recipeIngredients(config.recipe); track ingredient.id) {
         <li>

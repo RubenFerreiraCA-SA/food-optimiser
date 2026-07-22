@@ -11,6 +11,12 @@ interface RecipeIngredientRow {
   quantity: number;
 }
 
+interface SavedRecipeEvent {
+  id: string | null;
+  recipe: Omit<Recipe, 'id'>;
+  sourceRecipeId: string | null;
+}
+
 @Component({
   selector: 'app-new-recipe-view',
   imports: [FormsModule],
@@ -26,7 +32,7 @@ export class NewRecipeView {
   name = '';
   servings = 1;
   readonly ingredients = signal<RecipeIngredientRow[]>([{ ingredientId: '', ingredientName: '', quantity: 1 }]);
-  @Output() readonly saved = new EventEmitter<{ id: string | null; recipe: Omit<Recipe, 'id'> }>();
+  @Output() readonly saved = new EventEmitter<SavedRecipeEvent>();
   @Output() readonly cancelled = new EventEmitter<void>();
 
   readonly recipeMatches = signal<Recipe[]>([]);
@@ -151,8 +157,9 @@ export class NewRecipeView {
       }, {});
     if (!this.name.trim() || !Object.keys(ingredients).length || this.servings < 1) return;
     this.saved.emit({
-      id: this.recipeId ?? this.selectedRecipeId,
+      id: this.recipeId,
       recipe: { name: this.name.trim(), servings: this.servings, image: '', ingredients },
+      sourceRecipeId: this.recipeId ? null : this.selectedRecipeId,
     });
   }
 

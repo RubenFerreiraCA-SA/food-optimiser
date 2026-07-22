@@ -81,9 +81,9 @@ export class MenuPage {
     this.recipeBeingEdited.set(null);
     this.isCreatingRecipe.set(false);
   }
-  saveRecipe(event: { id: string | null; recipe: Omit<Recipe, 'id'> }): void {
+  saveRecipe(event: { id: string | null; recipe: Omit<Recipe, 'id'>; sourceRecipeId: string | null }): void {
     if (event.id) this.menu.updateRecipe(event.id, event.recipe);
-    else this.menu.add(event.recipe);
+    else this.menu.add(event.recipe, event.sourceRecipeId);
     this.closeRecipeForm();
   }
 }

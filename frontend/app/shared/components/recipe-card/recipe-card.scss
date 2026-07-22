@@ -33,6 +33,26 @@
   align-items: center;
   gap: 12px;
 }
+.recipe-badge {
+  display: inline-flex;
+  grid-column: 4;
+  grid-row: 1;
+  align-self: start;
+  justify-self: end;
+  padding: 6px 9px;
+  border: 1px solid #c7d6c6;
+  border-radius: 999px;
+  color: #4f6559;
+  background: #eef5ea;
+  font:
+    700 11px Arial,
+    sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.recipe-badge {
+  max-width: fit-content;
+}
 .recipe-icon {
   display: grid;
   width: 43px;

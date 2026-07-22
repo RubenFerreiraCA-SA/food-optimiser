@@ -12,4 +12,6 @@ export interface Recipe {
   servings: number;
   image: string;
   ingredients: RecipeIngredientMap;
+  origin?: 'shared' | 'forked' | 'custom';
+  sourceRecipeId?: string;
 }

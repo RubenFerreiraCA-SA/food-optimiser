@@ -51,4 +51,12 @@ export class RecipeCard {
     };
     return labels[this.config.recipe.id] ?? '🍽️';
   }
+
+  recipeBadgeLabel(): string | null {
+    const recipe = this.config.recipe;
+    if (recipe.origin === 'shared') return 'Original';
+    if (recipe.origin === 'forked') return 'Forked';
+    if (recipe.origin === 'custom') return 'Custom';
+    return null;
+  }
 }

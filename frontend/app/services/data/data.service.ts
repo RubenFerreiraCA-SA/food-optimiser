@@ -205,7 +205,7 @@ export class DataService {
       }
 
       const entries = await Promise.all(
-        ['profile', 'data'].map(async (collectionName) => {
+        ['profile', 'data', 'recipes'].map(async (collectionName) => {
           const snapshot = await getDocs(collection(firestore, 'users', uid, collectionName));
           const next: FirestoreCollectionData = {};
           snapshot.forEach((record) => {

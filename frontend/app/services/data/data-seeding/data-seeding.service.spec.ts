@@ -33,9 +33,15 @@ describe('SeedService', () => {
         collectionName: string,
         value: Array<{ id: string }>,
         scope: 'user' | 'global' = 'user',
-      ) => {
-        collections.set(key(scope, collectionName), new Map<string, unknown>(value.map((item) => [item.id, item])));
-      },
+      ) =>
+        value.map((item, index) => {
+          const next = { ...item, id: `${collectionName}-${index}` };
+          const collectionKey = key(scope, collectionName);
+          const collection = collections.get(collectionKey) ?? new Map<string, unknown>();
+          collection.set(next.id, next);
+          collections.set(collectionKey, collection);
+          return next;
+        }),
       whenReady: () => Promise.resolve(),
     };
     TestBed.configureTestingModule({
@@ -59,12 +65,13 @@ describe('SeedService', () => {
       { id: 'saved' },
     ]);
     expect(collections.get(key('global', GLOBAL_COLLECTIONS.ingredients))?.size).toBe(defaultIngredients().length);
+    expect(collections.get(key('user', USER_COLLECTIONS.recipes))?.size).toBe(defaultRecipes().length);
     expect(collections.get(key('user', USER_COLLECTIONS.data))?.get(USER_DATA_DOCS.ingredients)).toEqual(
       Object.fromEntries(defaultPantryIngredients().map((ingredient) => [ingredient.id, ingredient.quantity])),
     );
-    expect(collections.get(key('user', USER_COLLECTIONS.data))?.get(USER_DATA_DOCS.recipes)).toEqual(
-      { values: defaultRecipes().map((recipe) => recipe.id) },
-    );
+    expect(collections.get(key('user', USER_COLLECTIONS.data))?.get(USER_DATA_DOCS.recipes)).toEqual({
+      values: defaultRecipes().map((_, index) => `recipes-${index}`),
+    });
     expect(collections.get(key('user', USER_COLLECTIONS.profile))?.get(PROFILE_DOC_ID)).toEqual(
       expect.objectContaining({
         uid: 'user-1',
