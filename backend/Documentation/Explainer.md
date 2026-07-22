@@ -1,7 +1,7 @@
 # Meal Optimiser API Explainer
 
 This document explains the backend foundation at a file level.
-The project is intentionally set up without endpoints yet, so this file focuses on the host, configuration, Firestore access, and the schema contracts the future endpoints will use.
+It focuses on the host, configuration, Firestore access, the schema contracts, and the small read-only endpoint surface.
 
 ## Project files
 
@@ -15,13 +15,15 @@ It:
 - loads `appsettings.local.json` on developer machines
 - registers the backend services
 - enables the frontend CORS policy
-- starts the app without mapping routes yet
+- maps the read-only controllers and diagnostic endpoints
 
 ### [Infrastructure/DependencyInjection.cs](../Infrastructure/DependencyInjection.cs)
 
 The backend service registration entry point.
 
 It binds Firebase configuration, validates required settings, registers Firestore, and configures CORS origins.
+
+It also registers the controller pipeline and the read-state service layer.
 
 ### [Infrastructure/Configuration/FirebaseOptions.cs](../Infrastructure/Configuration/FirebaseOptions.cs)
 
@@ -45,6 +47,12 @@ A lightweight wrapper around the Firestore client.
 
 This gives the rest of the backend a single injectable access point for the database connection.
 
+### [Infrastructure/UserContext/CurrentUserAccessor.cs](../Infrastructure/UserContext/CurrentUserAccessor.cs)
+
+Resolves the current user id from the request.
+
+It checks claims first and falls back to the temporary `X-User-Id` header for local use.
+
 ### [Domain/Ingredients/IngredientDocument.cs](../Domain/Ingredients/IngredientDocument.cs)
 
 Typed representation of a shared ingredient document.
@@ -67,6 +75,30 @@ Typed representation of the pantry quantities stored under `users/{uid}/data/ing
 
 Typed representation of the user menu selection stored under `users/{uid}/data/recipes`.
 
+### [Controllers/MeController.cs](../Controllers/MeController.cs)
+
+Read-only routes for the current user's profile, pantry, and menu selection.
+
+### [Controllers/MenuController.cs](../Controllers/MenuController.cs)
+
+Read-only routes for the combined menu recipe view and the shared/personal recipe splits.
+
+### [Controllers/IngredientsController.cs](../Controllers/IngredientsController.cs)
+
+Read-only route for the shared ingredient catalog.
+
+### [Controllers/RecipesController.cs](../Controllers/RecipesController.cs)
+
+Read-only route for the global shared recipe catalog.
+
+### [Services/IReadOnlyAppStateService.cs](../Services/IReadOnlyAppStateService.cs)
+
+The read-service contract that backs the controllers.
+
+### [Services/FirestoreReadOnlyAppStateService.cs](../Services/FirestoreReadOnlyAppStateService.cs)
+
+The Firestore-backed implementation of the read-service contract.
+
 ### [appsettings.json](../appsettings.json)
 
 Shared backend settings.
@@ -85,8 +117,15 @@ The local `dotnet run` profile.
 
 It sets the local port, environment name, and emulator host.
 
-## What is not here
+## What the current endpoints expose
 
-There are intentionally no API endpoints yet.
-
-That layer will be added after the route contracts are defined.
+- `GET /api/health`
+- `GET /api/info`
+- `GET /api/me/profile`
+- `GET /api/me/pantry`
+- `GET /api/me/menu`
+- `GET /api/me/menu/all`
+- `GET /api/me/menu/personal-recipes`
+- `GET /api/me/menu/shared-recipes`
+- `GET /api/ingredients`
+- `GET /api/recipes`

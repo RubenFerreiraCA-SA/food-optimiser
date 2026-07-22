@@ -3,6 +3,8 @@ using Google.Cloud.Firestore;
 using Microsoft.Extensions.Options;
 using MealOptimiser.Api.Infrastructure.Configuration;
 using MealOptimiser.Api.Infrastructure.Firestore;
+using MealOptimiser.Api.Infrastructure.UserContext;
+using MealOptimiser.Api.Services;
 
 namespace MealOptimiser.Api.Infrastructure;
 
@@ -13,6 +15,11 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         services
+            .AddControllers()
+            .Services
+            .AddEndpointsApiExplorer()
+            .AddSwaggerGen()
+            .AddHttpContextAccessor()
             .AddOptions<FirebaseOptions>()
             .Bind(configuration.GetSection(FirebaseOptions.SectionName))
             .PostConfigure(options =>
@@ -48,6 +55,8 @@ public static class DependencyInjection
         });
 
         services.AddSingleton<IFirestoreDbAccessor, FirestoreDbAccessor>();
+        services.AddSingleton<ICurrentUserAccessor, CurrentUserAccessor>();
+        services.AddSingleton<IReadOnlyAppStateService, FirestoreReadOnlyAppStateService>();
 
         services.AddCors(options =>
         {
