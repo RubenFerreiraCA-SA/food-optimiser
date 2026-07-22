@@ -61,6 +61,45 @@
 .progress i.complete {
   background: #6e9979;
 }
+
+.planner-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  max-width: 620px;
+  margin: 0 auto 18px;
+  padding: 12px 16px;
+  border-radius: 16px;
+  font:
+    600 14px/1.4 Arial,
+    sans-serif;
+}
+
+.planner-status--loading {
+  color: #315d4c;
+  background: rgba(55, 107, 86, 0.1);
+  border: 1px solid rgba(55, 107, 86, 0.2);
+}
+
+.planner-status--error {
+  color: #7a2e2e;
+  background: rgba(181, 53, 53, 0.08);
+  border: 1px solid rgba(181, 53, 53, 0.2);
+}
+
+.planner-status__action {
+  border: 0;
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  font:
+    700 13px/1 Arial,
+    sans-serif;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 @media (max-width: 760px) {
   .planner-page {
     padding: 0 22px 42px;
@@ -78,4 +117,9 @@
   .progress-step b {
     display: none;
   }
+
+  .planner-status {
+    margin-inline: 0;
+  }
+
 }

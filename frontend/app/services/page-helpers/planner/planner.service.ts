@@ -1,6 +1,7 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { ApiClientService } from '../../api/api-client.service';
 import type { Recipe } from '../../data/shared-types';
+import { SnackbarService } from '../../ui/snackbar.service';
 
 export interface PlannerIngredientInput {
   id: string;
@@ -34,6 +35,7 @@ export interface OptimisedPlan {
 @Injectable({ providedIn: 'root' })
 export class PlannerService {
   private readonly api = inject(ApiClientService);
+  private readonly snackbar = inject(SnackbarService);
   private readonly planState = signal<OptimisedPlan | null>(null);
   private readonly loadingState = signal(false);
   private readonly errorState = signal('');
@@ -66,6 +68,7 @@ export class PlannerService {
       });
 
       this.planState.set(plan);
+      this.snackbar.success('Plan ready');
     } catch (error) {
       console.error('Failed to create plan from API:', error);
       this.errorState.set('Unable to create a plan right now. Please try again.');

@@ -1,0 +1,80 @@
+:host {
+  pointer-events: none;
+}
+
+.snackbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 50;
+  max-width: min(340px, calc(100vw - 44px));
+  padding: 14px 14px 14px 16px;
+  border-radius: 18px;
+  color: #fffdf8;
+  box-shadow: 0 16px 34px rgba(18, 37, 31, 0.24);
+  font:
+    600 14px/1.3 Arial,
+    sans-serif;
+}
+
+.snackbar__icon {
+  display: grid;
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.16);
+  font-size: 14px;
+  line-height: 1;
+}
+
+.snackbar__message {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.snackbar__close {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  margin: -2px -2px -2px 0;
+  border: 0;
+  border-radius: 999px;
+  color: inherit;
+  background: rgba(255, 255, 255, 0.12);
+  font:
+    700 18px/1 Arial,
+    sans-serif;
+  cursor: pointer;
+}
+
+.snackbar__close:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.snackbar--success {
+  background: #315d4c;
+}
+
+.snackbar--info {
+  background: #2f4d66;
+}
+
+.snackbar--error {
+  background: #7a2e2e;
+}
+
+@media (max-width: 760px) {
+  .snackbar {
+    right: 16px;
+    left: 16px;
+    bottom: 16px;
+    max-width: none;
+  }
+}

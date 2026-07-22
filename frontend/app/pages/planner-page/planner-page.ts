@@ -41,6 +41,8 @@ export class PlannerPage {
   readonly planningIngredients = signal<PlanningIngredient[]>(this.createPlanningIngredients());
   readonly selectedRecipeIds = signal<string[]>(this.menu.selectedRecipeIds());
   readonly plan = computed(() => this.planner.plan());
+  readonly planLoading = computed(() => this.planner.loading());
+  readonly planError = computed(() => this.planner.error());
   readonly planMeals = computed(() => this.plan()?.meals ?? []);
   readonly totalServings = computed(() => this.plan()?.totalMeals ?? 0);
   readonly totalDishes = computed(() => this.plan()?.totalDishes ?? 0);

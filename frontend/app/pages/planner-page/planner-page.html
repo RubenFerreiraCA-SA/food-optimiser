@@ -27,6 +27,19 @@
     </button>
   </nav>
 
+  @if (planLoading()) {
+    <div class="planner-status planner-status--loading" role="status" aria-live="polite">
+      Generating your plan...
+    </div>
+  }
+
+  @if (planError()) {
+    <div class="planner-status planner-status--error" role="alert">
+      {{ planError() }}
+      <button type="button" class="planner-status__action" (click)="createPlan()">Try again</button>
+    </div>
+  }
+
   @if (step() === 1) {
     <app-confirm-ingredients-view
       [ingredients]="planningIngredients()"
@@ -52,4 +65,5 @@
       (startNew)="startAgain()"
     />
   }
+
 </main>

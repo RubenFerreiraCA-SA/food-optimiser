@@ -1,0 +1,14 @@
+@if (snackbar(); as state) {
+  <div class="snackbar snackbar--{{ state.kind }}" role="status" aria-live="polite">
+    <span class="snackbar__icon" aria-hidden="true">{{ iconFor(state.kind) }}</span>
+    <span class="snackbar__message">{{ state.message }}</span>
+    <button
+      type="button"
+      class="snackbar__close"
+      aria-label="Dismiss notification"
+      (click)="dismiss()"
+    >
+      ×
+    </button>
+  </div>
+}

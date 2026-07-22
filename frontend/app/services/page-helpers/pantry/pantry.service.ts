@@ -3,6 +3,7 @@ import { AuthService } from '../../auth/auth.service';
 import { ApiClientService } from '../../api/api-client.service';
 import { IngredientCatalogService } from '../../data/ingredient-catalog.service';
 import { defaultPantryIngredients } from '../../data/data-seeding/seed-data';
+import { SnackbarService } from '../../ui/snackbar.service';
 
 export interface PantryIngredient {
   id: string;
@@ -16,6 +17,7 @@ export class PantryService {
   private readonly auth = inject(AuthService);
   private readonly api = inject(ApiClientService);
   private readonly catalog = inject(IngredientCatalogService);
+  private readonly snackbar = inject(SnackbarService);
   private readonly state = signal<PantryIngredient[]>([]);
   readonly ingredients = computed(() => this.state());
 
@@ -34,17 +36,20 @@ export class PantryService {
 
     await this.api.addPantryIngredient(ingredientId, quantity);
     await this.refresh();
+    this.snackbar.success('Ingredient added');
     return true;
   }
   async remove(id: string): Promise<void> {
     await this.api.removePantryIngredient(id);
     await this.refresh();
+    this.snackbar.success('Ingredient removed');
   }
   async setQuantity(id: string, quantity: number): Promise<boolean> {
     if (!Number.isInteger(quantity) || quantity < 0 || !this.state().some((item) => item.id === id))
       return false;
     await this.api.setPantryIngredient(id, quantity);
     await this.refresh();
+    this.snackbar.success('Pantry updated');
     return true;
   }
   async reset(): Promise<void> {
@@ -52,6 +57,7 @@ export class PantryService {
       Object.fromEntries(defaultPantryIngredients().map((ingredient) => [ingredient.id, ingredient.quantity])),
     );
     await this.refresh();
+    this.snackbar.success('Pantry restored');
   }
 
   private async refresh(): Promise<void> {

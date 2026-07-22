@@ -2,11 +2,13 @@ import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { AuthService } from '../../auth/auth.service';
 import { ApiClientService } from '../../api/api-client.service';
 import { Recipe } from '../../data/shared-types';
+import { SnackbarService } from '../../ui/snackbar.service';
 
 @Injectable({ providedIn: 'root' })
 export class MenuService {
   private readonly auth = inject(AuthService);
   private readonly api = inject(ApiClientService);
+  private readonly snackbar = inject(SnackbarService);
   private readonly sharedRecipesState = signal<Recipe[]>([]);
   private readonly userRecipesState = signal<Recipe[]>([]);
   private readonly selectedRecipeIdsState = signal<string[]>([]);
@@ -43,6 +45,7 @@ export class MenuService {
     const created = await this.api.createPersonalRecipe(this.toUpsertRecipe(storedRecipe));
     await this.api.addMenuRecipe(created.id);
     await this.refresh();
+    this.snackbar.success('Recipe added');
   }
 
   async fork(recipe: Recipe): Promise<void> {
@@ -77,6 +80,7 @@ export class MenuService {
     await this.api.updatePersonalRecipe(id, this.toUpsertRecipe(nextRecipe));
     await this.api.addMenuRecipe(id);
     await this.refresh();
+    this.snackbar.success('Recipe updated');
   }
 
   async remove(id: string): Promise<void> {
@@ -87,6 +91,7 @@ export class MenuService {
       await this.api.removeMenuRecipe(id);
     }
     await this.refresh();
+    this.snackbar.success('Recipe removed');
   }
 
   async select(id: string): Promise<void> {
@@ -103,6 +108,7 @@ export class MenuService {
     const sharedRecipes = await this.api.getRecipes();
     await this.api.replaceMenu(sharedRecipes.map((recipe) => recipe.id));
     await this.refresh();
+    this.snackbar.success('Menu restored');
   }
 
   private findRecipe(id: string): Recipe | undefined {
