@@ -68,6 +68,7 @@ public static class DependencyInjection
         services.AddSingleton<IFirestoreDbAccessor, FirestoreDbAccessor>();
         services.AddSingleton<ICurrentUserAccessor, CurrentUserAccessor>();
         services.AddSingleton<IReadOnlyAppStateService, FirestoreReadOnlyAppStateService>();
+        services.AddSingleton<IAppStateWriteService, FirestoreAppStateWriteService>();
 
         services.AddCors(options =>
         {

@@ -99,6 +99,21 @@ public sealed class FirestoreReadOnlyAppStateService(IFirestoreDbAccessor firest
             .ToArray();
     }
 
+    public async Task<IngredientResponse?> GetIngredientAsync(string ingredientId, CancellationToken cancellationToken = default)
+    {
+        var snapshot = await firestore.Database
+            .Collection(FirestoreCollectionNames.SharedIngredients)
+            .Document(ingredientId)
+            .GetSnapshotAsync(cancellationToken);
+
+        return snapshot.Exists
+            ? new IngredientResponse(
+                snapshot.Id,
+                snapshot.ContainsField("name") ? snapshot.GetValue<string>("name") : snapshot.Id,
+                snapshot.ContainsField("image") ? snapshot.GetValue<string>("image") : string.Empty)
+            : null;
+    }
+
     public async Task<IReadOnlyList<RecipeResponse>> GetRecipeCatalogAsync(CancellationToken cancellationToken = default)
     {
         var snapshot = await firestore.Database
@@ -109,6 +124,16 @@ public sealed class FirestoreReadOnlyAppStateService(IFirestoreDbAccessor firest
             .Select(document => MapRecipe(document, "shared", null))
             .OrderBy(recipe => recipe.Name, StringComparer.OrdinalIgnoreCase)
             .ToArray();
+    }
+
+    public async Task<RecipeResponse?> GetRecipeAsync(string recipeId, CancellationToken cancellationToken = default)
+    {
+        var snapshot = await firestore.Database
+            .Collection(FirestoreCollectionNames.SharedRecipes)
+            .Document(recipeId)
+            .GetSnapshotAsync(cancellationToken);
+
+        return snapshot.Exists ? MapRecipe(snapshot, "shared", null) : null;
     }
 
     private async Task<(IReadOnlyList<string> selectedIds, ISet<string> selectedSharedIds, Dictionary<string, RecipeResponse> personalRecipes, Dictionary<string, RecipeResponse> sharedRecipes)> LoadMenuRecipeMapsAsync(

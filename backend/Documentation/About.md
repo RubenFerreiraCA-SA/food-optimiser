@@ -1,7 +1,7 @@
 # Meal Optimiser API About
 
 This backend is the ASP.NET Core foundation for the app.
-It is wired to Firestore and the Firebase schema and now exposes a small read-only route surface.
+It is wired to Firestore and the Firebase schema and now exposes the user, pantry, menu, ingredient, and recipe endpoints used by the frontend.
 
 ## What the backend does
 
@@ -12,7 +12,7 @@ The backend currently:
 - connects to Firestore
 - configures the frontend CORS policy
 - exposes typed schema contracts for recipes, ingredients, pantry data, and user profiles
-- exposes read endpoints for the current user, menu views, and shared ingredient data
+- exposes read and write endpoints for the current user, menu views, and shared ingredient data
 
 ## Firestore
 
@@ -37,40 +37,96 @@ Simple liveness check.
 
 Runtime and Firestore connectivity information.
 
-### `GET /api/me/profile`
+### `GET /api/profile`
 
 Returns the authenticated user's profile.
 
-### `GET /api/me/pantry`
+### `GET /api/pantry`
 
 Returns the authenticated user's pantry quantities.
 
-### `GET /api/me/menu`
+### `PUT /api/pantry`
+
+Replaces the authenticated user's pantry quantities.
+
+### `POST /api/pantry/{ingredientId}`
+
+Adds a quantity for one ingredient in the pantry.
+
+### `PUT /api/pantry/{ingredientId}`
+
+Sets a specific pantry quantity for one ingredient.
+
+### `DELETE /api/pantry/{ingredientId}`
+
+Removes one ingredient from the pantry.
+
+### `GET /api/menu`
 
 Returns the authenticated user's selected recipe ids.
 
-### `GET /api/me/menu/all`
+### `PUT /api/menu`
+
+Replaces the authenticated user's selected recipe ids.
+
+### `POST /api/menu/{recipeId}`
+
+Adds one recipe id to the selected menu list.
+
+### `DELETE /api/menu/{recipeId}`
+
+Removes one recipe id from the selected menu list.
+
+### `GET /api/menu/all`
 
 Returns the combined menu recipe list for the current user:
 
 - shared recipes
 - user-owned recipes
 
-### `GET /api/me/menu/personal-recipes`
+### `GET /api/menu/personal-recipes`
 
 Returns only the user's personal recipe forks and custom recipes.
 
-### `GET /api/me/menu/shared-recipes`
+### `GET /api/menu/shared-recipes`
 
 Returns only the shared recipes the current user has added to their menu.
+
+### `POST /api/menu/personal-recipes`
+
+Creates a personal recipe fork or custom recipe for the current user.
+
+### `PUT /api/menu/personal-recipes/{recipeId}`
+
+Updates an existing personal recipe.
+
+### `DELETE /api/menu/personal-recipes/{recipeId}`
+
+Deletes a personal recipe.
 
 ### `GET /api/ingredients`
 
 Returns the shared ingredient catalog.
 
+### `GET /api/ingredients/{ingredientId}`
+
+Returns one shared ingredient by id.
+
+### `POST /api/ingredients`
+
+Adds a new shared ingredient if it does not already exist.
+
 ### `GET /api/recipes`
 
 Returns the global shared recipe catalog.
+
+### `GET /api/recipes/{recipeId}`
+
+Returns one shared recipe by id.
+
+### `POST /api/recipes`
+
+Creates a new shared recipe in the global catalog.
 
 ## Local setup
 

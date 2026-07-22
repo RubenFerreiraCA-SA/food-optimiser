@@ -1,7 +1,7 @@
 # Meal Optimiser API Explainer
 
 This document explains the backend foundation at a file level.
-It focuses on the host, configuration, Firestore access, the schema contracts, and the small read-only endpoint surface.
+It focuses on the host, configuration, Firestore access, the schema contracts, and the current API surface for user, pantry, menu, ingredient, and recipe data.
 
 ## Project files
 
@@ -75,17 +75,25 @@ Typed representation of the pantry quantities stored under `users/{uid}/data/ing
 
 Typed representation of the user menu selection stored under `users/{uid}/data/recipes`.
 
-### [Controllers/MeController.cs](../Controllers/MeController.cs)
+### [Controllers/ProfileController.cs](../Controllers/ProfileController.cs)
 
-Read-only routes for the current user's profile, pantry, menu selection, and menu recipe views.
+Routes for the current user's profile.
+
+### [Controllers/PantryController.cs](../Controllers/PantryController.cs)
+
+Routes for the current user's pantry.
+
+### [Controllers/MenuController.cs](../Controllers/MenuController.cs)
+
+Routes for the current user's menu selection, menu recipe views, and personal recipe mutations.
 
 ### [Controllers/IngredientsController.cs](../Controllers/IngredientsController.cs)
 
-Read-only route for the shared ingredient catalog.
+Routes for the shared ingredient catalog.
 
 ### [Controllers/RecipesController.cs](../Controllers/RecipesController.cs)
 
-Read-only route for the global shared recipe catalog.
+Routes for the global shared recipe catalog.
 
 ### [Services/IReadOnlyAppStateService.cs](../Services/IReadOnlyAppStateService.cs)
 
@@ -117,11 +125,22 @@ It sets the local port, environment name, and emulator host.
 
 - `GET /api/health`
 - `GET /api/info`
-- `GET /api/me/profile`
-- `GET /api/me/pantry`
-- `GET /api/me/menu`
-- `GET /api/me/menu/all`
-- `GET /api/me/menu/personal-recipes`
-- `GET /api/me/menu/shared-recipes`
+- `GET /api/profile`
+- `GET /api/pantry`
+- `GET /api/menu`
+- `PUT /api/pantry`
+- `POST /api/pantry/{ingredientId}`
+- `PUT /api/pantry/{ingredientId}`
+- `DELETE /api/pantry/{ingredientId}`
+- `PUT /api/menu`
+- `POST /api/menu/{recipeId}`
+- `DELETE /api/menu/{recipeId}`
+- `GET /api/menu/all`
+- `GET /api/menu/personal-recipes`
+- `GET /api/menu/shared-recipes`
 - `GET /api/ingredients`
+- `GET /api/ingredients/{ingredientId}`
+- `POST /api/ingredients`
 - `GET /api/recipes`
+- `GET /api/recipes/{recipeId}`
+- `POST /api/recipes`

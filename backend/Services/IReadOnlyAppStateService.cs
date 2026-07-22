@@ -13,5 +13,7 @@ public interface IReadOnlyAppStateService
     Task<IReadOnlyList<RecipeResponse>> GetSharedRecipesAsync(string userId, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<RecipeResponse>> GetAllMenuRecipesAsync(string userId, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<IngredientResponse>> GetIngredientsAsync(CancellationToken cancellationToken = default);
+    Task<IngredientResponse?> GetIngredientAsync(string ingredientId, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<RecipeResponse>> GetRecipeCatalogAsync(CancellationToken cancellationToken = default);
+    Task<RecipeResponse?> GetRecipeAsync(string recipeId, CancellationToken cancellationToken = default);
 }
