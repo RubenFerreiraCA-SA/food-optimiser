@@ -11,6 +11,9 @@ public sealed class MenuController(
     ICurrentUserAccessor currentUser,
     IReadOnlyAppStateService appState) : ControllerBase
 {
+    /// <summary>
+    /// Returns the user's full menu as a combined list of shared and personal recipes.
+    /// </summary>
     [HttpGet("all")]
     public async Task<ActionResult<IReadOnlyList<RecipeResponse>>> GetAll(CancellationToken cancellationToken)
     {
@@ -21,6 +24,9 @@ public sealed class MenuController(
         return Ok(recipes);
     }
 
+    /// <summary>
+    /// Returns the user's personal recipe forks and custom recipes that are on the menu.
+    /// </summary>
     [HttpGet("personal-recipes")]
     public async Task<ActionResult<IReadOnlyList<RecipeResponse>>> GetPersonal(CancellationToken cancellationToken)
     {
@@ -31,6 +37,9 @@ public sealed class MenuController(
         return Ok(recipes);
     }
 
+    /// <summary>
+    /// Returns the shared recipes the user has added to their menu.
+    /// </summary>
     [HttpGet("shared-recipes")]
     public async Task<ActionResult<IReadOnlyList<RecipeResponse>>> GetShared(CancellationToken cancellationToken)
     {

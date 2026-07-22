@@ -10,6 +10,12 @@ public sealed class MeController(
     ICurrentUserAccessor currentUser,
     IReadOnlyAppStateService appState) : ControllerBase
 {
+    /// <summary>
+    /// Returns the current user's profile.
+    /// </summary>
+    /// <remarks>
+    /// Uses the authenticated user id, or the temporary <c>X-User-Id</c> header in local development.
+    /// </remarks>
     [HttpGet("profile")]
     public async Task<IActionResult> GetProfile(CancellationToken cancellationToken)
     {
@@ -20,6 +26,12 @@ public sealed class MeController(
         return profile is null ? NotFound() : Ok(profile);
     }
 
+    /// <summary>
+    /// Returns the current user's pantry quantities.
+    /// </summary>
+    /// <remarks>
+    /// The pantry represents the user's ingredient balances.
+    /// </remarks>
     [HttpGet("pantry")]
     public async Task<IActionResult> GetPantry(CancellationToken cancellationToken)
     {
@@ -30,6 +42,9 @@ public sealed class MeController(
         return pantry is null ? NotFound() : Ok(pantry);
     }
 
+    /// <summary>
+    /// Returns the current user's selected menu recipe ids.
+    /// </summary>
     [HttpGet("menu")]
     public async Task<IActionResult> GetMenu(CancellationToken cancellationToken)
     {

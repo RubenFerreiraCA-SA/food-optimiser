@@ -8,6 +8,9 @@ namespace MealOptimiser.Api.Controllers;
 [Route("api/ingredients")]
 public sealed class IngredientsController(IReadOnlyAppStateService appState) : ControllerBase
 {
+    /// <summary>
+    /// Returns the global ingredient catalog.
+    /// </summary>
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<IngredientResponse>>> Get(CancellationToken cancellationToken)
     {

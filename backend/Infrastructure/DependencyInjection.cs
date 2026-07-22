@@ -1,5 +1,6 @@
 using Google.Api.Gax;
 using Google.Cloud.Firestore;
+using System.Reflection;
 using Microsoft.Extensions.Options;
 using MealOptimiser.Api.Infrastructure.Configuration;
 using MealOptimiser.Api.Infrastructure.Firestore;
@@ -18,7 +19,15 @@ public static class DependencyInjection
             .AddControllers()
             .Services
             .AddEndpointsApiExplorer()
-            .AddSwaggerGen()
+            .AddSwaggerGen(options =>
+            {
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                if (File.Exists(xmlPath))
+                {
+                    options.IncludeXmlComments(xmlPath);
+                }
+            })
             .AddHttpContextAccessor()
             .AddOptions<FirebaseOptions>()
             .Bind(configuration.GetSection(FirebaseOptions.SectionName))
