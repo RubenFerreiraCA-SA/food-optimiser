@@ -15,10 +15,9 @@ export class MenuService {
   private readonly data = inject(DataService);
   private readonly allRecipesState = signal<Recipe[]>(this.readRecipes());
   private readonly selectedRecipeIdsState = signal<string[]>(this.readSelection());
-  readonly recipes = computed(() =>
-    this.allRecipesState().filter((recipe) => this.selectedRecipeIdsState().includes(recipe.id)),
-  );
-  readonly allRecipes = computed(() => this.allRecipesState());
+  readonly recipes = computed(() => this.sortRecipes(this.allRecipesState().filter((recipe) => this.selectedRecipeIdsState().includes(recipe.id))));
+  readonly availableRecipes = computed(() => this.sortRecipes(this.allRecipesState().filter((recipe) => !this.selectedRecipeIdsState().includes(recipe.id))));
+  readonly allRecipes = computed(() => this.sortRecipes(this.allRecipesState()));
   readonly selectedRecipeIds = computed(() => this.selectedRecipeIdsState());
 
   constructor() {
@@ -46,10 +45,16 @@ export class MenuService {
       recipes.map((current) => (current.id === id ? { ...recipe, id } : current)),
     );
     this.data.upsertDocument(GLOBAL_COLLECTIONS.recipes, id, recipe, 'global');
+    this.select(id);
   }
 
   remove(id: string): void {
     this.updateSelection(this.selectedRecipeIdsState().filter((recipeId) => recipeId !== id));
+  }
+
+  select(id: string): void {
+    if (this.selectedRecipeIdsState().includes(id)) return;
+    this.updateSelection([...this.selectedRecipeIdsState(), id]);
   }
 
   reset(): void {
@@ -79,5 +84,9 @@ export class MenuService {
     await this.data.whenReady();
     this.allRecipesState.set(this.readRecipes());
     this.selectedRecipeIdsState.set(this.readSelection());
+  }
+
+  private sortRecipes(recipes: Recipe[]): Recipe[] {
+    return [...recipes].sort((left, right) => left.name.localeCompare(right.name, undefined, { sensitivity: 'base' }));
   }
 }

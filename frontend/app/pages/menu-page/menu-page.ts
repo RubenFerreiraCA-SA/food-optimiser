@@ -27,6 +27,7 @@ export class MenuPage {
     title: "What's on the menu?",
     description: 'Keep the meals you can make in one place, ready for your next plan.',
     titleId: 'menu-title',
+    mark: '🍽️',
     markRotation: -12,
   };
   recipeCard(recipe: Recipe): RecipeCardConfig {

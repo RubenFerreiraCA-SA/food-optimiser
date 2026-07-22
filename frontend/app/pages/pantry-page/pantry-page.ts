@@ -6,7 +6,7 @@ import { IngredientTable, IngredientTableConfig, IngredientTableEvent } from '..
 import { MenuService } from '../../services/page-helpers/menu/menu.service';
 import { PantryService, PantryIngredient } from '../../services/page-helpers/pantry/pantry.service';
 import { IngredientCatalogService } from '../../services/data/ingredient-catalog.service';
-import type { Recipe } from '../../services/data/shared-types';
+import type { Recipe, SharedIngredient } from '../../services/data/shared-types';
 
 @Component({
   selector: 'app-pantry-page',
@@ -23,23 +23,42 @@ export class PantryPage {
   readonly ingredientToRemove = signal<PantryIngredient | null>(null);
   readonly blockedIngredient = signal<PantryIngredient | null>(null);
   readonly editingIngredientId = signal<string | null>(null);
-  ingredientId = '';
-  quantity = 1;
+  readonly ingredientName = signal('');
+  readonly ingredientSearch = signal('');
+  readonly pendingIngredients = signal<PendingIngredient[]>([]);
   editQuantity = 0;
   addError = '';
   editError = '';
-  readonly hero: PageHeroConfig = { eyebrow: 'What you have', title: 'Your pantry.', description: 'Keep track of the ingredients available for your next meal plan.', titleId: 'pantry-title', markRotation: 16 };
+  readonly hero: PageHeroConfig = {
+    eyebrow: 'What you have',
+    title: 'Your pantry.',
+    description: 'Keep track of the ingredients available for your next meal plan.',
+    titleId: 'pantry-title',
+    mark: '🥕',
+    markRotation: 16,
+  };
 
   readonly blockedUsages = computed(() => {
     const ingredient = this.blockedIngredient();
     if (!ingredient) return [];
     return this.recipeUsages(ingredient);
   });
+  readonly ingredientMatches = computed(() => this.catalog.search(this.ingredientName()));
+  readonly exactIngredientMatch = computed(() => this.catalog.findByName(this.ingredientName().trim()) ?? null);
+  readonly canCreateIngredient = computed(
+    () => this.ingredientName().trim().length >= 3 && !this.ingredientMatches().length,
+  );
+  readonly visibleIngredients = computed(() => {
+    const query = this.ingredientSearch().trim().toLowerCase();
+    return [...this.pantry.ingredients()]
+      .filter((ingredient) => !query || ingredient.name.toLowerCase().includes(query))
+      .sort((left, right) => left.name.localeCompare(right.name, undefined, { sensitivity: 'base' }));
+  });
   get ingredientTable(): IngredientTableConfig {
     return {
       caption: 'Ingredients currently available in your pantry',
       quantityHeader: 'Quantity available',
-      rows: this.pantry.ingredients(),
+      rows: this.visibleIngredients(),
       quantityMode: 'editing',
       showQuantityLabel: true,
       editingId: this.editingIngredientId(),
@@ -65,12 +84,48 @@ export class PantryPage {
   handleRemovalDialog(action: string): void { action === 'confirm' ? this.confirmRemoval() : this.cancelDialogs(); }
 
   addIngredient(): void {
-    if (this.pantry.add(this.ingredientId, this.quantity)) {
-      this.ingredientId = '';
-      this.quantity = 1;
+    const ingredient = this.exactIngredientMatch();
+    if (ingredient) {
+      this.queueIngredient(ingredient);
+      return;
+    }
+
+    if (this.canCreateIngredient()) {
+      this.queueNewIngredient();
+      return;
+    }
+
+    this.addError = 'Pick a match or choose to add a new ingredient.';
+  }
+
+  selectIngredient(option: SharedIngredient): void {
+    this.queueIngredient(option);
+  }
+
+  addNewIngredient(): void {
+    this.queueNewIngredient();
+  }
+
+  updatePendingQuantity(id: string, quantity: number): void {
+    const validQuantity = Number.isFinite(quantity) ? Math.max(0, Math.floor(quantity)) : 0;
+    this.pendingIngredients.update((items) =>
+      items.map((item) => (item.id === id ? { ...item, quantity: validQuantity } : item)),
+    );
+  }
+
+  addPendingIngredient(id: string): void {
+    const pending = this.pendingIngredients().find((item) => item.id === id);
+    if (!pending) return;
+    if (this.pantry.add(pending.id, pending.quantity)) {
+      this.pendingIngredients.update((items) => items.filter((item) => item.id !== id));
       this.addError = '';
-      this.isAdding.set(false);
-    } else this.addError = 'Choose a unique ingredient and a quantity of at least one.';
+    } else {
+      this.addError = 'Enter a quantity of at least one.';
+    }
+  }
+
+  removePendingIngredient(id: string): void {
+    this.pendingIngredients.update((items) => items.filter((item) => item.id !== id));
   }
   requestRemoval(ingredient: PantryIngredient): void {
     this.recipeUsages(ingredient).length
@@ -112,6 +167,47 @@ export class PantryPage {
     this.showResetWarning.set(false);
   }
 
+  onIngredientInput(): void {
+    this.addError = '';
+  }
+
+  clearIngredientSearch(): void {
+    this.ingredientSearch.set('');
+  }
+
+  queueIngredient(option: SharedIngredient, isNew = false): void {
+    if (this.pendingIngredients().some((item) => item.id === option.id)) {
+      this.addError = `${option.name} is already in the list below.`;
+      return;
+    }
+    this.pendingIngredients.update((items) => [
+      ...items,
+      { id: option.id, name: option.name, quantity: 1, image: option.image, isNew },
+    ]);
+    this.ingredientName.set('');
+    this.addError = '';
+  }
+
+  queueNewIngredient(): void {
+    const name = this.ingredientName().trim();
+    if (name.length < 3) {
+      this.addError = 'Type at least three letters to add a new ingredient.';
+      return;
+    }
+    const existing = this.catalog.findByName(name);
+    if (existing) {
+      this.queueIngredient(existing);
+      return;
+    }
+    const ingredient = this.catalog.add(name);
+    if (!ingredient) {
+      this.addError = 'That ingredient could not be created.';
+      return;
+    }
+    this.queueIngredient(ingredient, true);
+    this.addError = '';
+  }
+
   private recipeUsages(ingredient: PantryIngredient): { recipe: Recipe; quantity: number }[] {
     return this.menu
       .recipes()
@@ -121,8 +217,12 @@ export class PantryPage {
           .map(([, quantity]) => ({ recipe, quantity })),
       );
   }
+}
 
-  ingredientOptions() {
-    return this.catalog.ingredients();
-  }
+interface PendingIngredient {
+  id: string;
+  name: string;
+  quantity: number;
+  image: string;
+  isNew: boolean;
 }

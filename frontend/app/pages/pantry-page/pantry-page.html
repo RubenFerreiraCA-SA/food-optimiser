@@ -8,36 +8,118 @@
       </div>
       <div class="actions">
         <button class="button secondary" type="button" (click)="showResetWarning.set(true)">
-          Reset pantry</button
-        ><button class="button primary" type="button" (click)="isAdding.set(!isAdding())">
+          Reset pantry
+        </button>
+        <button class="button primary" type="button" (click)="isAdding.set(!isAdding())">
           {{ isAdding() ? 'Close' : 'Add ingredient' }} <span aria-hidden="true">+</span>
         </button>
       </div>
     </div>
     @if (isAdding()) {
       <form class="add-form" (ngSubmit)="addIngredient()">
-        <label
+        <label class="ingredient-field"
           >Ingredient
-          <select name="ingredient-id" [(ngModel)]="ingredientId" required>
-            <option value="">Choose ingredient</option>
-            @for (option of ingredientOptions(); track option.id) {
-              <option [value]="option.id">{{ option.name }}</option>
+          <div class="ingredient-entry-row">
+            <input
+              name="ingredient-name"
+              [ngModel]="ingredientName()"
+              (ngModelChange)="ingredientName.set($event); onIngredientInput()"
+              placeholder="Start typing an ingredient"
+              autocomplete="off"
+              required
+            />
+            @if (canCreateIngredient()) {
+              <button class="button secondary add-new" type="button" (click)="addNewIngredient()">
+                Add "{{ ingredientName().trim() }}"
+              </button>
             }
-          </select>
-        </label><label
-          >Quantity<input
-            name="ingredient-quantity"
-            [(ngModel)]="quantity"
-            type="number"
-            min="1"
-            required /></label
-        ><button class="button primary" type="submit">Add ingredient</button>
+          </div>
+          <p class="field-note">
+            Search for an ingredient first. If it is not in the database, you can add it as a new
+            ingredient. If it is already in your pantry, the amount you add will be added to your
+            current total.
+          </p>
+          @if (ingredientName().trim().length >= 3) {
+            <div class="ingredient-suggestions">
+              @if (ingredientMatches().length) {
+                <p class="suggestion-label">Matches</p>
+                <div class="suggestion-list" role="listbox" [attr.aria-label]="'Ingredient matches for ' + ingredientName()">
+                  @for (option of ingredientMatches(); track option.id) {
+                    <button type="button" class="suggestion-item" (click)="selectIngredient(option)">
+                      <strong>{{ option.name }}</strong>
+                    </button>
+                  }
+                </div>
+              }
+            </div>
+          }
+        </label>
         @if (addError) {
           <p class="form-error">{{ addError }}</p>
         }
       </form>
+      @if (pendingIngredients().length) {
+        <section class="pending-section" aria-labelledby="pending-ingredients-title">
+          <div class="pending-heading">
+            <div>
+              <p class="eyebrow"><span></span>{{ pendingIngredients().length }} queued ingredients</p>
+              <h3 id="pending-ingredients-title">Queued ingredients</h3>
+            </div>
+          </div>
+          <div class="pending-list">
+            @for (item of pendingIngredients(); track item.id) {
+              <article class="pending-item">
+                <div class="pending-item__copy">
+                  <p class="pending-item__name">{{ item.name }}</p>
+                  @if (item.isNew) {
+                    <p class="pending-item__flag">New ingredient</p>
+                  }
+                </div>
+                <label class="pending-item__quantity">
+                  <span>Quantity</span>
+                  <input
+                    type="number"
+                    min="1"
+                    [value]="item.quantity"
+                    (input)="updatePendingQuantity(item.id, +$any($event.target).value)"
+                  />
+                </label>
+                <button class="button primary" type="button" (click)="addPendingIngredient(item.id)">
+                  Add to pantry
+                </button>
+                <button class="button secondary pending-remove" type="button" (click)="removePendingIngredient(item.id)">
+                  Remove
+                </button>
+              </article>
+            }
+          </div>
+        </section>
+      }
     }
-    <app-ingredient-table [config]="ingredientTable" (action)="handleTableAction($event)" (quantityChange)="updateEditingQuantity($event.quantity)" />
+    <div class="table-toolbar">
+      <div class="table-search-group">
+        <label class="table-search"
+          >Search pantry
+          <input
+            name="ingredient-search"
+            [ngModel]="ingredientSearch()"
+            (ngModelChange)="ingredientSearch.set($event)"
+            placeholder="Search by ingredient name"
+            autocomplete="off"
+          />
+        </label>
+        @if (ingredientSearch().trim()) {
+          <button class="button secondary table-search__clear" type="button" (click)="clearIngredientSearch()">
+            Clear
+          </button>
+        }
+      </div>
+    </div>
+    <app-ingredient-table
+      [config]="ingredientTable"
+      (action)="handleTableAction($event)"
+      (quantityChange)="updateEditingQuantity($event.quantity)"
+    />
   </section>
 </main>
 @if (showResetWarning()) {

@@ -29,6 +29,7 @@ export class PlannerPage {
     title: 'Plan your meals.',
     description: "We'll help you find the menu that makes your ingredients go furthest.",
     titleId: 'planner-title',
+    mark: '📋',
     markRotation: 12,
   };
 

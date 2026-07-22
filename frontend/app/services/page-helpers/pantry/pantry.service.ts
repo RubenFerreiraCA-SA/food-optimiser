@@ -31,9 +31,15 @@ export class PantryService {
 
   add(ingredientId: string, quantity: number): boolean {
     const ingredient = this.ingredientsCatalog().find((item) => item.id === ingredientId);
-    if (!ingredient || quantity < 1 || this.state().some((item) => item.id === ingredientId))
+    if (!ingredient || quantity < 1)
       return false;
-    const next = [...this.state(), { ...ingredient, quantity }];
+
+    const existing = this.state().find((item) => item.id === ingredientId);
+    const next = existing
+      ? this.state().map((item) =>
+          item.id === ingredientId ? { ...item, quantity: item.quantity + quantity } : item,
+        )
+      : [...this.state(), { ...ingredient, quantity }];
     this.update(next);
     return true;
   }

@@ -5,6 +5,7 @@ export interface PageHeroConfig {
   title: string;
   description: string;
   titleId: string;
+  mark?: string;
   markRotation?: number;
 }
 

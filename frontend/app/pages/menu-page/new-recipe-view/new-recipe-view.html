@@ -7,26 +7,106 @@
     </h1>
     <p class="intro">Tell us what the recipe makes and the ingredients it needs.</p>
     <form (ngSubmit)="save()">
+      @if (isEditing) {
+        <label>
+          Recipe name
+          <input
+            name="name"
+            [ngModel]="name"
+            (ngModelChange)="name = $event"
+            placeholder="e.g. Vegetable curry"
+            required
+          />
+        </label>
+      } @else if (selectedRecipeId) {
+        <div class="recipe-name-selected">
+          <span class="recipe-name-selected__label">Recipe name</span>
+          <div class="recipe-name-selected__copy">
+            <strong>{{ name }}</strong>
+            <button type="button" class="recipe-name-selected__change" (click)="clearSelectedRecipe()">
+              Change
+            </button>
+          </div>
+        </div>
+      } @else {
+        <label class="recipe-name-field">
+          Recipe name
+          <input
+            name="name"
+            [ngModel]="name"
+            (ngModelChange)="updateRecipeName($event)"
+            placeholder="Search recipes or create a new one"
+            autocomplete="off"
+            required
+          />
+          <p class="field-note">
+            Search existing recipes first. If it is not already in the database, you can create a new one.
+          </p>
+          @if (name.trim().length >= 3) {
+            <div class="recipe-name-suggestions">
+              @if (recipeMatches().length) {
+                <p class="suggestion-label">Matches</p>
+                <div class="suggestion-list" role="listbox" [attr.aria-label]="'Recipe matches for ' + name">
+                  @for (option of recipeMatches(); track option.id) {
+                    <button type="button" class="suggestion-item" (click)="selectRecipe(option)">
+                      <span class="suggestion-item__name"><strong>{{ option.name }}</strong></span>
+                      <span class="suggestion-item__meta">Feeds {{ option.servings }}</span>
+                    </button>
+                  }
+                </div>
+              } @else {
+                <p class="field-note">No saved recipes match this name yet. Continue to create a new recipe.</p>
+              }
+            </div>
+          }
+        </label>
+      }
       <label
-        >Recipe name
-        <input name="name" [(ngModel)]="name" placeholder="e.g. Vegetable curry" required /></label
-      ><label
         >Servings <input name="servings" [(ngModel)]="servings" type="number" min="1" required
       /></label>
       <fieldset>
         <legend>Ingredients</legend>
         @for (ingredient of ingredients(); track $index; let index = $index) {
           <div class="ingredient-row">
-            <select
-              [value]="ingredient.ingredientId"
-              (change)="updateIngredient(index, 'ingredientId', $any($event.target).value)"
-              [attr.aria-label]="'Ingredient ' + (index + 1)"
-            >
-              <option value="">Choose ingredient</option>
-              @for (option of ingredientOptions(); track option.id) {
-                <option [value]="option.id">{{ option.name }}</option>
+            <div class="ingredient-row__search">
+              @if (ingredient.ingredientId) {
+                <div class="ingredient-row__selected">
+                  <span class="ingredient-row__name">{{ ingredient.ingredientName }}</span>
+                  <button type="button" class="ingredient-row__change" (click)="clearIngredient(index)">
+                    Change
+                  </button>
+                </div>
+              } @else {
+                <div class="ingredient-row__searchbar">
+                  <input
+                    [value]="ingredient.ingredientName"
+                    (input)="updateIngredient(index, 'ingredientName', $any($event.target).value)"
+                    placeholder="Search ingredient"
+                    [attr.aria-label]="'Ingredient ' + (index + 1)"
+                    autocomplete="off"
+                  />
+                  @if (canCreateIngredient(index)) {
+                    <button type="button" class="add-ingredient__inline" (click)="createIngredient(index)">
+                      Add "{{ ingredient.ingredientName.trim() }}"
+                    </button>
+                  }
+                </div>
+                @if (ingredient.ingredientName.trim().length >= 3) {
+                  <div class="ingredient-row__suggestions">
+                    @if (ingredientMatches(index).length) {
+                      <p class="suggestion-label">Matches</p>
+                      <div class="suggestion-list" role="listbox" [attr.aria-label]="'Ingredient matches for ' + ingredient.ingredientName">
+                        @for (option of ingredientMatches(index); track option.id) {
+                          <button type="button" class="suggestion-item" (click)="selectIngredient(index, option)">
+                            <strong>{{ option.name }}</strong>
+                          </button>
+                        }
+                      </div>
+                    }
+                  </div>
+                }
               }
-            </select>
+            </div>
             <input
               [value]="ingredient.quantity"
               type="number"
@@ -35,12 +115,8 @@
               [attr.aria-label]="'Quantity for ingredient ' + (index + 1)"
             />
             @if (ingredients().length > 1) {
-              <button
-                type="button"
-                (click)="removeIngredient(index)"
-                [attr.aria-label]="'Remove ingredient ' + (index + 1)"
-              >
-                ×
+              <button type="button" class="ingredient-row__remove" (click)="removeIngredient(index)" [attr.aria-label]="'Remove ingredient ' + (index + 1)">
+                Remove
               </button>
             }
           </div>
