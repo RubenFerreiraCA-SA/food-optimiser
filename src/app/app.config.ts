@@ -5,12 +5,11 @@ import {
   provideBrowserGlobalErrorListeners,
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
-
-import { AuthService } from './shared/services/auth/auth.service';
 import { routes } from './app.routes';
-import { DataSeedingService } from './shared/services/data-seeding/data-seeding.service';
-import { DATA_ADAPTER, DataService } from './shared/services/data/data.service';
-import { FirebaseDataAdapter } from './shared/services/data/firebase-data-adapter';
+import { AuthService } from './services/auth/auth.service';
+import { DataSeedingService } from './services/data-seeding/data-seeding.service';
+import { DATA_ADAPTER, DataService } from './services/data/data.service';
+import { FirebaseDataAdapter } from './services/data/firebase-data-adapter';
 
 export const appConfig: ApplicationConfig = {
   providers: [

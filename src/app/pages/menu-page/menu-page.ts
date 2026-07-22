@@ -1,5 +1,4 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { MenuService, Recipe } from '../../shared/services/menu/menu.service';
 import { Dialog, DialogConfig } from '../../shared/components/dialog/dialog';
 import { NewRecipeView } from './new-recipe-view/new-recipe-view';
 import { PageHero, PageHeroConfig } from '../../shared/components/page-hero/page-hero';
@@ -8,6 +7,7 @@ import {
   RecipeCardConfig,
   RecipeCardEvent,
 } from '../../shared/components/recipe-card/recipe-card';
+import { MenuService, Recipe } from '../../services/menu/menu.service';
 
 @Component({
   selector: 'app-menu-page',

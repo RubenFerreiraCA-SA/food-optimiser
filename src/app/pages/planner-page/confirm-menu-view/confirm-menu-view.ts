@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { Recipe } from '../../../shared/services/menu/menu.service';
 import {
   RecipeCard,
   RecipeCardConfig,
   RecipeCardEvent,
 } from '../../../shared/components/recipe-card/recipe-card';
+import { Recipe } from '../../../services/menu/menu.service';
 
 @Component({
   selector: 'app-confirm-menu-view',

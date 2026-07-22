@@ -5,7 +5,7 @@ import { MenuPage } from './pages/menu-page/menu-page';
 import { PlannerPage } from './pages/planner-page/planner-page';
 import { LoginPage } from './pages/auth-page/login-page/login-page';
 import { RegisterPage } from './pages/auth-page/register-page/register-page';
-import { authGuard, guestGuard } from './shared/services/auth/auth.guard';
+import { guestGuard, authGuard } from './services/auth/auth.guard';
 
 export const routes: Routes = [
   { path: 'login', component: LoginPage, canActivate: [guestGuard] },

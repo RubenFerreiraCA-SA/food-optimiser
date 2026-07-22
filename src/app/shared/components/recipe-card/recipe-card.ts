@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import type { Recipe } from '../../services/menu/menu.service';
+import { Recipe } from '../../../services/menu/menu.service';
 
 export type RecipeCardMode = 'view' | 'select';
 

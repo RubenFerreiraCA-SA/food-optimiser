@@ -2,7 +2,7 @@ import { Component, ElementRef, HostListener, computed, effect, inject, signal }
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { filter, map, startWith } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { AuthService } from '../../services/auth/auth.service';
+import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-topbar',
