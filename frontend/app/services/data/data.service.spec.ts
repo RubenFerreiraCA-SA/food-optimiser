@@ -67,6 +67,7 @@ describe('DataService', () => {
     it('should return fallback data for missing collections and documents', async () => {
       // Assemble
       const service = await createService();
+      TestBed.flushEffects();
       await service.whenReady();
 
       // Act
@@ -106,6 +107,29 @@ describe('DataService', () => {
       // Assert
       expect(replaced).toHaveLength(1);
       expect(service.readCollection(USER_COLLECTIONS.recipes, [], 'user')).toEqual(replaced);
+      expect(firestoreMocks.setDoc).not.toHaveBeenCalled();
+      expect(firestoreMocks.deleteDoc).not.toHaveBeenCalled();
+    });
+
+    it('should replace a global collection without syncing', async () => {
+      // Assemble
+      const service = await createService();
+      TestBed.flushEffects();
+      await service.whenReady();
+
+      // Act
+      const replaced = service.replaceCollection(GLOBAL_COLLECTIONS.recipes, [
+        {
+          name: 'Soup',
+          servings: 2,
+          image: '',
+          ingredients: { tomato: 2 },
+        },
+      ], 'global');
+
+      // Assert
+      expect(replaced).toHaveLength(1);
+      expect(service.readCollection(GLOBAL_COLLECTIONS.recipes, [], 'global')).toEqual(replaced);
       expect(firestoreMocks.setDoc).not.toHaveBeenCalled();
       expect(firestoreMocks.deleteDoc).not.toHaveBeenCalled();
     });
@@ -167,6 +191,7 @@ describe('DataService', () => {
       const service = await createService();
 
       // Act
+      TestBed.flushEffects();
       await service.initialize();
 
       // Assert
@@ -189,6 +214,23 @@ describe('DataService', () => {
       expect(service.hasCollection('recipes')).toBe(true);
       expect(service.hasDocument('recipes', 'soup')).toBe(true);
       expect(service.collectionSize('recipes')).toBe(1);
+    });
+
+    it('should reuse the initialization promise when called twice', async () => {
+      // Arrange
+      userState.set({ uid: 'user-1' });
+      firestoreMocks.getDocs.mockImplementation(async () => createSnapshot([]));
+
+      // Act
+      const service = await createService();
+      TestBed.flushEffects();
+      const first = service.initialize();
+      const second = service.initialize();
+      await first;
+      await second;
+
+      // Assert
+      expect(initialize).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -303,6 +345,7 @@ describe('DataService', () => {
       const service = await createService();
 
       // Act
+      TestBed.flushEffects();
       await service.whenReady();
 
       // Assert
