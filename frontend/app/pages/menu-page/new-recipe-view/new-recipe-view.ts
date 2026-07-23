@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, Output, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { IngredientCatalogService } from '../../../services/data/ingredient-catalog.service';
-import { MenuService } from '../../../services/page-helpers/menu/menu.service';
-import { Recipe } from '../../../services/data/shared-types';
-import type { SharedIngredient } from '../../../services/data/shared-types';
+import { IngredientCatalogService } from '../../../services/domain/ingredients/ingredient-catalog.service';
+import { MenuService } from '../../../services/features/menu/menu.service';
+import { Recipe } from '../../../services/domain/models';
+import type { SharedIngredient } from '../../../services/domain/models';
 
 interface RecipeIngredientRow {
   ingredientId: string;

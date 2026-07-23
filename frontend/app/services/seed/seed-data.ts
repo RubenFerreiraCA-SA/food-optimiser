@@ -1,4 +1,4 @@
-import { Recipe, SharedIngredient } from '../shared-types';
+import { Recipe, SharedIngredient } from '../domain/models';
 
 export interface PantrySeedIngredient {
   id: string;

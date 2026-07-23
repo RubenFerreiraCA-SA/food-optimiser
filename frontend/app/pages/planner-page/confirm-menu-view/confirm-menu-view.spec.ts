@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ConfirmMenuView } from './confirm-menu-view';
-import { IngredientCatalogService } from '../../../services/data/ingredient-catalog.service';
-import type { Recipe, SharedIngredient } from '../../../services/data/shared-types';
+import { IngredientCatalogService } from '../../../services/domain/ingredients/ingredient-catalog.service';
+import type { Recipe, SharedIngredient } from '../../../services/domain/models';
 
 describe('ConfirmMenuView', () => {
   let fixture: ComponentFixture<ConfirmMenuView>;

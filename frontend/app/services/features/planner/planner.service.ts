@@ -1,7 +1,7 @@
 import { Injectable, computed, signal } from '@angular/core';
-import { ApiClientService } from '../../api/api-client.service';
-import type { Recipe } from '../../data/shared-types';
-import { SnackbarService } from '../../ui/snackbar.service';
+import { ApiClientService } from '../../core/api/api-client.service';
+import { SnackbarService } from '../../core/ui/snackbar.service';
+import type { Recipe } from '../../domain/models';
 
 export interface PlannerIngredientInput {
   id: string;

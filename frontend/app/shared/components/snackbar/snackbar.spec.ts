@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Snackbar } from './snackbar';
-import { SnackbarService } from '../../../services/ui/snackbar.service';
+import { SnackbarService } from '../../../services/core/ui/snackbar.service';
 
 describe('Snackbar', () => {
   let fixture: ComponentFixture<Snackbar>;

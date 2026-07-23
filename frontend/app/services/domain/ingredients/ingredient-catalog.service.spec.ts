@@ -1,9 +1,9 @@
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { ApiClientService } from '../api/api-client.service';
-import { AuthService } from '../auth/auth.service';
+import { ApiClientService } from '../../core/api/api-client.service';
+import { AuthService } from '../../core/auth/auth.service';
 import { IngredientCatalogService } from './ingredient-catalog.service';
-import type { SharedIngredient } from './shared-types';
+import type { SharedIngredient } from '../models';
 
 describe('IngredientCatalogService', () => {
   const readyState = signal(false);

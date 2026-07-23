@@ -2,10 +2,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { PantryPage } from './pantry-page';
-import { IngredientCatalogService } from '../../services/data/ingredient-catalog.service';
-import { MenuService } from '../../services/page-helpers/menu/menu.service';
-import { PantryService, PantryIngredient } from '../../services/page-helpers/pantry/pantry.service';
-import type { Recipe, SharedIngredient } from '../../services/data/shared-types';
+import { IngredientCatalogService } from '../../services/domain/ingredients/ingredient-catalog.service';
+import { MenuService } from '../../services/features/menu/menu.service';
+import { PantryService, PantryIngredient } from '../../services/features/pantry/pantry.service';
+import type { Recipe, SharedIngredient } from '../../services/domain/models';
 
 describe('PantryPage', () => {
   const pantryState = signal<PantryIngredient[]>([]);

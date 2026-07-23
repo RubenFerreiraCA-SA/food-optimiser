@@ -1,9 +1,9 @@
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
-import { AuthService } from '../../auth/auth.service';
-import { ApiClientService } from '../../api/api-client.service';
-import { IngredientCatalogService } from '../../data/ingredient-catalog.service';
-import { defaultPantryIngredients } from '../../data/data-seeding/seed-data';
-import { SnackbarService } from '../../ui/snackbar.service';
+import { ApiClientService } from '../../core/api/api-client.service';
+import { AuthService } from '../../core/auth/auth.service';
+import { SnackbarService } from '../../core/ui/snackbar.service';
+import { IngredientCatalogService } from '../../domain/ingredients/ingredient-catalog.service';
+import { defaultPantryIngredients } from '../../seed/seed-data';
 
 export interface PantryIngredient {
   id: string;

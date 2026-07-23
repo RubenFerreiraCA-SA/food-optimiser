@@ -3,13 +3,13 @@ import { ConfirmIngredientsView } from './confirm-ingredients-view/confirm-ingre
 import { ConfirmMenuView } from './confirm-menu-view/confirm-menu-view';
 import { OptimisedPlanView } from './optimised-plan-view/optimised-plan-view';
 import { PageHero, PageHeroConfig } from '../../shared/components/page-hero/page-hero';
-import { MenuService } from '../../services/page-helpers/menu/menu.service';
+import { MenuService } from '../../services/features/menu/menu.service';
 import {
   OptimisedPlanMeal,
   IngredientPlanUsage,
   PlannerService,
-} from '../../services/page-helpers/planner/planner.service';
-import { PantryIngredient, PantryService } from '../../services/page-helpers/pantry/pantry.service';
+} from '../../services/features/planner/planner.service';
+import { PantryIngredient, PantryService } from '../../services/features/pantry/pantry.service';
 
 export interface PlanningIngredient extends PantryIngredient {
   planningQuantity: number;

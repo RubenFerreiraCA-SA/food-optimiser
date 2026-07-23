@@ -6,15 +6,15 @@ import { ConfirmIngredientsView } from './confirm-ingredients-view/confirm-ingre
 import { ConfirmMenuView } from './confirm-menu-view/confirm-menu-view';
 import { OptimisedPlanView } from './optimised-plan-view/optimised-plan-view';
 import { PageHero, PageHeroConfig } from '../../shared/components/page-hero/page-hero';
-import { MenuService } from '../../services/page-helpers/menu/menu.service';
-import { PantryService, PantryIngredient } from '../../services/page-helpers/pantry/pantry.service';
+import { MenuService } from '../../services/features/menu/menu.service';
+import { PantryService, PantryIngredient } from '../../services/features/pantry/pantry.service';
 import {
   IngredientPlanUsage,
   OptimisedPlan,
   OptimisedPlanMeal,
   PlannerService,
-} from '../../services/page-helpers/planner/planner.service';
-import type { Recipe } from '../../services/data/shared-types';
+} from '../../services/features/planner/planner.service';
+import type { Recipe } from '../../services/domain/models';
 
 @Component({
   selector: 'app-page-hero',

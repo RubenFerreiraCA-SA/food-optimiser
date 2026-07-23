@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
-import { IngredientCatalogService } from '../../../services/data/ingredient-catalog.service';
-import { Recipe } from '../../../services/data/shared-types';
+import { IngredientCatalogService } from '../../../services/domain/ingredients/ingredient-catalog.service';
+import { Recipe } from '../../../services/domain/models';
 
 export type RecipeCardMode = 'view' | 'select';
 

@@ -1,8 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { Recipe, SharedIngredient } from '../data/shared-types';
+import { environment } from '../../../../environments/environment';
+import { Recipe, SharedIngredient } from '../../domain/models';
 
 export interface UserProfileResponse {
   uid: string;

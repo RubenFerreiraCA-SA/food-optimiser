@@ -1,7 +1,7 @@
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
-import { AuthService } from '../auth/auth.service';
-import { ApiClientService } from '../api/api-client.service';
-import { SharedIngredient } from './shared-types';
+import { ApiClientService } from '../../core/api/api-client.service';
+import { AuthService } from '../../core/auth/auth.service';
+import { SharedIngredient } from '../models';
 
 @Injectable({ providedIn: 'root' })
 export class IngredientCatalogService {

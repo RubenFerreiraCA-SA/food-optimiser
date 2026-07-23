@@ -7,8 +7,9 @@ import {
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
-import { AuthService } from './services/auth/auth.service';
-import { apiAuthInterceptor } from './services/api/api-auth.interceptor';
+import { apiAuthInterceptor } from './services/core/api/api-auth.interceptor';
+import { AuthService } from './services/core/auth/auth.service';
+import { DataSeedingService } from './services/seed/data-seeding.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,7 +18,9 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideAppInitializer(async () => {
       const auth = inject(AuthService);
+      const seeding = inject(DataSeedingService);
       await auth.initialize();
+      await seeding.seed();
     }),
   ],
 };

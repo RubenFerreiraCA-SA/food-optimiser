@@ -5,7 +5,7 @@ import {
   RecipeCardConfig,
   RecipeCardEvent,
 } from '../../../shared/components/recipe-card/recipe-card';
-import { Recipe } from '../../../services/data/shared-types';
+import { Recipe } from '../../../services/domain/models';
 
 @Component({
   selector: 'app-confirm-menu-view',

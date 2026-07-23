@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Topbar } from './topbar';
-import { AuthService } from '../../../services/auth/auth.service';
+import { AuthService } from '../../../services/core/auth/auth.service';
 
 @Component({
   standalone: true,

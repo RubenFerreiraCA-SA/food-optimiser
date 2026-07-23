@@ -1,9 +1,9 @@
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MenuPage } from './menu-page';
-import { IngredientCatalogService } from '../../services/data/ingredient-catalog.service';
-import { MenuService } from '../../services/page-helpers/menu/menu.service';
-import type { Recipe, SharedIngredient } from '../../services/data/shared-types';
+import { IngredientCatalogService } from '../../services/domain/ingredients/ingredient-catalog.service';
+import { MenuService } from '../../services/features/menu/menu.service';
+import type { Recipe, SharedIngredient } from '../../services/domain/models';
 
 describe('MenuPage render', () => {
   const recipesState = signal<Recipe[]>([]);

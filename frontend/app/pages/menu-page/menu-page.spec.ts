@@ -10,8 +10,8 @@ import {
   RecipeCardEvent,
 } from '../../shared/components/recipe-card/recipe-card';
 import { NewRecipeView } from './new-recipe-view/new-recipe-view';
-import { MenuService } from '../../services/page-helpers/menu/menu.service';
-import type { Recipe } from '../../services/data/shared-types';
+import { MenuService } from '../../services/features/menu/menu.service';
+import type { Recipe } from '../../services/domain/models';
 
 @Component({
   selector: 'app-page-hero',

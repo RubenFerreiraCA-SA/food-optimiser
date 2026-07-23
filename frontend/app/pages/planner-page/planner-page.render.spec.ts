@@ -2,11 +2,11 @@ import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PlannerPage } from './planner-page';
-import { IngredientCatalogService } from '../../services/data/ingredient-catalog.service';
-import { MenuService } from '../../services/page-helpers/menu/menu.service';
-import { PantryService, PantryIngredient } from '../../services/page-helpers/pantry/pantry.service';
-import { PlannerService, OptimisedPlan } from '../../services/page-helpers/planner/planner.service';
-import type { Recipe } from '../../services/data/shared-types';
+import { IngredientCatalogService } from '../../services/domain/ingredients/ingredient-catalog.service';
+import { MenuService } from '../../services/features/menu/menu.service';
+import { PantryService, PantryIngredient } from '../../services/features/pantry/pantry.service';
+import { PlannerService, OptimisedPlan } from '../../services/features/planner/planner.service';
+import type { Recipe } from '../../services/domain/models';
 
 describe('PlannerPage render', () => {
   const pantryState = signal<PantryIngredient[]>([

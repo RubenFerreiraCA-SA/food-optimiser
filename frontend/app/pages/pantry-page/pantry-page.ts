@@ -3,10 +3,10 @@ import { FormsModule } from '@angular/forms';
 import { Dialog, DialogConfig } from '../../shared/components/dialog/dialog';
 import { PageHero, PageHeroConfig } from '../../shared/components/page-hero/page-hero';
 import { IngredientTable, IngredientTableConfig, IngredientTableEvent } from '../../shared/components/ingredient-table/ingredient-table';
-import { MenuService } from '../../services/page-helpers/menu/menu.service';
-import { PantryService, PantryIngredient } from '../../services/page-helpers/pantry/pantry.service';
-import { IngredientCatalogService } from '../../services/data/ingredient-catalog.service';
-import type { Recipe, SharedIngredient } from '../../services/data/shared-types';
+import { MenuService } from '../../services/features/menu/menu.service';
+import { PantryService, PantryIngredient } from '../../services/features/pantry/pantry.service';
+import { IngredientCatalogService } from '../../services/domain/ingredients/ingredient-catalog.service';
+import type { Recipe, SharedIngredient } from '../../services/domain/models';
 
 @Component({
   selector: 'app-pantry-page',
