@@ -57,6 +57,31 @@ describe('IngredientCatalogService', () => {
     });
   });
 
+  describe('given auth becomes ready during construction', () => {
+    it('should refresh automatically from the constructor effect', async () => {
+      // Arrange
+      getIngredients.mockResolvedValueOnce([
+        { id: 'parsley', name: 'Parsley', image: '' },
+        { id: 'basil', name: 'Basil', image: '' },
+      ]);
+      readyState.set(false);
+      userState.set({ uid: 'user-1' });
+
+      // Act
+      const service = await createService();
+      readyState.set(true);
+      TestBed.flushEffects();
+      await Promise.resolve();
+
+      // Assert
+      expect(getIngredients).toHaveBeenCalledTimes(1);
+      expect(service.ingredients()).toEqual([
+        { id: 'basil', name: 'Basil', image: '' },
+        { id: 'parsley', name: 'Parsley', image: '' },
+      ]);
+    });
+  });
+
   describe('given auth is ready', () => {
     it('should refresh, sort, look up, search, and add ingredients', async () => {
       getIngredients.mockResolvedValueOnce([
@@ -64,14 +89,16 @@ describe('IngredientCatalogService', () => {
         { id: 'basil', name: 'Basil', image: '' },
         { id: 'tomato', name: 'Tomato', image: 'tomato.png' },
       ]);
-      readyState.set(true);
+      readyState.set(false);
       userState.set({ uid: 'user-1' });
 
       // Assemble
       const service = await createService();
 
       // Act
-      await (service as unknown as { refresh: () => Promise<void> }).refresh();
+      readyState.set(true);
+      TestBed.flushEffects();
+      await Promise.resolve();
       const blankAdd = await service.add('   ');
       const existingAdd = await service.add('Basil');
       const createdAdd = await service.add('Coriander');
@@ -108,14 +135,16 @@ describe('IngredientCatalogService', () => {
       const error = new Error('boom');
       const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
       getIngredients.mockRejectedValueOnce(error);
-      readyState.set(true);
+      readyState.set(false);
       userState.set({ uid: 'user-1' });
 
       // Assemble
       const service = await createService();
 
       // Act
-      await (service as unknown as { refresh: () => Promise<void> }).refresh();
+      readyState.set(true);
+      TestBed.flushEffects();
+      await Promise.resolve();
       const search = service.search('tom');
 
       // Assert

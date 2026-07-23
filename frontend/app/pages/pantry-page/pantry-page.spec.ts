@@ -435,6 +435,23 @@ describe('PantryPage', () => {
       });
     });
 
+    describe('given invalid ingredient input', () => {
+      it('should render the add error message', async () => {
+        await createComponent();
+
+        // Assemble
+        component.isAdding.set(true);
+        component.addError = 'Pick a match or choose to add a new ingredient.';
+
+        // Act
+        fixture.detectChanges();
+
+        // Assert
+        expect(fixture.nativeElement.textContent).toContain('Pick a match or choose to add a new ingredient.');
+        expect(fixture.nativeElement.querySelector('.form-error')).toBeTruthy();
+      });
+    });
+
     describe('given an existing ingredient suggestion', () => {
       it('should select a suggestion and support adding it to the pantry', async () => {
         await createComponent();
@@ -452,6 +469,26 @@ describe('PantryPage', () => {
         // Assert
         expect(fixture.nativeElement.textContent).toContain('Queued ingredients');
         expect(fixture.nativeElement.textContent).toContain('Add to pantry');
+      });
+    });
+
+    describe('given a pending ingredient quantity update', () => {
+      it('should render the quantity input and update the queued amount', async () => {
+        await createComponent();
+
+        // Assemble
+        (fixture.nativeElement.querySelector('.button.primary') as HTMLButtonElement).click();
+        await render();
+        await setInputValue('input[name="ingredient-name"]', 'Chili');
+        (fixture.nativeElement.querySelector('.add-new') as HTMLButtonElement).click();
+        await render();
+
+        // Act
+        await setInputValue('.pending-item__quantity input', '3');
+
+        // Assert
+        expect(component.pendingIngredients()[0].quantity).toBe(3);
+        expect(fixture.nativeElement.textContent).toContain('Queued ingredients');
       });
     });
 

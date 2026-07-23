@@ -585,6 +585,33 @@ describe('NewRecipeView', () => {
       });
     });
 
+    describe('given ingredient quantity input', () => {
+      it('should update the ingredient quantity field and save the new amount', async () => {
+        await createComponent();
+
+        // Assemble
+        await setInputValue('input[name="name"]', 'Soupish');
+        await setInputValue('input[aria-label="Ingredient 1"]', 'Tomato');
+
+        // Act
+        await setInputValue('input[aria-label="Quantity for ingredient 1"]', '3');
+        await component.save();
+
+        // Assert
+        expect(component.ingredients()[0].quantity).toBe(3);
+        expect(saved).toHaveBeenCalledWith({
+          id: null,
+          recipe: {
+            name: 'Soupish',
+            servings: 1,
+            image: '',
+            ingredients: { tomato: 3 },
+          },
+          sourceRecipeId: null,
+        });
+      });
+    });
+
     describe('given an editing recipe', () => {
       it('should render the edit form and save changes label', async () => {
         await createComponent();
