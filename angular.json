@@ -88,7 +88,7 @@
             "progress": false,
             "reporters": ["dot"],
             "coverage": true,
-            "coverageReporters": ["text-summary", "html"]
+            "coverageReporters": ["text-summary", "html", "lcovonly"]
           }
         }
       }

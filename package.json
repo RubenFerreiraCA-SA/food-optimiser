@@ -8,6 +8,7 @@
     "build": "ng build",
     "test": "ng test --watch=false --progress=false",
     "test:coverage": "ng test --watch=false --progress=false && node -e \"console.log('Coverage report: coverage/meal-optimiser/index.html')\"",
+    "test:coverage:open": "pnpm test:coverage && node _scripts/open-coverage.mjs",
     "deploy": "firebase deploy --only hosting,firestore:rules"
   },
   "private": true,
